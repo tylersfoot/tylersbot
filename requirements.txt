@@ -1,0 +1,15 @@
+discord
+python-dotenv
+neuralintents
+youtube_dl
+PyNaCl
+requests
+gptj
+py-cord
+jishaku
+discord-pretty-help
+motor
+psutil
+nest_asyncio
+dnspython
+pip-upgrader
