@@ -1,9 +1,9 @@
-discord
-python-dotenv
+discord~=2.0.0
+python-dotenv~=0.20.0
 neuralintents
 youtube_dl
 PyNaCl
-requests
+requests~=2.28.1
 gptj
 py-cord
 jishaku
@@ -13,3 +13,8 @@ psutil
 nest_asyncio
 dnspython
 pip-upgrader
+wikipedia~=1.4.0
+humanize~=4.3.0
+PyQRCode~=1.2.1
+DateTime~=4.5
+aiohttp~=3.7.4.post0
