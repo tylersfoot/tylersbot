@@ -136,22 +136,6 @@ if __name__ == "__main__":
         #     await ctx.send("Current uptime: " + text)
 
     @client.command()
-    async def check_cogs(ctx, cog_name):
-        try:
-            await client.load_extension(f"cogs.{cog_name}")
-        except commands.ExtensionAlreadyLoaded:
-            await ctx.send("Cog is loaded")
-        except commands.ExtensionNotFound:
-            await ctx.send("Cog not found")
-        else:
-            await ctx.send("Cog is unloaded")
-            await client.unload_extension(f"cogs.{cog_name}")
-
-    @client.command()
-    async def bruhh(ctx):
-        await client.load_extension('cogs.fun')
-
-    @client.command()
     async def load(ctx, extension):
         if ctx.message.author.id == 460161554915000355:
             await client.load_extension(f'cogs.{extension}')
