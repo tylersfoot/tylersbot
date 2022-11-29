@@ -5,7 +5,7 @@ import pyqrcode
 import os
 
 
-class Processing(commands.Cog):
+class Qrcode(commands.Cog):
     def __init__(self, client):
         self.client = client
 
@@ -64,4 +64,4 @@ class Processing(commands.Cog):
 
 
 async def setup(client):
-    await client.add_cog(Processing(client))
+    await client.add_cog(Qrcode(client))
