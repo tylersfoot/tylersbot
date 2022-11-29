@@ -82,11 +82,10 @@ if __name__ == "__main__":
     async def on_ready():
         change_status.start()
         print(f'''
-    ------
-    Logged in as
-    {client.user.name}
-    id:{client.user.id}
-    ------
+    #--------------------------#
+    |  Logged in as {client.user.name}  |
+    |  id:{client.user.id}   |
+    #--------------------------#
     ''')
 
 
