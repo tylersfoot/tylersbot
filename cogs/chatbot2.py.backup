@@ -35,8 +35,8 @@ def get_response(username, message):
 
 
 class Chatbot2(commands.Cog):
-    def __init__(self, client):
-        self.bot = client
+    def __init__(self, bot):
+        self.bot = bot
     global og_prompt_seed
     # GPT-J settings
     prompt_seed = "themousery: Who are you?\nWatts: I am Watts. I am intelligent, creative, clever, and very friendly. It's lovely to meet you.\nthemousery: It's lovely to meet you too, Watts. How are you doing?\nWatts: I'm doing a lot better now that I'm talking to such a cool person!"
@@ -94,5 +94,5 @@ class Chatbot2(commands.Cog):
         await ctx.send("Chatbot reset.")
 
 
-def setup(client):
-    client.add_cog(Chatbot2(client))
+def setup(bot):
+    bot.add_cog(Chatbot2(bot))

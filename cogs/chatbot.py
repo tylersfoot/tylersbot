@@ -9,9 +9,9 @@ API_URL = 'https://api-inference.huggingface.co/models/tylersfoot/'
 
 
 class Chatbot(commands.Cog):
-    def __init__(self, client):
+    def __init__(self, bot):
         model_name = 'DialoGPT-medium-rick'
-        self.client = client
+        self.bot = bot
         super().__init__()
         self.api_endpoint = API_URL + model_name
         # retrieve the secret API token from the system environment
@@ -55,8 +55,8 @@ class Chatbot(commands.Cog):
         """
         this function is called whenever the bot sees a message in a channel
         """
-        # ctx = await client.get_context(message)
-        if message.author == self.client.user:
+        # ctx = await bot.get_context(message)
+        if message.author == self.bot.user:
             return
         if str(message.channel) == 'chatbot':
             # form query payload with the content of the message
@@ -82,5 +82,5 @@ class Chatbot(commands.Cog):
         return
 
 
-async def setup(client):
-    await client.add_cog(Chatbot(client))
+def setup(bot):
+    bot.add_cog(Chatbot(bot))

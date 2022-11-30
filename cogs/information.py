@@ -5,12 +5,19 @@ import datetime
 import random
 import time
 
+for guild in bot.guilds:
+    guilds.append(guild.id)
+
 start_time = time.time()
 
 
 class Information(commands.Cog):
-    def __init__(self, client):
-        self.client = client
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.user_command(name="Account Creation Date", guild_ids=guilds)  # create a user command for the supplied guilds
+    async def account_creation_date(self, ctx, member: discord.Member):  # user commands return the member
+        await ctx.respond(f"{member.name}'s account was created on {member.created_at}")
 
     @commands.command()
     async def servercount(self, ctx):
@@ -18,15 +25,18 @@ class Information(commands.Cog):
 
     @commands.command(aliases=['invlink', 'invite', 'botinvite', 'botinv'])
     async def invitelink(self, ctx):
-        await ctx.send(f'''Bot invite link: https://discordapp.com/oauth2/authorize?client_id={self.client.user.id}&scope=bot&permissions=8
+        await ctx.send(f'''Bot invite link: https://discordapp.com/oauth2/authorize?bot_id={self.bot.user.id}&scope=bot&permissions=8
         Bot server invite link: https://discord.gg/DKpCvsJ4fp''')
 
     @commands.command()
     async def avatar(self, ctx, member: discord.Member = None):
         if member is None:
             member = ctx.author
-        icon_url = member.avatar_url
-        avatarEmbed = discord.Embed(title=f"{member.name}\'s Avatar", color=random.randint(0, 0xFFFFFF))
+        icon_url = member.avatar.url
+        avatarEmbed = discord.Embed(
+            title=f"{member.name}\'s Avatar",
+            color=int(str(ctx.author.color)[1:], 16)
+        )
         avatarEmbed.set_image(url=f"{icon_url}")
         avatarEmbed.timestamp = ctx.message.created_at
         await ctx.send(embed=avatarEmbed)
@@ -40,9 +50,9 @@ class Information(commands.Cog):
             title="Server information",
             description=f'{ctx.guild} ({ctx.guild.id})'
                         f'\nDescription: {ctx.guild.description}',
-            color=random.randint(0, 0xFFFFFF)
+            color=int(str(ctx.author.color)[1:], 16)
         )
-        embed.set_thumbnail(url=ctx.guild.icon_url)
+        embed.set_thumbnail(url=ctx.guild.icon.url)
         embed.timestamp = ctx.message.created_at
         embed.add_field(
             name="Verification",
@@ -85,7 +95,7 @@ class Information(commands.Cog):
 '''
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.author == self.client.user:
+        if message.author == self.bot.user:
             return
 
         if message.content == 'Hello' or message.content == 'hello':
@@ -123,5 +133,5 @@ class Information(commands.Cog):
 '''
 
 
-async def setup(client):
-    await client.add_cog(Information(client))
+def setup(bot):
+    bot.add_cog(Information(bot))

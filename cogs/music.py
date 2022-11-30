@@ -10,22 +10,22 @@ weezer = False
 
 
 class Music(commands.Cog):
-    def __init__(self, client):
-        self.client = client
+    def __init__(self, bot):
+        self.bot = bot
 
     @commands.command(aliases=['j', 'joinchannel'])
     async def join(self, ctx):
         if ctx.author.voice is None:
             await ctx.send("You are not in a voice channel!")
         voice_channel = ctx.author.voice.channel
-        if ctx.voice_client is None:
+        if ctx.voice_bot is None:
             await ctx.send("Joined")
             await voice_channel.connect()
-        elif ctx.author.voice.channel == ctx.voice_client.channel:
+        elif ctx.author.voice.channel == ctx.voice_bot.channel:
             await ctx.send("Already in that channel")
         else:
             await ctx.send("Moved")
-            await ctx.voice_client.move_to(voice_channel)
+            await ctx.voice_bot.move_to(voice_channel)
 
     @commands.command()
     async def weezer(self, ctx):
@@ -40,12 +40,12 @@ class Music(commands.Cog):
     @commands.command(aliases=['leave', 'l', 'leavechannel', 'dc', 'dis'])
     async def disconnect(self, ctx):
         global playing, paused
-        if ctx.voice_client is not None:
-            ctx.voice_client.resume()
-            ctx.voice_client.stop()
+        if ctx.voice_bot is not None:
+            ctx.voice_bot.resume()
+            ctx.voice_bot.stop()
             playing = False
             paused = False
-            await ctx.voice_client.disconnect()
+            await ctx.voice_bot.disconnect()
             await ctx.send("Disconnected")
         else:
             await ctx.send("Not in a voice channel")
@@ -57,16 +57,16 @@ class Music(commands.Cog):
             await ctx.send("You are not in a voice channel!")
         else:
             voice_channel = ctx.author.voice.channel
-            if ctx.voice_client is None:
+            if ctx.voice_bot is None:
                 await ctx.send("Joined")
                 await voice_channel.connect()
-            elif ctx.author.voice.channel != ctx.voice_client.channel:
+            elif ctx.author.voice.channel != ctx.voice_bot.channel:
                 await ctx.send("Moved")
-                await ctx.voice_client.move_to(voice_channel)
-            if ctx.author.voice.channel == ctx.voice_client.channel:
+                await ctx.voice_bot.move_to(voice_channel)
+            if ctx.author.voice.channel == ctx.voice_bot.channel:
                 await ctx.send("Loading...")
-                ctx.voice_client.stop()
-                ctx.voice_client.resume()
+                ctx.voice_bot.stop()
+                ctx.voice_bot.resume()
                 playing = False
                 paused = False
                 FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
@@ -86,7 +86,7 @@ class Music(commands.Cog):
                     'force-ipv4': True,
                     'cachedir': False
                 }
-                vc = ctx.voice_client
+                vc = ctx.voice_bot
 
                 with youtube_dl.YoutubeDL(ytdlopts) as ydl:
                     info = ydl.extract_info(url, download=False)
@@ -115,8 +115,8 @@ class Music(commands.Cog):
     async def stop(self, ctx):
         global playing, paused
         if playing:
-            ctx.voice_client.stop()
-            ctx.voice_client.resume()
+            ctx.voice_bot.stop()
+            ctx.voice_bot.resume()
             playing = False
             paused = False
             await ctx.send("Stopped")
@@ -127,7 +127,7 @@ class Music(commands.Cog):
     async def pause(self, ctx):
         global playing, paused
         if playing and not paused:
-            ctx.voice_client.pause()
+            ctx.voice_bot.pause()
             paused = True
             await ctx.send("Paused")
         elif playing and paused:
@@ -139,7 +139,7 @@ class Music(commands.Cog):
     async def resume(self, ctx):
         global playing, paused
         if playing and paused:
-            ctx.voice_client.resume()
+            ctx.voice_bot.resume()
             await ctx.send("Resumed")
         elif playing and not paused:
             await ctx.send("Already playing")
@@ -149,11 +149,11 @@ class Music(commands.Cog):
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
 
-        if not member.id == self.client.user.id:
+        if not member.id == self.bot.user.id:
             return
 
         elif before.channel is None:
-            voice = after.channel.guild.voice_client
+            voice = after.channel.guild.voice_bot
             time = 0
             while True:
                 await asyncio.sleep(1)
@@ -166,5 +166,5 @@ class Music(commands.Cog):
                     break
 
 
-async def setup(client):
-    await client.add_cog(Music(client))
+def setup(bot):
+    bot.add_cog(Music(bot))

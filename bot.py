@@ -1,18 +1,21 @@
 import datetime
-from datetime import datetime, timedelta
+from datetime import datetime
 import discord
 import json
 import os
-from os import listdir, system
 import time
 from itertools import cycle
-import asyncio
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
-import aiohttp
-from pretty_help import PrettyHelp
+import globalvariables as gv
 
 startupTime = time.time()
+
+
+def update_guild_count():
+    gv.guilds = []
+    for guild in bot.guilds:
+        gv.guilds.append(guild.id)
 
 
 def get_prefix(client, message):
@@ -64,7 +67,7 @@ if __name__ == "__main__":
         name="Bot Started!"
     )
 
-    client = commands.Bot(
+    bot = commands.Bot(
         command_prefix=get_prefix,
         help_command=commands.MinimalHelpCommand(),
         intents=discord.Intents.all(),
@@ -78,18 +81,40 @@ if __name__ == "__main__":
     ])
 
 
-    @client.event
+    @bot.event
     async def on_ready():
         change_status.start()
         print(f'''
     #--------------------------#
-    |  Logged in as {client.user.name}  |
-    |  id:{client.user.id}   |
+    |  Logged in as {bot.user.name}  |
+    |  id:{bot.user.id}   |
     #--------------------------#
     ''')
+        update_guild_count()
+        reloads = ''
+        print('Loading all cogs...')
+        for file in os.listdir('./cogs'):
+            if file.endswith('.py'):
+                if reloads == '':
+                    reloads = file
+                else:
+                    reloads += ', ' + file
+                try:
+                    bot.load_extension(f'cogs.{file[:-3]}')
+                except Exception as e:
+                    print(f'Cog {file} could not load. Error: {e}')
+                else:
+                    pass
+        print(f'Reloaded {reloads}')
+        try:
+            await bot.sync_commands()
+            print(bot.commands)
+            print(f'Synced commands')
+        except Exception as e:
+            print(f'Error syncing commands: {e}')
 
 
-    @client.event
+    @bot.event
     async def on_guild_join(guild):
         with open('data/prefixes.json', 'r') as f:
             prefixes = json.load(f)
@@ -103,7 +128,7 @@ if __name__ == "__main__":
             f.close()
 
 
-    @client.event
+    @bot.event
     async def on_guild_remove(guild):
         with open('data/prefixes.json', 'r') as f:
             prefixes = json.load(f)
@@ -118,10 +143,10 @@ if __name__ == "__main__":
 
     @tasks.loop(seconds=10)
     async def change_status():
-        await client.change_presence(activity=discord.Game(next(status)))
+        await bot.change_presence(activity=discord.Game(next(status)))
 
 
-    @client.command(aliases=['runtime'])
+    @bot.command(aliases=['runtime'])
     async def uptime(ctx):
         global startupTime
         currentTime = time.time()
@@ -129,36 +154,37 @@ if __name__ == "__main__":
         text = str(datetime.timedelta(seconds=difference))
         embed = discord.Embed(colour=0xc8dc6c)
         embed.add_field(name="Uptime", value=text)
-        embed.set_footer(text=f"{client.user.name} | {client.user.id}")
+        embed.set_footer(text=f"{bot.user.name} | {bot.user.id}")
         await ctx.send(embed=embed)
         # except discord.HTTPException:
         #     await ctx.send("Current uptime: " + text)
 
-    @client.command()
+    @bot.command()
     async def load(ctx, extension):
         if ctx.message.author.id == 460161554915000355:
-            await client.load_extension(f'cogs.{extension}')
+            await bot.load_extension(f'cogs.{extension}')
             await ctx.send(f'Loaded {extension}.py')
         else:
             await ctx.send('Sorry, you are not tylersfoot.')
 
-    @client.command()
+    @bot.command()
     async def unload(ctx, extension):
         if ctx.message.author.id == 460161554915000355:
-            await client.unload_extension(f'cogs.{extension}')
+            await bot.unload_extension(f'cogs.{extension}')
             await ctx.send(f'Unloaded {extension}.py')
         else:
             await ctx.send('Sorry, you are not tylersfoot.')
         for filename in os.listdir('./cogs'):
             if filename.endswith('.py'):
-                await client.load_extension(f'cogs.{filename[:-3]}')
+                await bot.load_extension(f'cogs.{filename[:-3]}')
                 print(f'Loaded {filename}')
 
-    @client.command(aliases=['refresh', 'update'])
-    async def reload(ctx, extension):
-        global reloads
+
+    @bot.slash_command(name="reload", description="Reloads cogs..",
+                       guild_ids=gv.guilds, aliases=['refresh', 'update'])
+    async def reload(ctx, extension: discord.Option(str)):
         reloads = ''
-        if ctx.message.author.id == 460161554915000355:
+        if ctx.author.id == 460161554915000355:
             if extension == 'info':
                 extension = 'information'
             if extension == 'mod':
@@ -167,8 +193,8 @@ if __name__ == "__main__":
                 extension = 'chatbot'
             if extension == 'roles':
                 extension = 'selfroles'
-            if extension in ['cogs', 'extensions', 'all']:
-                await ctx.send('Reloading all cogs...')
+            if extension in ['cogs', 'extensions', 'all', 'a']:
+                await ctx.respond('Reloading all cogs...')
                 for file in os.listdir('./cogs'):
                     if file.endswith('.py'):
                         if reloads == '':
@@ -176,40 +202,69 @@ if __name__ == "__main__":
                         else:
                             reloads += ', ' + file
                         try:
-                            await client.unload_extension(f'cogs.{file[:-3]}')
-                        except commands.ExtensionNotLoaded:
+                            bot.unload_extension(f'cogs.{file[:-3]}')
+                        except Exception as e:
+                            print(f'Cog {file} could not unload. Error: {e}')
                             pass
                         else:
                             pass
-                        await client.load_extension(f'cogs.{file[:-3]}')
-                await ctx.send(f'Reloaded {reloads}')
+                        bot.load_extension(f'cogs.{file[:-3]}')
+                await ctx.respond(f'Reloaded {reloads}')
+                print(f'Reloaded {reloads}')
             else:
-                await client.unload_extension(f'cogs.{extension}')
-                await client.load_extension(f'cogs.{extension}')
-                await ctx.send(f'Reloaded {extension}.py')
+                try:
+                    bot.unload_extension(f'cogs.{extension}')
+                    bot.load_extension(f'cogs.{extension}')
+                    await ctx.respond(f'Reloaded {extension}.py')
+                    print(f'Reloaded {extension}.py')
+                except Exception as e:
+                    await ctx.respond(f'Error reloading {extension}.py')
+                    print(f'Error reloading {extension}.py: {e}')
         else:
-            await ctx.send('Sorry, you are not tylersfoot.')
+            await ctx.respond('Sorry, you are not tylersfoot.')
 
 
-    @client.command()
+    @bot.command()
     async def prefix(ctx):
         print('f')
-        await ctx.send(f'My prefix here is {get_prefix(client, ctx.message)}')
+        await ctx.send(f'My prefix here is {get_prefix(bot, ctx.message)}')
 
 
-    @client.command()
+    @bot.command()
+    async def gc(ctx):
+        await ctx.send(f'{gv.guilds}')
+
+    @bot.command()
+    async def sync(ctx):
+        await bot.sync_commands()
+        await ctx.send('done')
+
+
+    # @bot.user_command(name="Account Creation Date", guild_ids=guilds)  # create a user command for the supplied guilds
+    # async def account_creation_date(ctx, member: discord.Member):  # user commands return the member
+    #     await ctx.respond(f"{member.name}'s account was created on {member.created_at}")
+
+
+    @bot.slash_command(name="ping", description="Sends the bot's latency.", guild_ids=gv.guilds)
     async def ping(ctx):
-        await ctx.send(f'Pong! {round(client.latency * 1000)}ms')
+        await ctx.respond(f'Pong! {round(bot.latency * 1000)}ms')
 
 
-    @client.event
+    @bot.slash_command(name="update_guilds", description="Updates the bot's guild count.", guild_ids=gv.guilds)
+    async def update_guilds(ctx):
+        update_guild_count()
+        print(f'Updated with {len(gv.guilds)} guilds: {gv.guilds}')
+        await ctx.respond(f'Updated {len(gv.guilds)} guilds: {gv.guilds}')
+
+
+    @bot.event
     async def on_member_join(member):
         print(f'{member} has joined the server.')
 
 
-    @client.event
+    @bot.event
     async def on_member_remove(member):
         print(f'{member} has left the server.')
 
 
-    client.run(token)
+    bot.run(token)

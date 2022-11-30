@@ -1,4 +1,3 @@
-discord~=2.0.0
 python-dotenv~=0.20.0
 neuralintents
 youtube_dl

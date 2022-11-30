@@ -6,8 +6,8 @@ from humanize import number
 
 
 class Calculator(commands.Cog):
-    def __init__(self, client):
-        self.client = client
+    def __init__(self, bot):
+        self.bot = bot
 
     @commands.command()
     async def calc(self, ctx, operation: str):
@@ -39,5 +39,5 @@ class Calculator(commands.Cog):
                     await ctx.reply(f'Error occured: `{error}`. Please report this to `tylersfoot`.')
 
 
-async def setup(client):
-    await client.add_cog(Calculator(client))
+def setup(bot):
+    bot.add_cog(Calculator(bot))
