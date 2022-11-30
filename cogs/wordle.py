@@ -12,8 +12,8 @@ board = [['--', '--', '--', '--', '--'], [cw, cw, cw, cw, cw], ['--', '--', '--'
 
 
 class Wordle(commands.Cog):
-    def __init__(self, client):
-        self.client = client
+    def __init__(self, bot):
+        self.bot = bot
 
     @commands.command()
     async def wordlestart(self, ctx):
@@ -24,7 +24,7 @@ class Wordle(commands.Cog):
         embed = discord.Embed(
             title="Wordle",
             description="",
-            color=random.randint(0, 0xFFFFFF)
+            color=int(str(ctx.author.color)[1:], 16)
         )
         embed.timestamp = ctx.message.created_at
         embed.add_field(
@@ -66,5 +66,5 @@ class Wordle(commands.Cog):
         # await ctx.send(embed=embed)
 
 
-async def setup(client):
-    await client.add_cog(Wordle(client))
+def setup(bot):
+    bot.add_cog(Wordle(bot))

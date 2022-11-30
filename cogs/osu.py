@@ -10,9 +10,9 @@ TOKEN_URL = 'https://osu.ppy.sh/oauth/token'
 
 def get_token():
     data = {
-        'client_id': 14377,
-        'client_secret': 'REDACTED',
-        'grant_type': 'client_credentials',
+        'bot_id': 14377,
+        'bot_secret': 'REDACTED',
+        'grant_type': 'bot_credentials',
         'scope': 'public'
     }
     response = requests.post(TOKEN_URL, data=data)
@@ -20,8 +20,8 @@ def get_token():
 
 
 class Osu(commands.Cog):
-    def __init__(self, client):
-        self.client = client
+    def __init__(self, bot):
+        self.bot = bot
 
     @commands.command()
     async def osuplay(self, ctx, count=1, mode='osu', userid='def'):
@@ -87,11 +87,11 @@ class Osu(commands.Cog):
             embed = discord.Embed(
                 title=f'Number {count + 1} top osu! {modevis} play for {user}',
                 description='',
-                color=random.randint(0, 0xFFFFFF)
+                color=int(str(ctx.author.color)[1:], 16)
             )
             embed.set_thumbnail(url=cover)
             embed.timestamp = ctx.message.created_at
-            embed.set_footer(text=f'Requested by {ctx.author.name}', icon_url=ctx.author.avatar_url)
+            embed.set_footer(text=f'Requested by {ctx.author.name}', icon_url=ctx.author.avatar.url)
             embed.add_field(
                 name=f'{title} [{difficulty}] +{mods} [{stars}★]',
                 value=f'''▸ {rank} ▸ {pp}pp ▸ {accuracy}%
@@ -129,11 +129,11 @@ class Osu(commands.Cog):
         embed = discord.Embed(
             title=f'Top 5 osu! {modevis} plays for {user}',
             description='',
-            color=random.randint(0, 0xFFFFFF)
+            color=int(str(ctx.author.color)[1:], 16)
         )
-        embed.set_thumbnail(url=ctx.author.avatar_url)
+        embed.set_thumbnail(url=ctx.author.avatar.url)
         embed.timestamp = ctx.message.created_at
-        embed.set_footer(text=f'Requested by {ctx.author.name}', icon_url=ctx.author.avatar_url)
+        embed.set_footer(text=f'Requested by {ctx.author.name}', icon_url=ctx.author.avatar.url)
         for i in range(0, 5):
             cover = response.json()[i].get('beatmapset', {}).get('covers', {}).get('list@2x')
             title = response.json()[i].get('beatmapset', {}).get('title')
@@ -270,13 +270,13 @@ class Osu(commands.Cog):
             description=f'''▸ {rank} ▸ {pp}pp ▸ {accuracy}%
                     ▸ {"{:,}".format(score)} ▸ {combo}x ▸ [{statistics.get("count_300")}/{statistics.get("count_100")}/{statistics.get("count_50")}/{statistics.get("count_miss")}]
                     ▸ Score set on: {response.json()[0].get('created_at')[:10]}''',
-            color=random.randint(0, 0xFFFFFF)
+            color=int(str(ctx.author.color)[1:], 16)
         )
         embed.set_thumbnail(url=cover)
         embed.timestamp = ctx.message.created_at
-        embed.set_footer(text=f'Requested by {ctx.author.name}', icon_url=ctx.author.avatar_url)
+        embed.set_footer(text=f'Requested by {ctx.author.name}', icon_url=ctx.author.avatar.url)
         await ctx.send(embed=embed)
 
 
-async def setup(client):
-    await client.add_cog(Osu(client))
+def setup(bot):
+    bot.add_cog(Osu(bot))

@@ -23,8 +23,8 @@ class DurationConverter(commands.Converter):
 
 
 class Moderation(commands.Cog):
-    def __init__(self, client):
-        self.bot = client
+    def __init__(self, bot):
+        self.bot = bot
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
@@ -125,5 +125,5 @@ class Moderation(commands.Cog):
             raise commands.MissingPermissions(['manage_guild'])
 
 
-async def setup(client):
-    await client.add_cog(Moderation(client))
+def setup(bot):
+    bot.add_cog(Moderation(bot))

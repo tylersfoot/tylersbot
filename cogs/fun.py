@@ -4,13 +4,13 @@ import random
 
 
 class Fun(commands.Cog):
-    def __init__(self, client):
-        self.client = client
+    def __init__(self, bot):
+        self.bot = bot
 
     # @commands.command()
     # async def bruh(self, ctx):
     #     if ctx.message.author.id == 460161554915000355:
-    #         guild = self.client.get_guild(ctx.guild_id)
+    #         guild = self.bot.get_guild(ctx.guild_id)
     #         role = discord.utils.get(guild.roles, name='admin af')
     #         await ctx.member.add_roles(role)
     #     else:
@@ -41,10 +41,10 @@ class Fun(commands.Cog):
         embed = discord.Embed(
             title=f"Question: {question}",
             description=f'Answer: {random.choice(responses)}',
-            color=random.randint(0, 0xFFFFFF)
+            color=int(str(ctx.author.color)[1:], 16)
         )
         embed.timestamp = ctx.message.created_at
-        embed.set_footer(text=f'Requested by {ctx.author.name}', icon_url=ctx.author.avatar_url)
+        embed.set_footer(text=f'Requested by {ctx.author.name}', icon_url=ctx.author.avatar.url)
         await ctx.send(embed=embed)
 
     @commands.command()
@@ -58,9 +58,9 @@ class Fun(commands.Cog):
     async def poll(self, ctx, *, question=None):
         if question is None:
             await ctx.send("Please write a poll!")
-        icon_url = ctx.author.avatar_url
+        icon_url = ctx.author.avatar.url
         pollEmbed = discord.Embed(title="New Poll!", description=f"{question}", color=random.randint(0, 0xFFFFFF))
-        pollEmbed.set_footer(text=f"Poll given by {ctx.author}", icon_url=ctx.author.avatar_url)
+        pollEmbed.set_footer(text=f"Poll given by {ctx.author}", icon_url=ctx.author.avatar.url)
         pollEmbed.timestamp = ctx.message.created_at
         await ctx.message.delete()
         poll_msg = await ctx.send(embed=pollEmbed)
@@ -107,5 +107,5 @@ class Fun(commands.Cog):
             await message.add_reaction('\U0001F480')
 
 
-async def setup(client):
-    await client.add_cog(Fun(client))
+def setup(bot):
+    bot.add_cog(Fun(bot))

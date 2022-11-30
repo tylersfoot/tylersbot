@@ -3,8 +3,8 @@ from discord.ext import commands
 
 
 class Selfroles(commands.Cog):
-    def __init__(self, client):
-        self.client = client
+    def __init__(self, bot):
+        self.bot = bot
         self.role_message_id = 962196125937463298
 
     @commands.Cog.listener()
@@ -13,7 +13,7 @@ class Selfroles(commands.Cog):
         if payload.message_id != self.role_message_id:
             return
 
-        guild = self.client.get_guild(payload.guild_id)
+        guild = self.bot.get_guild(payload.guild_id)
 
         if payload.emoji.name == '🗿':
             role = discord.utils.get(guild.roles, name='stone')
@@ -31,7 +31,7 @@ class Selfroles(commands.Cog):
         if payload.message_id != self.role_message_id:
             return
 
-        guild = self.client.get_guild(payload.guild_id)
+        guild = self.bot.get_guild(payload.guild_id)
         member = guild.get_member(payload.user_id)
 
         if payload.emoji.name == '🗿':
@@ -45,5 +45,5 @@ class Selfroles(commands.Cog):
             await member.remove_roles(role)
 
 
-async def setup(client):
-    await client.add_cog(Selfroles(client))
+async def setup(bot):
+    await bot.add_cog(Selfroles(bot))
