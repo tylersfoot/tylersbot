@@ -31,12 +31,11 @@ class Information(commands.Cog):
     async def avatar(self, ctx, member: discord.Member = None):
         if member is None:
             member = ctx.author
-        icon_url = member.avatar.url
         avatarEmbed = discord.Embed(
             title=f"{member.name}\'s Avatar",
             color=int(str(ctx.author.color)[1:], 16)
         )
-        avatarEmbed.set_image(url=f"{icon_url}")
+        avatarEmbed.set_image(url=f"{member.avatar.url}")
         avatarEmbed.timestamp = datetime.datetime.now()
         await ctx.respond(embed=avatarEmbed)
 
