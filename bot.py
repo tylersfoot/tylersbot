@@ -7,15 +7,20 @@ import time
 from itertools import cycle
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
-import globalvariables as gv
 
 startupTime = time.time()
+guilds = [806659671129456640, 894275390959407134, 926920084860076082, 962179884627669062, 970926942511566851, 971048611184017448]
 
 
 def update_guild_count():
-    gv.guilds = []
+    global guilds
+    guilds = []
     for guild in bot.guilds:
-        gv.guilds.append(guild.id)
+        guilds.append(guild.id)
+    with open('data/globalvariables.json', 'w') as f:
+        guildsjson = json.dumps(guilds)
+        f.write(guildsjson)
+        f.close()
 
 
 def get_prefix(client, message):
@@ -90,6 +95,7 @@ if __name__ == "__main__":
     |  id:{bot.user.id}   |
     #--------------------------#
     ''')
+
         update_guild_count()
         reloads = ''
         print('Loading all cogs...')
@@ -181,7 +187,7 @@ if __name__ == "__main__":
 
 
     @bot.slash_command(name="reload", description="Reloads cogs..",
-                       guild_ids=gv.guilds, aliases=['refresh', 'update'])
+                       guild_ids=guilds, aliases=['refresh', 'update'])
     async def reload(ctx, extension: discord.Option(str)):
         reloads = ''
         if ctx.author.id == 460161554915000355:
@@ -232,7 +238,7 @@ if __name__ == "__main__":
 
     @bot.command()
     async def gc(ctx):
-        await ctx.send(f'{gv.guilds}')
+        await ctx.send(f'{guilds}')
 
     @bot.command()
     async def sync(ctx):
@@ -245,16 +251,16 @@ if __name__ == "__main__":
     #     await ctx.respond(f"{member.name}'s account was created on {member.created_at}")
 
 
-    @bot.slash_command(name="ping", description="Sends the bot's latency.", guild_ids=gv.guilds)
+    @bot.slash_command(name="ping", description="Sends the bot's latency.", guild_ids=guilds)
     async def ping(ctx):
         await ctx.respond(f'Pong! {round(bot.latency * 1000)}ms')
 
 
-    @bot.slash_command(name="update_guilds", description="Updates the bot's guild count.", guild_ids=gv.guilds)
+    @bot.slash_command(name="update_guilds", description="Updates the bot's guild count.", guild_ids=guilds)
     async def update_guilds(ctx):
         update_guild_count()
-        print(f'Updated with {len(gv.guilds)} guilds: {gv.guilds}')
-        await ctx.respond(f'Updated {len(gv.guilds)} guilds: {gv.guilds}')
+        print(f'Updated with {len(guilds)} guilds: {guilds}')
+        await ctx.respond(f'Updated {len(guilds)} guilds: {guilds}')
 
 
     @bot.event
