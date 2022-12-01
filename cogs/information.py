@@ -4,9 +4,7 @@ from bot import get_servercount
 import datetime
 import random
 import time
-
-for guild in bot.guilds:
-    guilds.append(guild.id)
+from bot import guilds
 
 start_time = time.time()
 
