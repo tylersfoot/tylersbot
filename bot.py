@@ -1,5 +1,4 @@
 import datetime
-from datetime import datetime
 import discord
 import json
 import os
@@ -46,25 +45,25 @@ if __name__ == "__main__":
     token = os.getenv('DISCORD_TOKEN')
 
 
-    class CustomHelpCommand(commands.HelpCommand):
-        def __init__(self):
-            super().__init__(command_attrs={
-                'cooldown': commands.Cooldown(1, 3, commands.BucketType.member)
-            })
-
-        async def send_bot_help(self, mapping):
-            for cog in mapping:
-                await self.get_destination().send(f'{cog.qualified_name}: {[command.name for command in mapping[cog]]}')
-            return await super().send_bot_help(mapping)
-
-        async def send_cog_help(self, cog):
-            await self.get_destination().send(f'{cog.qualified_name}: {[command.name for command in cog.get_commands()]}')
-
-        async def send_group_help(self, group):
-            await self.get_destination().send(f'{group.name}: {[command.name for index, command in enumerate(group.commands)]}')
-
-        async def send_command_help(self, command):
-            await self.get_destination().send(command.name)
+    # class CustomHelpCommand(commands.HelpCommand):
+    #     def __init__(self):
+    #         super().__init__(command_attrs={
+    #             'cooldown': commands.Cooldown(1, 3, commands.BucketType.member)
+    #         })
+    #
+    #     async def send_bot_help(self, mapping):
+    #         for cog in mapping:
+    #             await self.get_destination().send(f'{cog.qualified_name}: {[command.name for command in mapping[cog]]}')
+    #         return await super().send_bot_help(mapping)
+    #
+    #     async def send_cog_help(self, cog):
+    #         await self.get_destination().send(f'{cog.qualified_name}: {[command.name for command in cog.get_commands()]}')
+    #
+    #     async def send_group_help(self, group):
+    #         await self.get_destination().send(f'{group.name}: {[command.name for index, command in enumerate(group.commands)]}')
+    #
+    #     async def send_command_help(self, command):
+    #         await self.get_destination().send(command.name)
 
 
     activity = discord.Activity(
@@ -114,7 +113,7 @@ if __name__ == "__main__":
         print(f'Reloaded {reloads}')
         try:
             await bot.sync_commands()
-            print(bot.commands)
+            # print(bot.commands)
             print(f'Synced commands')
         except Exception as e:
             print(f'Error syncing commands: {e}')
@@ -152,44 +151,68 @@ if __name__ == "__main__":
         await bot.change_presence(activity=discord.Game(next(status)))
 
 
-    @bot.command(aliases=['runtime'])
+    @bot.slash_command(name="uptime", description="Sends the bot's uptime since last restart.", guild_ids=guilds)
     async def uptime(ctx):
         global startupTime
         currentTime = time.time()
         difference = int(round(currentTime - startupTime))
         text = str(datetime.timedelta(seconds=difference))
-        embed = discord.Embed(colour=0xc8dc6c)
-        embed.add_field(name="Uptime", value=text)
-        embed.set_footer(text=f"{bot.user.name} | {bot.user.id}")
-        await ctx.send(embed=embed)
-        # except discord.HTTPException:
-        #     await ctx.send("Current uptime: " + text)
+        embed = discord.Embed(
+            title=f"Tylersbot Uptime",
+            description=text,
+            color=int(str(ctx.author.color)[1:], 16)
+        )
+        embed.set_footer(text=f'Requested by {ctx.author.name}', icon_url=ctx.author.avatar.url)
+        embed.timestamp = datetime.datetime.now()
+        await ctx.respond(embed=embed)
 
-    @bot.command()
-    async def load(ctx, extension):
-        if ctx.message.author.id == 460161554915000355:
-            await bot.load_extension(f'cogs.{extension}')
-            await ctx.send(f'Loaded {extension}.py')
-        else:
-            await ctx.send('Sorry, you are not tylersfoot.')
 
-    @bot.command()
+    @bot.slash_command(name="unload", description="[DEV CMD] Unloads cogs.",
+                       guild_ids=guilds)
     async def unload(ctx, extension):
-        if ctx.message.author.id == 460161554915000355:
-            await bot.unload_extension(f'cogs.{extension}')
-            await ctx.send(f'Unloaded {extension}.py')
+        cogs = ''
+        if ctx.author.id == 460161554915000355:
+            if extension == 'info':
+                extension = 'information'
+            if extension == 'mod':
+                extension = 'moderation'
+            if extension == 'chat':
+                extension = 'chatbot'
+            if extension == 'roles':
+                extension = 'selfroles'
+            if extension in ['cogs', 'extensions', 'all', 'a']:
+                await ctx.respond('Unloading all cogs...')
+                for file in os.listdir('./cogs'):
+                    if file.endswith('.py'):
+                        if cogs == '':
+                            cogs = file
+                        else:
+                            cogs += ', ' + file
+                        try:
+                            bot.unload_extension(f'cogs.{file[:-3]}')
+                        except Exception as e:
+                            print(f'Cog {file} could not unload. Error: {e}')
+                            pass
+                        else:
+                            pass
+                await ctx.respond(f'Unloaded {cogs}')
+                print(f'Unloaded {cogs}')
+            else:
+                try:
+                    bot.unload_extension(f'cogs.{extension}')
+                    await ctx.respond(f'Unloaded {extension}.py')
+                    print(f'Unloaded {extension}.py')
+                except Exception as e:
+                    await ctx.respond(f'Error unloading {extension}.py: {e}')
+                    print(f'Error unloading {extension}.py: {e}')
         else:
-            await ctx.send('Sorry, you are not tylersfoot.')
-        for filename in os.listdir('./cogs'):
-            if filename.endswith('.py'):
-                await bot.load_extension(f'cogs.{filename[:-3]}')
-                print(f'Loaded {filename}')
+            await ctx.respond('You must be a developer to use this command.')
 
 
-    @bot.slash_command(name="reload", description="Reloads cogs..",
-                       guild_ids=guilds, aliases=['refresh', 'update'])
+    @bot.slash_command(name="reload", description="[DEV CMD] Loads/reloads cogs.",
+                       guild_ids=guilds)
     async def reload(ctx, extension: discord.Option(str)):
-        reloads = ''
+        cogs = ''
         if ctx.author.id == 460161554915000355:
             if extension == 'info':
                 extension = 'information'
@@ -203,10 +226,10 @@ if __name__ == "__main__":
                 await ctx.respond('Reloading all cogs...')
                 for file in os.listdir('./cogs'):
                     if file.endswith('.py'):
-                        if reloads == '':
-                            reloads = file
+                        if cogs == '':
+                            cogs = file
                         else:
-                            reloads += ', ' + file
+                            cogs += ', ' + file
                         try:
                             bot.unload_extension(f'cogs.{file[:-3]}')
                         except Exception as e:
@@ -215,8 +238,8 @@ if __name__ == "__main__":
                         else:
                             pass
                         bot.load_extension(f'cogs.{file[:-3]}')
-                await ctx.respond(f'Reloaded {reloads}')
-                print(f'Reloaded {reloads}')
+                await ctx.respond(f'Reloaded {cogs}')
+                print(f'Reloaded {cogs}')
             else:
                 try:
                     bot.unload_extension(f'cogs.{extension}')
@@ -224,10 +247,10 @@ if __name__ == "__main__":
                     await ctx.respond(f'Reloaded {extension}.py')
                     print(f'Reloaded {extension}.py')
                 except Exception as e:
-                    await ctx.respond(f'Error reloading {extension}.py')
+                    await ctx.respond(f'Error reloading {extension}.py: {e}')
                     print(f'Error reloading {extension}.py: {e}')
         else:
-            await ctx.respond('Sorry, you are not tylersfoot.')
+            await ctx.respond('You must be a developer to use this command.')
 
 
     @bot.command()
@@ -236,14 +259,19 @@ if __name__ == "__main__":
         await ctx.send(f'My prefix here is {get_prefix(bot, ctx.message)}')
 
 
-    @bot.command()
-    async def gc(ctx):
-        await ctx.send(f'{guilds}')
+    # @bot.command()
+    # guild count
+    # async def gc(ctx):
+    #     await ctx.send(f'{guilds}')
 
-    @bot.command()
+
+    @bot.slash_command(name="sync", description="[DEV CMD] Syncs slash commands.", guild_ids=guilds)
     async def sync(ctx):
-        await bot.sync_commands()
-        await ctx.send('done')
+        if ctx.author.id == 460161554915000355:
+            await bot.sync_commands()
+            await ctx.respond('Synced commands.')
+        else:
+            await ctx.respond('You must be a developer to use this command.')
 
 
     # @bot.user_command(name="Account Creation Date", guild_ids=guilds)  # create a user command for the supplied guilds
