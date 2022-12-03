@@ -1,14 +1,13 @@
 import discord
 from discord.ext import commands
 from craiyon import Craiyon
-import asyncio
 import aiofiles
 import aiofiles.os
 import time
-import os
 import random
-import PIL
 from PIL import Image
+from bot import guilds
+import datetime
 
 
 def merge(im1, im2):
@@ -44,17 +43,21 @@ class Imagegen(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(aliases=['imggen', 'imagegen', 'aiimage', 'aiimg', 'aiimagegen', 'aiimggen'])
-    async def img(self, ctx, *, prompt):
+    @commands.command()
+    async def img(self, ctx):
+        await ctx.reply('Use /img from now on! >:3')
 
+    @commands.slash_command(name="img", description="Generates images based off the prompt using AI.", guilds=guilds)
+    async def imggen(self, ctx, *, prompt):
+        # message = await ctx.respond('Generating images... please wait around 40-60 seconds <a:loading1:1048082138282606642>', ephemeral=True)
+        message = await ctx.respond('Generating images... please wait around 40-60 seconds <a:loading1:1048082138282606642>')
+        # await ctx.response.defer(ephemeral=True)
         startTime = time.time()
         uid = str(random.randint(1, 1000000000000))
 
-        await ctx.reply('Generating images... please wait around 1-2 minutes.')
         generator = Craiyon()  # Instantiates the api wrapper
-        async with ctx.typing():
-            result = await generator.async_generate(prompt)
-            await result.async_save_images('./data/temp/')  # Saves the generated images to 'data/temp/
+        result = await generator.async_generate(prompt)
+        await result.async_save_images('./data/temp/')  # Saves the generated images to 'data/temp/
         for i in range(1, 10):
             await aiofiles.os.rename(f'./data/temp/image-{i}.jpg', f'./data/temp/img-{uid}-{i}.jpg')
 
@@ -91,9 +94,10 @@ class Imagegen(commands.Cog):
         file = discord.File(f'./data/temp/img-{uid}-merged5.jpg', filename=f'ai-{uid}.jpg')
         embed.set_image(url=f'attachment://ai-{uid}.jpg')
 
-        embed.timestamp = ctx.message.created_at
+        embed.timestamp = datetime.datetime.now()
         embed.set_footer(text=f'Requested by {ctx.author.name} ~ generated in {(time.time() - startTime):.1f}s ~ {(filesize/(1024*1024)):.2f}MB', icon_url=ctx.author.avatar.url)
-        await ctx.reply(file=file, embed=embed)
+        await ctx.followup.send(file=file, embed=embed)
+        file.close()
         for i in range(1, 10):
             await aiofiles.os.remove(f'./data/temp/img-{uid}-{i}.jpg')
             try:
