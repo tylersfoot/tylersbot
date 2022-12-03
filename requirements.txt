@@ -17,3 +17,5 @@ humanize~=4.3.0
 PyQRCode~=1.2.1
 DateTime~=4.5
 aiohttp~=3.7.4.post0
+aiofiles~=22.1.0
+Pillow~=9.3.0
