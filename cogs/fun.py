@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
 import random
+from bot import guilds
+import datetime
 
 
 class Fun(commands.Cog):
@@ -16,7 +18,7 @@ class Fun(commands.Cog):
     #     else:
     #         await ctx.send('Sorry, you are not tylersfoot.')
 
-    @commands.command(aliases=['8ball'])
+    @commands.slash_command(name="8ball", description="Decide your fate!", guilds=guilds)
     async def eightball(self, ctx, *, question):
         responses = ["It is certain.",
                      "It is decidedly so.",
@@ -43,47 +45,52 @@ class Fun(commands.Cog):
             description=f'Answer: {random.choice(responses)}',
             color=int(str(ctx.author.color)[1:], 16)
         )
-        embed.timestamp = ctx.message.created_at
+        embed.timestamp = datetime.datetime.now()
         embed.set_footer(text=f'Requested by {ctx.author.name}', icon_url=ctx.author.avatar.url)
-        await ctx.send(embed=embed)
+        await ctx.respond(embed=embed)
 
-    @commands.command()
+    @commands.slash_command(name="say", description="Tell the bot to say something.", guilds=guilds)
     async def say(self, ctx, *, arg=None):
         if arg is None:
-            await ctx.send('Say what?')
+            await ctx.respond('Say what?')
         else:
-            await ctx.send(arg)
+            await ctx.respond(arg)
 
-    @commands.command()
+    @commands.slash_command(name="poll", description="Creates a poll.", guilds=guilds)
     async def poll(self, ctx, *, question=None):
         if question is None:
-            await ctx.send("Please write a poll!")
+            await ctx.respond("Please write a poll!")
         icon_url = ctx.author.avatar.url
         pollEmbed = discord.Embed(title="New Poll!", description=f"{question}", color=random.randint(0, 0xFFFFFF))
         pollEmbed.set_footer(text=f"Poll given by {ctx.author}", icon_url=ctx.author.avatar.url)
         pollEmbed.timestamp = ctx.message.created_at
         await ctx.message.delete()
-        poll_msg = await ctx.send(embed=pollEmbed)
+        poll_msg = await ctx.respond(embed=pollEmbed)
         await poll_msg.add_reaction("⬆️")
         await poll_msg.add_reaction("⬇️")
 
-    @commands.command(aliases=['coinflip'])
-    async def flipcoin(self, ctx):
+    @commands.slash_command(name="coinflip", description="Flips a coin.", guilds=guilds)
+    async def coinflip(self, ctx):
         coin = ['Heads', 'Tails']
-        await ctx.send(f'Flipped a coin and got {random.choice(coin)}!')
+        await ctx.respond(f'Flipped a coin and got {random.choice(coin)}!')
 
-    @commands.command()
+    @commands.slash_command(name="punch", description="Punches a user.", guilds=guilds)
     async def punch(self, ctx, arg):
-        await ctx.send(f'Punched {arg}!')
 
-    @commands.command()
-    async def doublepunch(self, ctx, arg1, arg2):
-        await ctx.send(f'Double punched {arg1} and {arg2}! Ouch!')
+        await ctx.respond(f'Punched {arg}!')
 
-    @commands.command()
+    @commands.slash_command(name="doublepunch", description="Punches two users.", guilds=guilds)
+    async def doublepunch(self, ctx, member1: discord.Member = None, member2: discord.Member = None):
+        if member1 is None:
+            member1 = self.client.user.mention
+        if member2 is None:
+            member2 = self.client.user.mention
+        await ctx.respond(f'Double punched {member1} and {member2}! Ouch!')
+
+    @commands.slash_command(name="roundhousekick", description="Roundhouse kicks multiple users.", guilds=guilds)
     async def roundhousekick(self, ctx, *args):
         everyone = ', '.join(args)
-        await ctx.send(f'Roundhouse kicked {everyone}! Impressive!')
+        await ctx.respond(f'Roundhouse kicked {everyone}! Impressive!')
 
     @commands.command()
     async def removerole(self, ctx, user, role):
@@ -93,7 +100,6 @@ class Fun(commands.Cog):
             await remove_roles(user2, role)
         else:
             await ctx.send('Sorry, you are not tylersfoot.')
-
 
     @commands.Cog.listener()
     async def on_message(self, message):
