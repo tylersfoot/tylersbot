@@ -27,17 +27,16 @@ class Information(commands.Cog):
         tylersbot development server invite link: https://discord.gg/DKpCvsJ4fp''')
 
     @commands.slash_command(name="avatar", description="Sends the avatar of the specified user.", guilds=guilds)
-    # @option("channel", discord.Member, description="Select a user", )
     async def avatar(self, ctx, member: discord.Member = None):
         if member is None:
             member = ctx.author
-        avatarEmbed = discord.Embed(
+        embed = discord.Embed(
             title=f"{member.name}\'s Avatar",
             color=int(str(ctx.author.color)[1:], 16)
         )
-        avatarEmbed.set_image(url=f"{member.avatar.url}")
-        avatarEmbed.timestamp = datetime.datetime.now()
-        await ctx.respond(embed=avatarEmbed)
+        embed.set_image(url=f"{member.avatar.url}")
+        embed.timestamp = datetime.datetime.now()
+        await ctx.respond(embed=embed)
 
     @commands.slash_command(name="server_info", description="Sends information about the current server.", guilds=guilds)
     async def serverinfo(self, ctx):
