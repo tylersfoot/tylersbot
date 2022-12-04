@@ -4,33 +4,23 @@ import wikipedia
 import asyncio
 from random import randint
 import traceback
+from bot import guilds
 
 
 class Wiki(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(aliases=['wikipediasearch', 'wikiresults', 'wikipediaresults', 'wikis', 'wikipedias'])
+    @commands.slash_command(name="wikisearch", description="Returns a summary of the wikipedia page specified.", guilds=guilds)
     async def wikisearch(self, ctx, *, request):
 
         try:
             wikicontent = wikipedia.search(request, results=10, suggestion=False)  # Wikipedia search request
-            # print('--------------------------------')
-            # print(wikicontent)
+
             wikilinks = []
-            # for i in wikicontent:
-            #     try:
-            #         wikilinks.append(wikipedia.page(i, auto_suggest=False, redirect=True, preload=False).url)
-            #     except wikipedia.DisambiguationError as e:
-            #         try:
-            #             wikilinks.append(wikipedia.page(e.options[0]).url)
-            #         except:
-            #             wikilinks.append('https://en.wikipedia.org/wiki/Special:Search?search=' + i.replace(' ', '_'))
             for i in wikicontent:
                 wikilinks.append('https://en.wikipedia.org/wiki/Special:Search?search=' + i.replace(' ', '_'))
 
-            # print('--------------------------------')
-            # print(wikilinks)
             embed = discord.Embed(
                 title="Wikipedia search results:",
                 color=int(str(ctx.author.color)[1:], 16),
@@ -45,16 +35,18 @@ class Wiki(commands.Cog):
             embed.set_thumbnail(
                 url='https://www.wikipedia.org/static/images/project-logos/enwiki.png'
             )
-            await ctx.send(embed=embed)
+            await ctx.respond(embed=embed)
 
         # Handle random errors
         except Exception as error:
-            await ctx.send(f'Sorry, an error occurred: \n[{error}]\n - Please report to tylersfoot.')
+            if error == wikipedia.exceptions.DisambiguationError:
+                await ctx.send('There are too many search results for this query. Please be more specific.')
+            await ctx.send(f'Sorry, an error occurred: \n`{error}`\n - Please report to `tylersfoot#8888`.')
             print(traceback.format_exc())
 
     @commands.command(aliases=['wikipedia', 'wikiarticle', 'wikia', 'wikiaa'])
     async def wiki(self, ctx, *, request):
-
+        await ctx.response.defer(ephemeral=True)
         # Checks if the request is valid
         try:
             pagecontent = wikipedia.page(request, auto_suggest=False, redirect=True, preload=False)
@@ -80,13 +72,13 @@ class Wiki(commands.Cog):
             embed.set_thumbnail(
                 url=thumbnail
             )
-            await ctx.send(embed=embed)
+            await ctx.respond(embed=embed)
 
         except wikipedia.PageError:
-            await ctx.send(f'Sorry, there are no results for "{request}".')
+            await ctx.respond(f'Sorry, there are no results for "{request}".')
 
         except Exception as error:
-            await ctx.send(f'Sorry, an error occurred: \n[{str(error)[:1900]}]\n - Please report to tylersfoot.')
+            await ctx.respond(f'Sorry, an error occurred: \n`{str(error)[:1900]}`\n - `Please report to `tylersfoot#8888`')
             print(traceback.format_exc())
 
     @commands.command(aliases=['wikipediarandom', 'wikipediarand', 'wikirand', 'wiki_random', 'wiki_rand'])
@@ -127,7 +119,7 @@ class Wiki(commands.Cog):
             embed.set_footer(text=f'Requested by {ctx.author.name} | {tries} attempts', icon_url=ctx.author.avatar.url)
             await ctx.send(embed=embed)
         except Exception as error:
-            await ctx.send(f'Sorry, an error occurred: \n[{error}]\n - Please report to tylersfoot.')
+            await ctx.respond(f'Sorry, an error occurred: \n`{str(error)[:1900]}`\n - `Please report to `tylersfoot#8888`')
             print(traceback.format_exc())
 
 
