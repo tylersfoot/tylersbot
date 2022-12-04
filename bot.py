@@ -6,9 +6,16 @@ import time
 from itertools import cycle
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
+import aiofiles.os
 
 startupTime = time.time()
 guilds = [806659671129456640, 894275390959407134, 926920084860076082, 962179884627669062, 970926942511566851, 971048611184017448]
+
+
+async def clear_temp():
+    direct = './data/temp/'
+    for f in await aiofiles.os.listdir(direct):
+        await aiofiles.os.remove(os.path.join(direct, f))
 
 
 def update_guild_count():
@@ -44,7 +51,6 @@ if __name__ == "__main__":
     load_dotenv()
     token = os.getenv('DISCORD_TOKEN')
 
-
     # class CustomHelpCommand(commands.HelpCommand):
     #     def __init__(self):
     #         super().__init__(command_attrs={
@@ -65,7 +71,6 @@ if __name__ == "__main__":
     #     async def send_command_help(self, command):
     #         await self.get_destination().send(command.name)
 
-
     activity = discord.Activity(
         type=discord.ActivityType.playing,
         name="Bot Started!"
@@ -79,9 +84,10 @@ if __name__ == "__main__":
         status=discord.Status.online
     )
     status = cycle([
-        f"t.help | {get_servercount()} servers",
-        "t.help | made by tylersfoot",
-        "t.help | migrated to pycord"
+        f".help | {get_servercount()} servers",
+        ".help | made by tylersfoot",
+        ".help | migrated to pycord",
+        ".help | added .img command"
     ])
 
 
@@ -95,22 +101,23 @@ if __name__ == "__main__":
     #--------------------------#
     ''')
 
-        update_guild_count()
-        reloads = ''
+        update_guild_count() # update guild count
+        await clear_temp() # clear temp folder
+        cogs = ''
         print('Loading all cogs...')
         for file in os.listdir('./cogs'):
             if file.endswith('.py'):
-                if reloads == '':
-                    reloads = file
+                if cogs == '':
+                    cogs = file
                 else:
-                    reloads += ', ' + file
+                    cogs += ', ' + file
                 try:
                     bot.load_extension(f'cogs.{file[:-3]}')
                 except Exception as e:
                     print(f'Cog {file} could not load. Error: {e}')
                 else:
                     pass
-        print(f'Reloaded {reloads}')
+        print(f'Loaded {cogs}')
         try:
             await bot.sync_commands()
             # print(bot.commands)
@@ -212,6 +219,7 @@ if __name__ == "__main__":
     @bot.slash_command(name="reload", description="[DEV CMD] Loads/reloads cogs.",
                        guild_ids=guilds)
     async def reload(ctx, extension: discord.Option(str)):
+        await ctx.response.defer(ephemeral=False)
         cogs = ''
         if ctx.author.id == 460161554915000355:
             if extension == 'info':
@@ -223,7 +231,6 @@ if __name__ == "__main__":
             if extension == 'roles':
                 extension = 'selfroles'
             if extension in ['cogs', 'extensions', 'all', 'a']:
-                await ctx.respond('Reloading all cogs...')
                 for file in os.listdir('./cogs'):
                     if file.endswith('.py'):
                         if cogs == '':
@@ -259,24 +266,24 @@ if __name__ == "__main__":
         await ctx.send(f'My prefix here is {get_prefix(bot, ctx.message)}')
 
 
-    # @bot.command()
-    # guild count
-    # async def gc(ctx):
-    #     await ctx.send(f'{guilds}')
-
-
     @bot.slash_command(name="sync", description="[DEV CMD] Syncs slash commands.", guild_ids=guilds)
     async def sync(ctx):
         if ctx.author.id == 460161554915000355:
+            await ctx.response.defer(ephemeral=True)
             await bot.sync_commands()
-            await ctx.respond('Synced commands.')
+            await ctx.followup.send('Synced commands.')
         else:
             await ctx.respond('You must be a developer to use this command.')
 
 
-    # @bot.user_command(name="Account Creation Date", guild_ids=guilds)  # create a user command for the supplied guilds
-    # async def account_creation_date(ctx, member: discord.Member):  # user commands return the member
-    #     await ctx.respond(f"{member.name}'s account was created on {member.created_at}")
+    @bot.slash_command(name="clear_temp", description="[DEV CMD] Clears temp folder.", guild_ids=guilds)
+    async def cleartemp(ctx):
+        if ctx.author.id == 460161554915000355:
+            await ctx.response.defer(ephemeral=True)
+            await clear_temp()
+            await ctx.followup.send('Cleared temp folder.')
+        else:
+            await ctx.respond('You must be a developer to use this command.')
 
 
     @bot.slash_command(name="ping", description="Sends the bot's latency.", guild_ids=guilds)
