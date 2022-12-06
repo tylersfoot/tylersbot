@@ -1,12 +1,9 @@
-# tylersbot
+<img align="right" src="[https://i.imgur.com/zrE80HY.png](https://raw.githubusercontent.com/tylersfoot/tylersbot/main/assets/icon.png)" height="200" width="200">
 
-[![Discord][7]][8]
-[![Lint & Test][1]][2]
-[![Build][3]][4]
-[![Deploy][5]][6]
+# tylersfot
+
+[![Discord](https://discordapp.com/api/guilds/962179884627669062/widget.png)]( https://discord.gg/DKpCvsJ4fp)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-
-<img src="https://raw.githubusercontent.com/tylersfoot/tylersbot/main/assets/icon.png" width="50" height="50">
 
 My personal Discord bot, developed using Pycord (from discord.py). First major coding project.
 
