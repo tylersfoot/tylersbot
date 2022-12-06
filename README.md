@@ -1,6 +1,6 @@
 <img align="right" src="https://raw.githubusercontent.com/tylersfoot/tylersbot/main/assets/icon.png" height="200" width="200">
 
-# tylersfot
+# tylersbot
 
 [![Discord](https://discordapp.com/api/guilds/962179884627669062/widget.png)]( https://discord.gg/DKpCvsJ4fp)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
