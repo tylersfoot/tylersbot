@@ -1,4 +1,4 @@
-<img align="right" src="[https://i.imgur.com/zrE80HY.png](https://raw.githubusercontent.com/tylersfoot/tylersbot/main/assets/icon.png)" height="200" width="200">
+<img align="right" src="https://raw.githubusercontent.com/tylersfoot/tylersbot/main/assets/icon.png" height="200" width="200">
 
 # tylersfot
 
