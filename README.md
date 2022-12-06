@@ -9,4 +9,8 @@ My personal Discord bot, developed using Pycord (from discord.py). First major c
 
 Discord Server: https://discord.gg/Qmxk53t93z
 
+## Setup:
+
+To use, create a `.venv` file in the main directory, and add (will finish later)
+
 <!-- Read the [Contributing Guide](https://pythondiscord.com/pages/contributing/bot/) on our website if you're interested in helping out. -->
