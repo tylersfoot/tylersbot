@@ -79,6 +79,7 @@ Development Discord Server: https://discord.gg/Qmxk53t93z
 
 ![image](https://user-images.githubusercontent.com/93095330/205968036-9be463a1-2007-425a-9eb1-870018b06df9.png)
 ![image](https://user-images.githubusercontent.com/93095330/205968074-725fed0b-29fa-4451-bdb7-f22186b02c26.png)
+![image](https://user-images.githubusercontent.com/93095330/205968974-c31712c9-8762-4000-b07d-48680951ed18.png)
 
 
 
