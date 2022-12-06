@@ -77,42 +77,9 @@ Development Discord Server: https://discord.gg/Qmxk53t93z
 <!-- Read the [Contributing Guide](https://pythondiscord.com/pages/contributing/bot/) on our website if you're interested in helping out. -->
 
 
+![image](https://user-images.githubusercontent.com/93095330/205968036-9be463a1-2007-425a-9eb1-870018b06df9.png)
+![image](https://user-images.githubusercontent.com/93095330/205968074-725fed0b-29fa-4451-bdb7-f22186b02c26.png)
 
-meow meow, meow meow meow?
-
-meow meow meow meow meow meow meow.
-
-
-
-
-tylerdepa8@gmail.com
-meow!!!
-
-meow meow meow!!!
-
-
-
-
-tylerdepa8@gmail.com
-meow :3
-
-meow meow meow :3
-
-
-
-
-tylerdepa8@gmail.com
-meowwww meow meow!! meow meow >w< meow~!
-
-meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow >w< meow meow meow~!
-
-
-
-
-tylerdepa8@gmail.com
-meow ~_~ meow meowmeow-? meow :/
-
-meow meow meow meow meow meow meow meowmeow-meow meow meow meow meow :/ meow meow.
 
 
 
