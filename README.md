@@ -6,6 +6,8 @@
 [![Deploy][5]][6]
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
+<img src="https://raw.githubusercontent.com/tylersfoot/tylersbot/main/assets/icon.png" width="50" height="50">
+
 My personal Discord bot, developed using Pycord (from discord.py). First major coding project.
 
 Discord Server: https://discord.gg/Qmxk53t93z
