@@ -5,9 +5,9 @@
 [![Discord](https://discordapp.com/api/guilds/962179884627669062/widget.png)]( https://discord.gg/DKpCvsJ4fp)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-My personal Discord bot, developed using Pycord (from discord.py). First major coding project.
+My personal Discord bot, developed using Pycord (migrated from discord.py). First major coding project. Feel free to give me any feedback, suggestions, bug reports, or to use the code for yourself.
 
-Discord Server: https://discord.gg/Qmxk53t93z
+Development Discord Server: https://discord.gg/Qmxk53t93z
 
 ## Features:
 ### bot.py
