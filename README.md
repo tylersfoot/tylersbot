@@ -55,6 +55,23 @@ Discord Server: https://discord.gg/Qmxk53t93z
 
 `[DEV] /removerole user:discord.Member role:discord.Role` - removes the specified role from the specified user
 
+### imagegen.py
 
+### information.py
+
+### moderation.py
+
+### music.py
+
+### osu.py
+
+### qrcode.py
+
+### selfroles.py
+
+### wiki.py
+
+### wordle.py
+(WIP)
 
 <!-- Read the [Contributing Guide](https://pythondiscord.com/pages/contributing/bot/) on our website if you're interested in helping out. -->
