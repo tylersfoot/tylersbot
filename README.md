@@ -9,8 +9,52 @@ My personal Discord bot, developed using Pycord (from discord.py). First major c
 
 Discord Server: https://discord.gg/Qmxk53t93z
 
-## Setup:
+## Features:
+### bot.py
+`/uptime` - returns the uptime of the bot since last restart
 
-To use, create a `.venv` file in the main directory, and add (will finish later)
+`[DEV] /unload extension` - unloads a specified cog or all cogs
+
+`[DEV] /reload extension` - reloads/loads a specified cog or all cogs
+
+`.prefix` - returns the current guild's prefix (soon depreciated)
+
+`[DEV] /sync` - syncs all slash commands
+
+`[DEV] /clear_temp` - deletes all files in the bot's temp folder
+
+`/ping` - returns the bot's ping
+
+`/update_guilds` - updates the bot's guild count
+
+### calculator.py
+`/calc expression:str` - calculates the given expression
+
+`/pi n:int` - returns the n'th digit of pi (WIP)
+
+### chatbot.py
+(WIP)
+
+### commanderrorhandler.py
+(WIP)
+
+### fun.py
+`/eightball question:str` - lets the 8ball decide your fate
+
+`/say message:str` - makes the bot say the message specified
+
+`/poll question:str` - creates a poll in the current channel
+
+`/coinflip` - flips a coin. duh.
+
+`/punch user:discord.Member` - punches the user mentioned
+
+`/doublepunch user1:discord.Member user2:discord.Member` - punches two users mentioned
+
+`/roundhousekick users:str` - roundhouse kicks all people mentioned
+
+`[DEV] /removerole user:discord.Member role:discord.Role` - removes the specified role from the specified user
+
+
 
 <!-- Read the [Contributing Guide](https://pythondiscord.com/pages/contributing/bot/) on our website if you're interested in helping out. -->
