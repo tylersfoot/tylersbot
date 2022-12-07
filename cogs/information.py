@@ -13,6 +13,32 @@ class Information(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.slash_command(name="suggestion", description="Sends a suggestion to the developers.", guilds=guilds)
+    async def suggestion(self, ctx, text):
+        embed = discord.Embed(
+            title=f"{ctx.author}\'s Suggestion",
+            description=f'{text}',
+            color=int(str(ctx.author.color)[1:], 16)
+        )
+        embed.timestamp = datetime.datetime.now()
+        # posts in suggestions/reports channel
+        channel = await self.bot.fetch_channel(1049496433100853350)
+        await ctx.respond('Suggestion sent!')
+        await channel.send(embed=embed)
+
+    @commands.slash_command(name="bugreport", description="Sends a bug report to the developers. Add as much information as possible!", guilds=guilds)
+    async def bugreport(self, ctx, text):
+        embed = discord.Embed(
+            title=f"{ctx.author}\'s Bug Report",
+            description=f'{text}',
+            color=int(str(ctx.author.color)[1:], 16)
+        )
+        embed.timestamp = datetime.datetime.now()
+        # posts in suggestions/reports channel
+        channel = await self.bot.fetch_channel(1049496433100853350)
+        await ctx.respond('Report sent!')
+        await channel.send(embed=embed)
+
     @commands.user_command(name="Account Creation Date", guild_ids=guilds)  # create a user command for the supplied guilds
     async def account_creation_date(self, ctx, member: discord.Member):  # user commands return the member
         await ctx.respond(f"{member.name}'s account was created on {member.created_at}")
@@ -45,16 +71,14 @@ class Information(commands.Cog):
             fa = True
         embed = discord.Embed(
             title="Server information",
-            description=f'{ctx.guild} ({ctx.guild.id})'
-                        f'\nDescription: {ctx.guild.description}',
+            description=f'{ctx.guild} ({ctx.guild.id})\nDescription: {ctx.guild.description}',
             color=int(str(ctx.author.color)[1:], 16)
         )
         embed.set_thumbnail(url=ctx.guild.icon.url)
         embed.timestamp = datetime.datetime.now()
         embed.add_field(
             name="Verification",
-            value=f'Level: {ctx.guild.verification_level}'
-                  f'\nRequires 2FA: {fa}',
+            value=f'Level: {ctx.guild.verification_level}\nRequires 2FA: {fa}',
             inline=True
         )
         embed.add_field(
@@ -82,8 +106,7 @@ class Information(commands.Cog):
         )
         embed.add_field(
             name="Roles",
-            value=f'Roles: {len(ctx.guild.roles)}'
-                  f'\nHighest role: {ctx.guild.roles[-1].mention}',
+            value=f'Roles: {len(ctx.guild.roles)}\nHighest role: {ctx.guild.roles[-1].mention}',
             inline=True
         )
         await ctx.respond(embed=embed)
