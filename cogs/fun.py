@@ -18,7 +18,7 @@ class Fun(commands.Cog):
     #     else:
     #         await ctx.send('Sorry, you are not tylersfoot.')
 
-    @commands.slash_command(name="8ball", description="Decide your fate!", guilds=guilds)
+    @commands.slash_command(name="8ball", description="Decide your fate!")
     async def eightball(self, ctx, *, question):
         responses = ["It is certain.",
                      "It is decidedly so.",
@@ -49,14 +49,14 @@ class Fun(commands.Cog):
         embed.set_footer(text=f'Requested by {ctx.author.name}', icon_url=ctx.author.avatar.url)
         await ctx.respond(embed=embed)
 
-    @commands.slash_command(name="say", description="Tell the bot to say something.", guilds=guilds)
+    @commands.slash_command(name="say", description="Tell the bot to say something.")
     async def say(self, ctx, *, arg=None):
         if arg is None:
             await ctx.respond('Say what?')
         else:
             await ctx.respond(arg)
 
-    @commands.slash_command(name="poll", description="Creates a poll.", guilds=guilds)
+    @commands.slash_command(name="poll", description="Creates a poll.")
     async def poll(self, ctx, *, question=None):
         if question is None:
             await ctx.respond("Please write a poll!")
@@ -69,17 +69,17 @@ class Fun(commands.Cog):
         await poll_msg.add_reaction("⬆️")
         await poll_msg.add_reaction("⬇️")
 
-    @commands.slash_command(name="coinflip", description="Flips a coin.", guilds=guilds)
+    @commands.slash_command(name="coinflip", description="Flips a coin.")
     async def coinflip(self, ctx):
         coin = ['Heads', 'Tails']
         await ctx.respond(f'Flipped a coin and got {random.choice(coin)}!')
 
-    @commands.slash_command(name="punch", description="Punches a user.", guilds=guilds)
+    @commands.slash_command(name="punch", description="Punches a user.")
     async def punch(self, ctx, arg):
 
         await ctx.respond(f'Punched {arg}!')
 
-    @commands.slash_command(name="doublepunch", description="Punches two users.", guilds=guilds)
+    @commands.slash_command(name="doublepunch", description="Punches two users.")
     async def doublepunch(self, ctx, member1: discord.Member = None, member2: discord.Member = None):
         if member1 is None:
             member1 = self.client.user.mention
@@ -87,7 +87,7 @@ class Fun(commands.Cog):
             member2 = self.client.user.mention
         await ctx.respond(f'Double punched {member1} and {member2}! Ouch!')
 
-    @commands.slash_command(name="roundhousekick", description="Roundhouse kicks multiple users.", guilds=guilds)
+    @commands.slash_command(name="roundhousekick", description="Roundhouse kicks multiple users.")
     async def roundhousekick(self, ctx, *args):
         everyone = ', '.join(args)
         await ctx.respond(f'Roundhouse kicked {everyone}! Impressive!')
