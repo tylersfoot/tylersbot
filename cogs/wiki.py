@@ -11,7 +11,7 @@ class Wiki(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(name="wikisearch", description="Returns a summary of the wikipedia page specified.", guilds=guilds)
+    @commands.slash_command(name="wikisearch", description="Returns a summary of the wikipedia page specified.")
     async def wikisearch(self, ctx, *, request):
 
         try:
