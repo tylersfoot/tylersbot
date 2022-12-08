@@ -44,12 +44,12 @@ class Imagegen(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(name="img", description="Generates images based off the prompt using AI.", guilds=guilds)
+    @commands.slash_command(name="img", description="Generates images based off the prompt using AI.")
     async def imggen(self, ctx, *, prompt):
         uid = str(random.randint(1, 1000000000000))
         try:
             # message = await ctx.respond('Generating images... please wait around 40-60 seconds <a:loading1:1048082138282606642>', ephemeral=True)
-            message = await ctx.respond('Generating images... please wait around 40-60 seconds <a:loading1:1048082138282606642>')
+            await ctx.respond('Generating images... please wait around 40-60 seconds <a:loading1:1048082138282606642>')
             # await ctx.response.defer(ephemeral=True)
             start_time = time.perf_counter()
 
@@ -93,7 +93,7 @@ class Imagegen(commands.Cog):
             embed.timestamp = datetime.datetime.now()
             total_time = time.perf_counter() - start_time
             embed.set_footer(text=f'Requested by {ctx.author.name} ~ generated in {total_time:.1f}s ~ {(filesize/(1024*1024)):.2f}MB ~ Craiyon AI', icon_url=ctx.author.avatar.url)
-            await ctx.followup.send(file=file, embed=embed)
+            await ctx.edit(content=None, file=file, embed=embed)
             file.close()
             for i in range(1, 10):
                 await aiofiles.os.remove(f'./data/temp/img-{uid}-{i}.jpg')
