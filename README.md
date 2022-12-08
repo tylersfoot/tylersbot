@@ -2,30 +2,39 @@
 
 # tylersbot
 
-[![Discord](https://discordapp.com/api/guilds/962179884627669062/widget.png)]( https://discord.gg/DKpCvsJ4fp)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Discord](https://discordapp.com/api/guilds/962179884627669062/widget.png)](https://discord.gg/DKpCvsJ4fp)
+[![License](https://img.shields.io/github/license/tylersfoot/tylersbot)](LICENSE)
+![Last Commit](https://img.shields.io/github/last-commit/tylersfoot/tylersbot)
+![Commit Frequency](https://img.shields.io/github/commit-activity/y/tylersfoot/tylersbot)
+![Followers](https://img.shields.io/github/followers/tylersfoot)
+![Stars](https://img.shields.io/github/stars/tylersfoot/tylersbot)
+![Files](https://img.shields.io/github/directory-file-count/tylersfoot/tylersbot)
+![Size](https://img.shields.io/github/repo-size/tylersfoot/tylersbot)
+![Language](https://img.shields.io/github/languages/top/tylersfoot/tylersbot)
 
-My personal Discord bot, developed using Pycord (migrated from discord.py). First major coding project. Feel free to give me any feedback, suggestions, bug reports, or to use the code for yourself.
+My personal Discord bot, developed using Pycord (migrated from discord.py). My first major coding project. Feel free to give me any questions, feedback, suggestions, bug reports, or to use the code for yourself.
 
-Development Discord Server: https://discord.gg/Qmxk53t93z
+Development Discord Server: https://discord.gg/DKpCvsJ4fp
 
-## Features:
+---
+
+## Features/Commands:
 ### bot.py
 `/uptime` - returns the uptime of the bot since last restart
 
-`[DEV] /unload extension` - unloads a specified cog or all cogs
-
-`[DEV] /reload extension` - reloads/loads a specified cog or all cogs
-
 `.prefix` - returns the current guild's prefix (soon depreciated)
-
-`[DEV] /sync` - syncs all slash commands
-
-`[DEV] /clear_temp` - deletes all files in the bot's temp folder
 
 `/ping` - returns the bot's ping
 
 `/update_guilds` - updates the bot's guild count
+
+`[DEV] /unload extension:str` - unloads a specified cog or all cogs
+
+`[DEV] /reload extension:str` - reloads/loads a specified cog or all cogs
+
+`[DEV] /sync` - syncs all slash commands
+
+`[DEV] /clear_temp` - deletes all files in the bot's temp folder
 
 ### calculator.py
 `/calc expression:str` - calculates the given expression
@@ -33,7 +42,11 @@ Development Discord Server: https://discord.gg/Qmxk53t93z
 `/pi n:int` - returns the n'th digit of pi (WIP)
 
 ### chatbot.py
-(WIP)
+`/chat prompt:str` - sends a prompt to the chatbot and returns the response
+
+`/chatlogin` - logs in to the chatbot
+
+`/chatrefresh` - refreshes the chatbot's thread and deletes previous context
 
 ### commanderrorhandler.py
 (WIP)
@@ -56,37 +69,41 @@ Development Discord Server: https://discord.gg/Qmxk53t93z
 `[DEV] /removerole user:discord.Member role:discord.Role` - removes the specified role from the specified user
 
 ### imagegen.py
+`/img prompt:str` - generates 9 images based on the prompt using Craiyon AI
 
 ### information.py
+`/suggestion text:str` - sends a suggestion to the developer(s)
+
+`/bugreport text:str` - sends a bugreport to the developer(s)
+
+`/servercount` - returns the number of servers the bot is in
+
+`/invitelink` - sends the invite link for the bot & the discord server
+
+`/avatar member:discord.Member` - returns the avatar for the user mentioned (author if none)
+
+`/serverinfo` - returns information about the current server
 
 ### moderation.py
+(WIP)
 
 ### music.py
+(WIP)
 
 ### osu.py
+(WIP)
 
 ### qrcode.py
 
 ### selfroles.py
+(WIP)
 
 ### wiki.py
+`/wikisearch request:str` - returns a list of Wikipedia articles based on the request
+
+`/wiki request:str` - returns a summary of the specified Wikipedia article
+
+`/wikirandom` - returns the summary of a random Wikipedia article
 
 ### wordle.py
 (WIP)
-
-<!-- Read the [Contributing Guide](https://pythondiscord.com/pages/contributing/bot/) on our website if you're interested in helping out. -->
-
-
-![image](https://user-images.githubusercontent.com/93095330/205968036-9be463a1-2007-425a-9eb1-870018b06df9.png)
-![image](https://user-images.githubusercontent.com/93095330/205968074-725fed0b-29fa-4451-bdb7-f22186b02c26.png)
-![image](https://user-images.githubusercontent.com/93095330/205968974-c31712c9-8762-4000-b07d-48680951ed18.png)
-
-
-
-
-
-tylerdepa8@gmail.com
-MEOWW!! x3 meow meoww~! meow >~< meeow meow meow mewmew ^w^
-
-!
-An error occurred. If this issue persists please contact us through our help center at help.openai.com.
