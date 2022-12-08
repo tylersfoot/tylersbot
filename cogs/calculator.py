@@ -13,7 +13,7 @@ class Calculator(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(name="calculate", description="Calculates the given expression.", guilds=guilds)
+    @commands.slash_command(name="calculate", description="Calculates the given expression.")
     async def calc(self, ctx, expression: str):
         await ctx.response.defer(ephemeral=False)
         try:
