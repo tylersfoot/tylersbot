@@ -11,9 +11,8 @@ class Wiki(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(name="wikisearch", description="Returns a summary of the wikipedia page specified.")
+    @commands.slash_command(name="wikisearch", description="Returns a list of Wikipedia articles based on the request.")
     async def wikisearch(self, ctx, *, request):
-
         try:
             wikicontent = wikipedia.search(request, results=10, suggestion=False)  # Wikipedia search request
 
@@ -37,17 +36,15 @@ class Wiki(commands.Cog):
             )
             await ctx.respond(embed=embed)
 
-        # Handle random errors
         except Exception as error:
             if error == wikipedia.exceptions.DisambiguationError:
                 await ctx.send('There are too many search results for this query. Please be more specific.')
             await ctx.send(f'Sorry, an error occurred: \n`{error}`\n - Please report to `tylersfoot#8888`.')
             print(traceback.format_exc())
 
-    @commands.command(aliases=['wikipedia', 'wikiarticle', 'wikia', 'wikiaa'])
+    @commands.slash_command(name="wiki", description="Returns a summary of the Wikipedia article specified.")
     async def wiki(self, ctx, *, request):
         await ctx.response.defer(ephemeral=True)
-        # Checks if the request is valid
         try:
             pagecontent = wikipedia.page(request, auto_suggest=False, redirect=True, preload=False)
             pagetext = wikipedia.summary(request, auto_suggest=False, redirect=True, sentences=5)
@@ -81,10 +78,9 @@ class Wiki(commands.Cog):
             await ctx.respond(f'Sorry, an error occurred: \n`{str(error)[:1900]}`\n - `Please report to `tylersfoot#8888`')
             print(traceback.format_exc())
 
-    @commands.command(aliases=['wikipediarandom', 'wikipediarand', 'wikirand', 'wiki_random', 'wiki_rand'])
+    @commands.slash_command(name="wiki", description="Returns the summary of a random Wikipedia article.")
     async def wikirandom(self, ctx):
-        # Gets a random wikipedia article
-
+        await ctx.response.defer(ephemeral=True)
         try:
             tries = 0
             # Tries to get a random article 10 times
@@ -117,7 +113,7 @@ class Wiki(commands.Cog):
                                   )
             embed.set_thumbnail(url=thumbnail)
             embed.set_footer(text=f'Requested by {ctx.author.name} | {tries} attempts', icon_url=ctx.author.avatar.url)
-            await ctx.send(embed=embed)
+            await ctx.respond(embed=embed)
         except Exception as error:
             await ctx.respond(f'Sorry, an error occurred: \n`{str(error)[:1900]}`\n - `Please report to `tylersfoot#8888`')
             print(traceback.format_exc())
