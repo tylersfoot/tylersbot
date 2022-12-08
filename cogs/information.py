@@ -13,7 +13,7 @@ class Information(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(name="suggestion", description="Sends a suggestion to the developers.", guilds=guilds)
+    @commands.slash_command(name="suggestion", description="Sends a suggestion to the developers.")
     async def suggestion(self, ctx, text):
         embed = discord.Embed(
             title=f"{ctx.author}\'s Suggestion",
@@ -26,7 +26,7 @@ class Information(commands.Cog):
         await ctx.respond('Suggestion sent!')
         await channel.send(embed=embed)
 
-    @commands.slash_command(name="bugreport", description="Sends a bug report to the developers. Add as much information as possible!", guilds=guilds)
+    @commands.slash_command(name="bugreport", description="Sends a bug report to the developers. Add as much information as possible!")
     async def bugreport(self, ctx, text):
         embed = discord.Embed(
             title=f"{ctx.author}\'s Bug Report",
@@ -39,20 +39,20 @@ class Information(commands.Cog):
         await ctx.respond('Report sent!')
         await channel.send(embed=embed)
 
-    @commands.user_command(name="Account Creation Date", guild_ids=guilds)  # create a user command for the supplied guilds
+    @commands.user_command(name="Account Creation Date")  # create a user command for the supplied guilds
     async def account_creation_date(self, ctx, member: discord.Member):  # user commands return the member
         await ctx.respond(f"{member.name}'s account was created on {member.created_at}")
 
-    @commands.slash_command(name="server_count", description="Gets the bot's server count.", guilds=guilds)
+    @commands.slash_command(name="server_count", description="Gets the bot's server count.")
     async def servercount(self, ctx):
         await ctx.respond(f'I am in {get_servercount()} servers! (Count refreshes every time bot is restarted)')
 
-    @commands.slash_command(name="invite_link", description="Sends the invite link for the tylersbot server.", guilds=guilds)
+    @commands.slash_command(name="invite_link", description="Sends the invite link for the tylersbot server.")
     async def invitelink(self, ctx):
         await ctx.respond(f'''tylersbot invite link: https://discordapp.com/oauth2/authorize?client_id={self.bot.user.id}scope=applications.commands%20bot&permissions=8
         tylersbot development server invite link: https://discord.gg/DKpCvsJ4fp''')
 
-    @commands.slash_command(name="avatar", description="Sends the avatar of the specified user.", guilds=guilds)
+    @commands.slash_command(name="avatar", description="Sends the avatar of the specified user.")
     async def avatar(self, ctx, member: discord.Member = None):
         if member is None:
             member = ctx.author
@@ -64,7 +64,7 @@ class Information(commands.Cog):
         embed.timestamp = datetime.datetime.now()
         await ctx.respond(embed=embed)
 
-    @commands.slash_command(name="server_info", description="Sends information about the current server.", guilds=guilds)
+    @commands.slash_command(name="server_info", description="Sends information about the current server.")
     async def serverinfo(self, ctx):
         fa = False
         if ctx.guild.mfa_level == 1:
