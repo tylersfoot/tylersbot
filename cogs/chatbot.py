@@ -1,85 +1,56 @@
-import os
-import json
-import requests
 import discord
 from discord.ext import commands
-
-# this is my Hugging Face profile link
-API_URL = 'https://api-inference.huggingface.co/models/tylersfoot/'
+from revChatGPT.revChatGPT import Chatbot as CB
+from bot import guilds
+from dotenv import load_dotenv
+import os
 
 
 class Chatbot(commands.Cog):
     def __init__(self, bot):
-        model_name = 'DialoGPT-medium-rick'
         self.bot = bot
-        super().__init__()
-        self.api_endpoint = API_URL + model_name
-        # retrieve the secret API token from the system environment
-        # huggingface_token = os.environ['HUGGINGFACE_TOKEN']
-        huggingface_token = os.getenv('HUGGINGFACE_TOKEN')
-        # format the header in our request to Hugging Face
-        self.request_headers = {
-            'Authorization': 'Bearer {}'.format(huggingface_token)
-        }
 
+    @commands.slash_command(name="chatlogin", description="Logs into the chatbot")
+    async def chatlogin(self, ctx):
+        global chatbot
+        await ctx.respond('Logging in... <a:loading1:1048082138282606642>')
+        try:
+            load_dotenv()
+            email = os.getenv('CHATBOT_EMAIL')
+            password = os.getenv('CHATBOT_PASSWORD')
+            chatbot = CB({
+                "email": email,
+                "password": password
+            })
+            await ctx.edit(content='Logged in!')
+        except Exception as e:
+            await ctx.edit(content=f'Sorry, an error occurred: \n`{e}`\n - Please report to `tylersfoot#8888`')
 
-    def query(self, payload):
-        """
-        make request to the Hugging Face model API
-        """
-        data = json.dumps(payload)
-        response = requests.request('POST',
-                                    self.api_endpoint,
-                                    headers=self.request_headers,
-                                    data=data)
-        ret = json.loads(response.content.decode('utf-8'))
-        return ret
+    @commands.slash_command(name="chatrefresh", description="Refreshes the current chatbot thread (deletes previous context)")
+    async def chatrefresh(self, ctx):
+        global chatbot
+        await ctx.respond('Refreshing thread... <a:loading1:1048082138282606642>')
+        try:
+            chatbot.reset_chat()
+            await ctx.edit(content='Refreshed the chatbot thread!')
+        except Exception as e:
+            await ctx.edit(content=f'Sorry, an error occurred: \n`{e}`\n - Please report to `tylersfoot#8888`')
 
-    async def on_ready(self):
-        self.query({'inputs': {'text': 'Hello!'}})
-
-    # tempchan = null
-    # for channel in ctx.guild.channels:
-    #     if channel.name == "henry-logs":
-    #         await ctx.send(
-    #             "Henry Logs channel is already setup. If you have access to it, it should be available in the channel list")
-    #         tempchan = channel
-    #         break;
-    # if tempchan == null:
-    #     await ctx.send(
-    #         "Henry logs channel is not found! If you have such access please create channel named **EXACTLY**")
-    #     await ctx.send("```henry-logs```")
-
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        """
-        this function is called whenever the bot sees a message in a channel
-        """
-        # ctx = await bot.get_context(message)
-        if message.author == self.bot.user:
-            return
-        if str(message.channel) == 'chatbot':
-            # form query payload with the content of the message
-            payload = {'inputs': {'text': message.content}}
-
-            # while the bot is waiting on a response from the model
-            # set the its status as typing for user-friendliness
-            async with message.channel.typing():
-                response = self.query(payload)
-            bot_response = response.get('generated_text', None)
-
-            # we may get ill-formed response if the model hasn't fully loaded
-            # or has timed out
-            if not bot_response:
-                if 'error' in response:
-                    print(response['error'])
-                    bot_response = '`{}`'.format(response['error'])
-                else:
-                    bot_response = 'Hmm... something is not right with the chatbot.'
-
-            # send the model's response to the Discord channel
-            await message.channel.send(bot_response, reference=message)
-        return
+    @commands.slash_command(name="chat", description="Send a message to the chatbot!")
+    async def chat(self, ctx, *, prompt: str):
+        global chatbot
+        await ctx.respond('Sending the message to the chatbot... <a:loading1:1048082138282606642>')
+        try:
+            await ctx.edit(content='Waiting for a response from the chatbot... <a:loading1:1048082138282606642>')
+            response = chatbot.get_chat_response(prompt)
+            # send the username of the person who sent the message
+            message = f'{ctx.author.mention}: {prompt}\n\n`Chatbot:` {response["message"]}'
+            message = message[:2000]
+            await ctx.edit(content=message)
+        except NameError:
+            await ctx.edit(content=f'Please run the `/chatlogin` command!')
+        except Exception as e:
+            await ctx.edit(content=f'Sorry, an error occurred: \n`{e}`\n - Please report to `tylersfoot#8888`')
 
 
 def setup(bot):
