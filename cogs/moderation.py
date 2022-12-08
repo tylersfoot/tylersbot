@@ -4,6 +4,7 @@ import json
 import random
 from asyncio import sleep
 from discord.ext import commands
+import datetime
 
 snipe_message_author = {}
 snipe_message_content = {}
@@ -28,23 +29,31 @@ class Moderation(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
-        snipe_message_author[message.channel.id] = message.author
-        snipe_message_content[message.channel.id] = message.content
-        await sleep(60)
-        del snipe_message_author[message.channel.id]
-        del snipe_message_content[message.channel.id]
+        embed = discord.Embed(
+            title=f"{message.author}\'s Message",
+            description=f'{message.content}'
+        )
+        embed.timestamp = datetime.datetime.now()
+        # posts in suggestions/reports channel
+        channel = await self.bot.fetch_channel(1050002784671518790)
+        await channel.send(embed=embed)
+        # snipe_message_author[message.channel.id] = message.author
+        # snipe_message_content[message.channel.id] = message.content
+        # await sleep(60)
+        # del snipe_message_author[message.channel.id]
+        # del snipe_message_content[message.channel.id]
 
-    @commands.command()
-    async def snipe(self, ctx):
-        channel = ctx.channel
-        try:
-            snipeEmbed = discord.Embed(title=f"Last deleted message in #{channel.name}",
-                                       description=snipe_message_content[channel.id],
-                                       color=random.randint(0, 0xFFFFFF))
-            snipeEmbed.set_footer(text=f"Deleted by {snipe_message_author[channel.id]}")
-            await ctx.send(embed=snipeEmbed)
-        except:
-            await ctx.send(f"There are no deleted messages in #{channel.name}")
+    # @commands.command()
+    # async def snipe(self, ctx):
+    #     channel = ctx.channel
+    #     try:
+    #         snipeEmbed = discord.Embed(title=f"Last deleted message in #{channel.name}",
+    #                                    description=snipe_message_content[channel.id],
+    #                                    color=random.randint(0, 0xFFFFFF))
+    #         snipeEmbed.set_footer(text=f"Deleted by {snipe_message_author[channel.id]}")
+    #         await ctx.send(embed=snipeEmbed)
+    #     except:
+    #         await ctx.send(f"There are no deleted messages in #{channel.name}")
 
     @commands.command(aliases=['clear'])
     async def purge(self, ctx, amount: int):
