@@ -3,6 +3,7 @@ from discord.ext import commands
 import youtube_dl
 from time import sleep
 import asyncio
+from bot import guilds
 
 playing = False
 paused = False
@@ -50,7 +51,7 @@ class Music(commands.Cog):
         else:
             await ctx.send("Not in a voice channel")
 
-    @commands.command(aliases=['pl', 'p', 'playsong'])
+    @commands.slash_command(name="play", description="Plays a song (youtube link)")
     async def play(self, ctx, *, url):
         global playing, paused, weezer
         if ctx.author.voice is None:
