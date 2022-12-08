@@ -158,7 +158,7 @@ if __name__ == "__main__":
         await bot.change_presence(activity=discord.Game(next(status)))
 
 
-    @bot.slash_command(name="uptime", description="Sends the bot's uptime since last restart.", guild_ids=guilds)
+    @bot.slash_command(name="uptime", description="Sends the bot's uptime since last restart.")
     async def uptime(ctx):
         global startupTime
         currentTime = time.time()
@@ -174,9 +174,8 @@ if __name__ == "__main__":
         await ctx.respond(embed=embed)
 
 
-    @bot.slash_command(name="unload", description="[DEV CMD] Unloads cogs.",
-                       guild_ids=guilds)
-    async def unload(ctx, extension):
+    @bot.slash_command(name="unload", description="[DEV CMD] Unloads cogs.")
+    async def unload(ctx, extension: str):
         cogs = ''
         if ctx.author.id == 460161554915000355:
             if extension == 'info':
@@ -216,9 +215,8 @@ if __name__ == "__main__":
             await ctx.respond('You must be a developer to use this command.')
 
 
-    @bot.slash_command(name="reload", description="[DEV CMD] Loads/reloads cogs.",
-                       guild_ids=guilds)
-    async def reload(ctx, extension: discord.Option(str)):
+    @bot.slash_command(name="reload", description="[DEV CMD] Loads/reloads cogs.")
+    async def reload(ctx, extension: str):
         await ctx.response.defer(ephemeral=False)
         cogs = ''
         if ctx.author.id == 460161554915000355:
@@ -266,7 +264,7 @@ if __name__ == "__main__":
         await ctx.send(f'My prefix here is {get_prefix(bot, ctx.message)}')
 
 
-    @bot.slash_command(name="sync", description="[DEV CMD] Syncs slash commands.", guild_ids=guilds)
+    @bot.slash_command(name="sync", description="[DEV CMD] Syncs slash commands.")
     async def sync(ctx):
         if ctx.author.id == 460161554915000355:
             await ctx.response.defer(ephemeral=True)
@@ -276,7 +274,7 @@ if __name__ == "__main__":
             await ctx.respond('You must be a developer to use this command.')
 
 
-    @bot.slash_command(name="clear_temp", description="[DEV CMD] Clears temp folder.", guild_ids=guilds)
+    @bot.slash_command(name="clear_temp", description="[DEV CMD] Clears temp folder.")
     async def cleartemp(ctx):
         if ctx.author.id == 460161554915000355:
             await ctx.response.defer(ephemeral=True)
@@ -286,12 +284,12 @@ if __name__ == "__main__":
             await ctx.respond('You must be a developer to use this command.')
 
 
-    @bot.slash_command(name="ping", description="Sends the bot's latency.", guild_ids=guilds)
+    @bot.slash_command(name="ping", description="Sends the bot's latency.")
     async def ping(ctx):
         await ctx.respond(f'Pong! {round(bot.latency * 1000)}ms')
 
 
-    @bot.slash_command(name="update_guilds", description="Updates the bot's guild count.", guild_ids=guilds)
+    @bot.slash_command(name="update_guilds", description="Updates the bot's guild count.")
     async def update_guilds(ctx):
         update_guild_count()
         print(f'Updated with {len(guilds)} guilds: {guilds}')
