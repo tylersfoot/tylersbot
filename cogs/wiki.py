@@ -78,7 +78,7 @@ class Wiki(commands.Cog):
             await ctx.respond(f'Sorry, an error occurred: \n`{str(error)[:1900]}`\n - `Please report to `tylersfoot#8888`')
             print(traceback.format_exc())
 
-    @commands.slash_command(name="wiki", description="Returns the summary of a random Wikipedia article.")
+    @commands.slash_command(name="wikirandom", description="Returns the summary of a random Wikipedia article.")
     async def wikirandom(self, ctx):
         await ctx.response.defer(ephemeral=True)
         try:
