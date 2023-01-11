@@ -20,5 +20,5 @@ aiohttp==3.8.3
 aiofiles~=22.1.0
 Pillow==9.4.0
 mpmath~=1.2.1
-revChatGPT==0.0.48.3
+revChatGPT==0.1.1
 craiyon.py
