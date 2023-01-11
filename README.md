@@ -18,6 +18,31 @@ Development Discord Server: https://discord.gg/DKpCvsJ4fp
 
 ---
 
+## Setup:
+
+First, install the required libraries:
+
+```
+pip install -r requirements.txt
+```
+
+Create a `.env` file with the following template:
+
+```
+DISCORD_TOKEN = your_discord_bot_token
+HUGGINGFACE_TOKEN = your_huggingface_token
+CHATBOT_EMAIL = your_openai_email
+CHATBOT_PASSWORD = your_openai_password
+```
+
+Finally, start the bot!
+
+```
+python bot.py
+```
+
+---
+
 ## Features/Commands:
 ### bot.py
 `/uptime` - returns the uptime of the bot since last restart
