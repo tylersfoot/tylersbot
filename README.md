@@ -39,8 +39,6 @@ Development Discord Server: https://discord.gg/DKpCvsJ4fp
 ### calculator.py
 `/calc expression:str` - calculates the given expression
 
-`/pi n:int` - returns the n'th digit of pi (WIP)
-
 ### chatbot.py
 `/chat prompt:str` - sends a prompt to the chatbot and returns the response
 
