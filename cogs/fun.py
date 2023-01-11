@@ -56,18 +56,23 @@ class Fun(commands.Cog):
         else:
             await ctx.respond(arg)
 
-    @commands.slash_command(name="poll", description="Creates a poll.")
-    async def poll(self, ctx, *, question=None):
-        if question is None:
-            await ctx.respond("Please write a poll!")
-        icon_url = ctx.author.avatar.url
-        pollEmbed = discord.Embed(title="New Poll!", description=f"{question}", color=random.randint(0, 0xFFFFFF))
-        pollEmbed.set_footer(text=f"Poll given by {ctx.author}", icon_url=ctx.author.avatar.url)
-        pollEmbed.timestamp = ctx.message.created_at
-        await ctx.message.delete()
-        poll_msg = await ctx.respond(embed=pollEmbed)
-        await poll_msg.add_reaction("⬆️")
-        await poll_msg.add_reaction("⬇️")
+    # @commands.slash_command(name="poll", description="Creates a poll.")
+    # async def poll(self, ctx, *, question=None):
+    #     if question is None:
+    #         await ctx.respond("Please write a poll!")
+    #     icon_url = ctx.author.avatar.url
+    #     embed = discord.Embed(
+    #         title="New Poll!",
+    #         description=f"{question}",
+    #         color=random.randint(0, 0xFFFFFF)
+    #     )
+    #     embed.set_footer(text=f"Poll given by {ctx.author}", icon_url=ctx.author.avatar.url)
+    #     embed.timestamp = datetime.datetime.now()
+    #     poll_msg = await ctx.respond(embed=embed)
+        # poll_msg.add_option("⬆️", "Yes")
+        # poll_msg.add_option("⬇️", "No")
+        # await poll_msg.add_reaction("⬆️")
+        # await poll_msg.add_reaction("⬇️")
 
     @commands.slash_command(name="coinflip", description="Flips a coin.")
     async def coinflip(self, ctx):
