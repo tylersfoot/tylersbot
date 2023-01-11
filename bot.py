@@ -7,15 +7,20 @@ from itertools import cycle
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 import aiofiles.os
+import sys
 
 startupTime = time.time()
 guilds = [806659671129456640, 894275390959407134, 926920084860076082, 962179884627669062, 970926942511566851, 971048611184017448]
+developers = [460161554915000355]
 
 
 async def clear_temp():
     direct = './data/temp/'
+    count = 0
     for f in await aiofiles.os.listdir(direct):
         await aiofiles.os.remove(os.path.join(direct, f))
+        count += 1
+    return count
 
 
 def update_guild_count():
@@ -177,7 +182,7 @@ if __name__ == "__main__":
     @bot.slash_command(name="unload", description="[DEV CMD] Unloads cogs.")
     async def unload(ctx, extension: str):
         cogs = ''
-        if ctx.author.id == 460161554915000355:
+        if ctx.author.id in developers:
             if extension == 'info':
                 extension = 'information'
             if extension == 'mod':
@@ -219,7 +224,7 @@ if __name__ == "__main__":
     async def reload(ctx, extension: str):
         await ctx.response.defer(ephemeral=False)
         cogs = ''
-        if ctx.author.id == 460161554915000355:
+        if ctx.author.id in developers:
             if extension == 'info':
                 extension = 'information'
             if extension == 'mod':
@@ -247,7 +252,13 @@ if __name__ == "__main__":
                 print(f'Reloaded {cogs}')
             else:
                 try:
-                    bot.unload_extension(f'cogs.{extension}')
+                    try:
+                        bot.unload_extension(f'cogs.{extension}')
+                    except Exception as e:
+                        print(f'Cog {extension} could not unload. Error: {e}')
+                        pass
+                    else:
+                        pass
                     bot.load_extension(f'cogs.{extension}')
                     await ctx.respond(f'Reloaded {extension}.py')
                     print(f'Reloaded {extension}.py')
@@ -266,7 +277,7 @@ if __name__ == "__main__":
 
     @bot.slash_command(name="sync", description="[DEV CMD] Syncs slash commands.")
     async def sync(ctx):
-        if ctx.author.id == 460161554915000355:
+        if ctx.author.id in developers:
             await ctx.response.defer(ephemeral=True)
             await bot.sync_commands()
             await ctx.followup.send('Synced commands.')
@@ -274,12 +285,22 @@ if __name__ == "__main__":
             await ctx.respond('You must be a developer to use this command.')
 
 
+    @bot.slash_command(name="stopbot", description="[DEV CMD] Stops/terminates the bot.")
+    async def stopbot(ctx):
+        if ctx.author.id in developers:
+            await ctx.respond('Stopping bot...')
+            await bot.close()
+            sys.exit()
+        else:
+            await ctx.respond('You must be a developer to use this command.')
+
+
     @bot.slash_command(name="clear_temp", description="[DEV CMD] Clears temp folder.")
     async def cleartemp(ctx):
-        if ctx.author.id == 460161554915000355:
+        if ctx.author.id in developers:
             await ctx.response.defer(ephemeral=True)
-            await clear_temp()
-            await ctx.followup.send('Cleared temp folder.')
+            count = await clear_temp()
+            await ctx.followup.send(f'Cleared {count} files from the temp folder.')
         else:
             await ctx.respond('You must be a developer to use this command.')
 
