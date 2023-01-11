@@ -22,3 +22,6 @@ Pillow==9.4.0
 mpmath~=1.2.1
 revChatGPT==0.1.1
 craiyon.py
+aiopath
+anyio==3.6.2
+caio==0.9.11
