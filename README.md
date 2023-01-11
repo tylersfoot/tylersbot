@@ -20,7 +20,11 @@ Development Discord Server: https://discord.gg/DKpCvsJ4fp
 
 ## Setup:
 
-First, install the required libraries:
+Install Python 3.7+
+
+Download the repository files
+
+Install the required libraries:
 
 ```
 pip install -r requirements.txt
@@ -40,6 +44,8 @@ Finally, start the bot!
 ```
 python bot.py
 ```
+
+Note: There are references to me or the servers I'm in. Feel free to change them, such as: reporting errors to tylersfoot#8888 and the `developers` variable in `bot.py`.
 
 ---
 
@@ -61,6 +67,8 @@ python bot.py
 
 `[DEV] /clear_temp` - deletes all files in the bot's temp folder
 
+`[DEV] /stopbot` - stops the instance of the bot
+
 ### calculator.py
 `/calc expression:str` - calculates the given expression
 
@@ -78,8 +86,6 @@ python bot.py
 `/eightball question:str` - lets the 8ball decide your fate
 
 `/say message:str` - makes the bot say the message specified
-
-`/poll question:str` - creates a poll in the current channel
 
 `/coinflip` - flips a coin. duh.
 
@@ -107,16 +113,29 @@ python bot.py
 
 `/serverinfo` - returns information about the current server
 
+`account_creation_date` - returns the date of the user's account creation
+
 ### moderation.py
 (WIP)
 
 ### music.py
-(WIP)
+`/play url:str` - plays the audio from the youtube link provided
+
+`/join` - joins the voice channel the user is in
+
+`/disconnect` - disconnects from the currently connected voice channel
+
+`/pause` - pauses the current audio
+
+`/resume` - resumes playing the current audio
+
+`/stop` - stops playing audio
 
 ### osu.py
 (WIP)
 
 ### qrcode.py
+(WIP)
 
 ### selfroles.py
 (WIP)
