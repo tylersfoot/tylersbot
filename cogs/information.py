@@ -41,7 +41,7 @@ class Information(commands.Cog):
 
     @commands.user_command(name="Account Creation Date")  # create a user command for the supplied guilds
     async def account_creation_date(self, ctx, member: discord.Member):  # user commands return the member
-        await ctx.respond(f"{member.name}'s account was created on {member.created_at}")
+        await ctx.respond(f'{member.name}\'s account was created on {member.created_at.strftime("%B %d, %Y")}')
 
     @commands.slash_command(name="server_count", description="Gets the bot's server count.")
     async def servercount(self, ctx):
