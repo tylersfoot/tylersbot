@@ -2,6 +2,7 @@
 /data/data.json
 /data/pi-billion.txt
 /data/temp/
+/.idea/
 
 ### Database ###
 *.accdb
