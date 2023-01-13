@@ -7,23 +7,25 @@ from humanize import number
 from bot import guilds
 import mpmath
 import traceback
+import asyncio
 
 
 class Calculator(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
+        
     @commands.slash_command(name="calculate", description="Calculates the given expression.")
     async def calc(self, ctx, expression: str):
+        # create task to run the calculation in background
+        task = asyncio.create_task(eval(expression))
         await ctx.response.defer(ephemeral=False)
         try:
-            # Define a list of operator symbols that our calculator should support
+            # list of operators
             operators = ['+', '-', '*', '/', '^', 'sqrt']
 
-            # Loop through the list of operators
+            # loop through the list of operators
             for operator in operators:
-                # Replace the operator symbol with the corresponding
-                # Python operator (e.g. '^' becomes '**')
+                # replace the operator symbol with the corresponding python operator (e.g. '^' becomes '**')
                 expression = str(expression)
                 expression = expression.replace(operator, {
                     '+': '+',
@@ -38,10 +40,16 @@ class Calculator(commands.Cog):
                     ')': ')'
                 }[operator])
 
-            # Evaluate the expression and print the result
-            result = eval(expression)
+            # wait for the evaluation to complete or for the timeout to expire
+            result = await asyncio.wait_for(task, timeout=10)
 
             await ctx.respond(result)
+            
+            # cancel the timer
+            signal.alarm(0)
+        except asyncio.TimeoutError:
+            task.cancel()
+            await ctx.respond('Calculation took too long, please try again with a simpler expression.')
         except Exception as e:
             try:
                 await ctx.respond(f'Sorry, an error occurred: \n`{e}`\n - Please report to `tylersfoot#8888`')
