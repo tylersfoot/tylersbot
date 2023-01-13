@@ -191,6 +191,8 @@ if __name__ == "__main__":
                 extension = 'chatbot'
             if extension == 'roles':
                 extension = 'selfroles'
+            if extension == 'qr':
+                extension = 'qrcode'
             if extension in ['cogs', 'extensions', 'all', 'a']:
                 await ctx.respond('Unloading all cogs...')
                 for file in os.listdir('./cogs'):
