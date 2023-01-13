@@ -110,10 +110,17 @@ class Fun(commands.Cog):
     async def on_message(self, message):
         if message.author.bot:
             return
-        if message.author.id == 581094196769718272:
-            await message.add_reaction('\U0001F923')
-            if random.random() < 0.1:
-                await message.channel.send(f'bro can u shut up jonas fr no one cares \U0001F644 \U0001F485')
+        if random.random() < 0.001:
+            await message.add_reaction('<a:deadcat:1063260777278083224>')
+            embed = discord.Embed(
+                title=f"ATTENTION!!!!",
+                description=f'thanks for your attention <:kirbysmile:1063259570232885310>',
+                color=int(str(message.author.color)[1:], 16)
+            )
+            embed.set_image(url='https://media.discordapp.net/attachments/962179885231652966/1063261025232760992/attention-thanks-for-your-attention-trolling-poster-3593367102.jpeg')
+            embed.timestamp = datetime.datetime.now()
+            embed.set_footer(text=f'this message has a 0.1% chance of appearing!', icon_url=message.author.avatar.url)
+            await message.channel.send(embed=embed)
         if 'fnf' in message.content.lower():
             await message.add_reaction('\U0001F480')
 
