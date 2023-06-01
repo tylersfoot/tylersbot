@@ -21,7 +21,7 @@ class Information(commands.Cog):
             color=int(str(ctx.author.color)[1:], 16)
         )
         embed.timestamp = datetime.datetime.now()
-        # posts in suggestions/reports channel
+        # posts in suggestions/reports channel; change this to whatever channel you want them sent to
         channel = await self.bot.fetch_channel(1049496433100853350)
         await ctx.respond('Suggestion sent!')
         await channel.send(embed=embed)
@@ -34,13 +34,13 @@ class Information(commands.Cog):
             color=int(str(ctx.author.color)[1:], 16)
         )
         embed.timestamp = datetime.datetime.now()
-        # posts in suggestions/reports channel
+        # posts in suggestions/reports channel; chat this to whatever channel you want them sent to
         channel = await self.bot.fetch_channel(1049496433100853350)
         await ctx.respond('Report sent!')
         await channel.send(embed=embed)
 
-    @commands.user_command(name="Account Creation Date")  # create a user command for the supplied guilds
-    async def account_creation_date(self, ctx, member: discord.Member):  # user commands return the member
+    @commands.user_command(name="Account Creation Date") # returns when an account was created (discord added this after I made this)
+    async def account_creation_date(self, ctx, member: discord.Member):
         await ctx.respond(f'{member.name}\'s account was created on {member.created_at.strftime("%B %d, %Y")}')
 
     @commands.slash_command(name="server_count", description="Gets the bot's server count.")
@@ -49,7 +49,7 @@ class Information(commands.Cog):
 
     @commands.slash_command(name="invite_link", description="Sends the invite link for the tylersbot server.")
     async def invitelink(self, ctx):
-        await ctx.respond(f'''tylersbot invite link: https://discordapp.com/oauth2/authorize?client_id={self.bot.user.id}scope=applications.commands%20bot&permissions=8
+        await ctx.respond(f'''invite tylersbot to a server: https://discordapp.com/oauth2/authorize?client_id={self.bot.user.id}scope=applications.commands%20bot&permissions=8
         tylersbot development server invite link: https://discord.gg/DKpCvsJ4fp''')
 
     @commands.slash_command(name="avatar", description="Sends the avatar of the specified user.")
