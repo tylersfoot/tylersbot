@@ -48,14 +48,12 @@ class Imagegen(commands.Cog):
     async def imggen(self, ctx, *, prompt):
         uid = str(random.randint(1, 1000000000000))
         try:
-            # message = await ctx.respond('Generating images... please wait around 40-60 seconds <a:loading1:1048082138282606642>', ephemeral=True)
             await ctx.respond('Generating images... please wait around 40-60 seconds <a:loading1:1048082138282606642>')
-            # await ctx.response.defer(ephemeral=True)
             start_time = time.perf_counter()
 
-            generator = Craiyon()  # Instantiates the api wrapper
+            generator = Craiyon()  # instantiates the api wrapper
             result = await generator.async_generate(prompt)
-            await result.async_save_images('./data/temp/')  # Saves the generated images to 'data/temp/
+            await result.async_save_images('./data/temp/')  # saves the generated images to 'data/temp/'
             for i in range(1, 10):
                 await aiofiles.os.rename(f'./data/temp/image-{i}.jpg', f'./data/temp/img-{uid}-{i}.jpg')
 
@@ -95,6 +93,7 @@ class Imagegen(commands.Cog):
             embed.set_footer(text=f'Requested by {ctx.author.name} ~ generated in {total_time:.1f}s ~ {(filesize/(1024*1024)):.2f}MB ~ Craiyon AI', icon_url=ctx.author.avatar.url)
             await ctx.edit(content=None, file=file, embed=embed)
             file.close()
+            # after sending images, delete from folder
             for i in range(1, 10):
                 await aiofiles.os.remove(f'./data/temp/img-{uid}-{i}.jpg')
                 try:
@@ -105,9 +104,9 @@ class Imagegen(commands.Cog):
             tb = traceback.extract_tb(e.__traceback__)
             e = f"{e} (line {tb[-1].lineno})"
             try:
-                await ctx.respond(f'Sorry, an error occurred: \n`{e}`\n - Please report to `tylersfoot#8888`')
+                await ctx.respond(f'Sorry, an error occurred: \n`{e}`\n - Please report to a developer')
             except:
-                await ctx.send(f'Sorry, an error occurred: \n`{e}`\n - Please report to `tylersfoot#8888`')
+                await ctx.send(f'Sorry, an error occurred: \n`{e}`\n - Please report to a developer')
 
 
 def setup(bot):
