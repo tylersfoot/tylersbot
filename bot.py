@@ -10,7 +10,9 @@ import aiofiles.os
 import sys
 
 startupTime = time.time()
+# not really sure why this is here? im pretty sure this gets overwritten in update_guild_count()
 guilds = [806659671129456640, 894275390959407134, 926920084860076082, 962179884627669062, 970926942511566851, 971048611184017448]
+# people who can call dev commands
 developers = [460161554915000355]
 
 
@@ -39,12 +41,6 @@ def get_prefix(client, message):
         prefixes = json.load(f)
     return prefixes[str(message.guild.id)]
 
-# def get_prefix(arg1, message):
-#     with open('data/prefixes.json', 'r') as f:
-#         prefixes = json.load(f)
-#     return prefixes.get(str(message.guild.id), "t.")
-
-
 def get_servercount():
     with open('data/prefixes.json', 'r') as f:
         prefixes = json.load(f)
@@ -55,26 +51,6 @@ def get_servercount():
 if __name__ == "__main__":
     load_dotenv()
     token = os.getenv('DISCORD_TOKEN')
-
-    # class CustomHelpCommand(commands.HelpCommand):
-    #     def __init__(self):
-    #         super().__init__(command_attrs={
-    #             'cooldown': commands.Cooldown(1, 3, commands.BucketType.member)
-    #         })
-    #
-    #     async def send_bot_help(self, mapping):
-    #         for cog in mapping:
-    #             await self.get_destination().send(f'{cog.qualified_name}: {[command.name for command in mapping[cog]]}')
-    #         return await super().send_bot_help(mapping)
-    #
-    #     async def send_cog_help(self, cog):
-    #         await self.get_destination().send(f'{cog.qualified_name}: {[command.name for command in cog.get_commands()]}')
-    #
-    #     async def send_group_help(self, group):
-    #         await self.get_destination().send(f'{group.name}: {[command.name for index, command in enumerate(group.commands)]}')
-    #
-    #     async def send_command_help(self, command):
-    #         await self.get_destination().send(command.name)
 
     activity = discord.Activity(
         type=discord.ActivityType.playing,
@@ -91,10 +67,10 @@ if __name__ == "__main__":
     status = cycle([
         f".help | {get_servercount()} servers",
         ".help | made by tylersfoot",
-        ".help | migrated to pycord",
-        ".help | added .img command"
+        ".help | another status",
+        ".help | yippee"
     ])
-
+    
 
     @bot.event
     async def on_ready():
@@ -157,12 +133,12 @@ if __name__ == "__main__":
             json.dump(prefixes, f, indent=4)
             f.close()
 
-
+    # changes status every 10 seconds; change in `status` list
     @tasks.loop(seconds=10)
     async def change_status():
         await bot.change_presence(activity=discord.Game(next(status)))
 
-
+    
     @bot.slash_command(name="uptime", description="Sends the bot's uptime since last restart.")
     async def uptime(ctx):
         global startupTime
@@ -307,7 +283,7 @@ if __name__ == "__main__":
             await ctx.respond('You must be a developer to use this command.')
 
 
-    @bot.slash_command(name="ping", description="Sends the bot's latency.")
+    @bot.slash_command(name="ping", description="Sends the bot's latency/ping.")
     async def ping(ctx):
         await ctx.respond(f'Pong! {round(bot.latency * 1000)}ms')
 
