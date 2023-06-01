@@ -9,14 +9,6 @@ class Fun(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    # @commands.command()
-    # async def bruh(self, ctx):
-    #     if ctx.message.author.id == 460161554915000355:
-    #         guild = self.bot.get_guild(ctx.guild_id)
-    #         role = discord.utils.get(guild.roles, name='admin af')
-    #         await ctx.member.add_roles(role)
-    #     else:
-    #         await ctx.send('Sorry, you are not tylersfoot.')
 
     @commands.slash_command(name="8ball", description="Decide your fate!")
     async def eightball(self, ctx, *, question):
@@ -56,24 +48,6 @@ class Fun(commands.Cog):
         else:
             await ctx.respond(arg)
 
-    # @commands.slash_command(name="poll", description="Creates a poll.")
-    # async def poll(self, ctx, *, question=None):
-    #     if question is None:
-    #         await ctx.respond("Please write a poll!")
-    #     icon_url = ctx.author.avatar.url
-    #     embed = discord.Embed(
-    #         title="New Poll!",
-    #         description=f"{question}",
-    #         color=random.randint(0, 0xFFFFFF)
-    #     )
-    #     embed.set_footer(text=f"Poll given by {ctx.author}", icon_url=ctx.author.avatar.url)
-    #     embed.timestamp = datetime.datetime.now()
-    #     poll_msg = await ctx.respond(embed=embed)
-        # poll_msg.add_option("⬆️", "Yes")
-        # poll_msg.add_option("⬇️", "No")
-        # await poll_msg.add_reaction("⬆️")
-        # await poll_msg.add_reaction("⬇️")
-
     @commands.slash_command(name="coinflip", description="Flips a coin.")
     async def coinflip(self, ctx):
         coin = ['Heads', 'Tails']
@@ -96,18 +70,15 @@ class Fun(commands.Cog):
     async def roundhousekick(self, ctx, *args):
         everyone = ', '.join(args)
         await ctx.respond(f'Roundhouse kicked {everyone}! Impressive!')
-
-    @commands.command()
-    async def removerole(self, ctx, user, role):
-        if ctx.message.author.id == 460161554915000355:
-            user2 = ctx.guild.get_member(user)
-            role = discord.utils.get(ctx.message.guild.roles, name=role)
-            await remove_roles(user2, role)
-        else:
-            await ctx.send('Sorry, you are not tylersfoot.')
+        
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        '''
+        easter egg type thing. adds a reaction and replies with a message at a 0.1% change every message is sent.
+        feel free to remove this or change it if it gets annoying. also the emojis wont work since you're probably
+        not in my server.
+        '''
         if message.author.bot:
             return
         if random.random() < 0.001:
@@ -121,8 +92,9 @@ class Fun(commands.Cog):
             embed.timestamp = datetime.datetime.now()
             embed.set_footer(text=f'this message has a 0.1% chance of appearing!', icon_url=message.author.avatar.url)
             await message.channel.send(embed=embed)
-        if 'fnf' in message.content.lower():
-            await message.add_reaction('\U0001F480')
+        # example of doing something if any message sent has 'example' in it
+        if 'example' in message.content.lower():
+            await message.add_reaction('\U0001F480') # skull emoji
 
 
 def setup(bot):
