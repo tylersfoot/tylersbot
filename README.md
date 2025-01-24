@@ -14,11 +14,11 @@
 
 My personal Discord bot, developed using Pycord (migrated from discord.py). My first major coding project. Feel free to give me any questions, feedback, suggestions, bug reports, or to use the code for yourself.
 
-Development Discord Server: https://discord.gg/DKpCvsJ4fp
+Development Discord Server: [https://discord.gg/DKpCvsJ4fp](https://discord.gg/DKpCvsJ4fp)
 
 ---
 
-## Setup:
+## Setup
 
 Install Python 3.7+
 
@@ -26,13 +26,13 @@ Download the repository files
 
 Install the required libraries:
 
-```
+```bash
 pip install -r requirements.txt
 ```
 
 Create a `.env` file with the following template:
 
-```
+```env
 DISCORD_TOKEN = your_discord_bot_token
 HUGGINGFACE_TOKEN = your_huggingface_token
 CHATBOT_EMAIL = your_openai_email
@@ -41,7 +41,7 @@ CHATBOT_PASSWORD = your_openai_password
 
 Finally, start the bot!
 
-```
+```bash
 python bot.py
 ```
 
@@ -49,15 +49,13 @@ Note: There are references to me or the servers I'm in. Feel free to change them
 
 ---
 
-## Features/Commands:
+## Features/Commands
+
 ### bot.py
+
 `/uptime` - returns the uptime of the bot since last restart
 
-`.prefix` - returns the current guild's prefix (soon depreciated)
-
-`/ping` - returns the bot's ping
-
-`/update_guilds` - updates the bot's guild count
+`/ping` - returns the bot's latency/ping
 
 `[DEV] /unload extension:str` - unloads a specified cog or all cogs
 
@@ -70,19 +68,15 @@ Note: There are references to me or the servers I'm in. Feel free to change them
 `[DEV] /stopbot` - stops the instance of the bot
 
 ### calculator.py
-`/calc expression:str` - calculates the given expression
 
-### chatbot.py
-`/chat prompt:str` - sends a prompt to the chatbot and returns the response
-
-`/chatlogin` - logs in to the chatbot
-
-`/chatrefresh` - refreshes the chatbot's thread and deletes previous context
+`/calc expression:str` - calculates the given mathematical expression
 
 ### commanderrorhandler.py
-(WIP)
+
+handles customized error messages
 
 ### fun.py
+
 `/eightball question:str` - lets the 8ball decide your fate
 
 `/say message:str` - makes the bot say the message specified

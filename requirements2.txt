@@ -1,0 +1,8 @@
+aiofiles
+aiohttp
+aiopath
+python-dotenv
+py-cord
+mpmath
+Pillow
+sympy
