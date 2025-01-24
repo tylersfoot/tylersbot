@@ -6,3 +6,6 @@ py-cord
 mpmath
 Pillow
 sympy
+pyqrcode
+pypng
+requests

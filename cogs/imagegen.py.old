@@ -44,7 +44,7 @@ class Imagegen(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(name="img", description="Generates images based off the prompt using AI.")
+    @commands.slash_command(name="img", description="Generates images based off the prompt using Craiyon AI.")
     async def imggen(self, ctx, *, prompt):
         uid = str(random.randint(1, 1000000000000))
         try:

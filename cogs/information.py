@@ -1,58 +1,56 @@
 import discord
 from discord.ext import commands
-from bot import get_servercount
 import datetime
-import random
-import time
-from bot import guilds
-
-start_time = time.time()
 
 
 class Information(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        
 
     @commands.slash_command(name="suggestion", description="Sends a suggestion to the developers.")
-    async def suggestion(self, ctx, text):
+    async def suggestion(self, ctx, text: str):
         embed = discord.Embed(
             title=f"{ctx.author}\'s Suggestion",
             description=f'{text}',
             color=int(str(ctx.author.color)[1:], 16)
         )
         embed.timestamp = datetime.datetime.now()
-        # posts in suggestions/reports channel; change this to whatever channel you want them sent to
+        # posts in suggestions/reports channel
         channel = await self.bot.fetch_channel(1049496433100853350)
-        await ctx.respond('Suggestion sent!')
+        await ctx.respond('Suggestion sent!', ephemeral=True)
         await channel.send(embed=embed)
 
+
     @commands.slash_command(name="bugreport", description="Sends a bug report to the developers. Add as much information as possible!")
-    async def bugreport(self, ctx, text):
+    async def bugreport(self, ctx, text: str):
         embed = discord.Embed(
             title=f"{ctx.author}\'s Bug Report",
             description=f'{text}',
             color=int(str(ctx.author.color)[1:], 16)
         )
         embed.timestamp = datetime.datetime.now()
-        # posts in suggestions/reports channel; chat this to whatever channel you want them sent to
+        # posts in suggestions/reports channel
         channel = await self.bot.fetch_channel(1049496433100853350)
-        await ctx.respond('Report sent!')
+        await ctx.respond('Report sent!', ephemeral=True)
         await channel.send(embed=embed)
 
-    @commands.user_command(name="Account Creation Date") # returns when an account was created (discord added this after I made this)
-    async def account_creation_date(self, ctx, member: discord.Member):
-        await ctx.respond(f'{member.name}\'s account was created on {member.created_at.strftime("%B %d, %Y")}')
 
     @commands.slash_command(name="server_count", description="Gets the bot's server count.")
     async def servercount(self, ctx):
-        await ctx.respond(f'I am in {get_servercount()} servers! (Count refreshes every time bot is restarted)')
+        servercount = len(self.bot.guilds)
+        if servercount == 1:
+            await ctx.respond(f'I am in 1 server!')
+        else:
+            await ctx.respond(f'I am in {servercount} servers!')
 
-    @commands.slash_command(name="invite_link", description="Sends the invite link for the tylersbot server.")
+
+    @commands.slash_command(name="invite_link", description="Sends the invite link for the development server.", integration_types={discord.IntegrationType.guild_install, discord.IntegrationType.user_install})
     async def invitelink(self, ctx):
-        await ctx.respond(f'''invite tylersbot to a server: https://discordapp.com/oauth2/authorize?client_id={self.bot.user.id}scope=applications.commands%20bot&permissions=8
-        tylersbot development server invite link: https://discord.gg/DKpCvsJ4fp''')
+        await ctx.respond(f'''tylersfoot development server invite: https://discord.gg/DKpCvsJ4fp''')
 
-    @commands.slash_command(name="avatar", description="Sends the avatar of the specified user.")
+
+    @commands.slash_command(name="avatar", description="Grabs the avatar of the specified user.", integration_types={discord.IntegrationType.guild_install, discord.IntegrationType.user_install})
     async def avatar(self, ctx, member: discord.Member = None):
         if member is None:
             member = ctx.author
@@ -63,8 +61,22 @@ class Information(commands.Cog):
         embed.set_image(url=f"{member.avatar.url}")
         embed.timestamp = datetime.datetime.now()
         await ctx.respond(embed=embed)
+        
+        
+    @commands.user_command(name="Avatar", description="Grabs the avatar of the specified user.", integration_types={discord.IntegrationType.guild_install, discord.IntegrationType.user_install})
+    async def avatar_user(self, ctx, member: discord.Member = None):
+        if member is None:
+            member = ctx.author
+        embed = discord.Embed(
+            title=f"{member.name}\'s Avatar",
+            color=int(str(ctx.author.color)[1:], 16)
+        )
+        embed.set_image(url=f"{member.avatar.url}")
+        embed.timestamp = datetime.datetime.now()
+        await ctx.respond(embed=embed)
 
-    @commands.slash_command(name="server_info", description="Sends information about the current server.")
+
+    @commands.slash_command(name="server_info", description="Sends information about the current server.", integration_types={discord.IntegrationType.guild_install, discord.IntegrationType.user_install})
     async def serverinfo(self, ctx):
         fa = False
         if ctx.guild.mfa_level == 1:
@@ -94,8 +106,7 @@ class Information(commands.Cog):
         )
         embed.add_field(
             name="Boosts",
-            value=f'Tier {ctx.guild.premium_tier} with {ctx.guild.premium_subscription_count} boosts'
-                  f'\nbruh boosters',
+            value=f'Tier {ctx.guild.premium_tier} with {ctx.guild.premium_subscription_count} boosts',
             inline=True
         )
         embed.add_field(
@@ -110,6 +121,22 @@ class Information(commands.Cog):
             inline=True
         )
         await ctx.respond(embed=embed)
+        
+                
+    @commands.slash_command(name="account_creation_date", description="Returns when an account was created.", integration_types={discord.IntegrationType.guild_install, discord.IntegrationType.user_install})
+    async def account_creation_date(self, ctx, member: discord.Member = None):
+        if member is None:
+            member = ctx.author
+        creation_date = member.created_at.strftime("%B %d, %Y")
+        await ctx.respond(f"{member.name}'s account was created on {creation_date}.")
+    
+    
+    @commands.user_command(name="Account Creation Date", description="Returns when an account was created.", integration_types={discord.IntegrationType.guild_install, discord.IntegrationType.user_install})
+    async def account_creation_date_user(self, ctx, member: discord.Member = None):
+        if member is None:
+            member = ctx.author
+        creation_date = member.created_at.strftime("%B %d, %Y")
+        await ctx.respond(f"{member.name}'s account was created on {creation_date}.")
 
 
 def setup(bot):

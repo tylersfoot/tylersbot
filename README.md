@@ -51,6 +51,12 @@ Note: There are references to me or the servers I'm in. Feel free to change them
 
 ## Features/Commands
 
+[DEV] = developer only command (temporary)
+
+(user) = available as a user app (right click on user to use)
+
+(global) = command available everywhere (dms, other servers) - USER INSTALL ONLY
+
 ### bot.py
 
 `/uptime` - returns the uptime of the bot since last restart
@@ -69,70 +75,62 @@ Note: There are references to me or the servers I'm in. Feel free to change them
 
 ### calculator.py
 
-`/calc expression:str` - calculates the given mathematical expression
+`/calculate expression:str` - calculates the given mathematical expression
 
 ### commanderrorhandler.py
 
-handles customized error messages
+Handles customized error messages
 
 ### fun.py
 
-`/eightball question:str` - lets the 8ball decide your fate
+`/8ball question:str` - (global) lets the 8ball decide your fate
 
-`/say message:str` - makes the bot say the message specified
+`/say message:str` - (global) makes the bot say the message specified
 
-`/coinflip` - flips a coin. duh.
+`/coinflip` - (global) flips a coin. duh.
 
-`/punch user:discord.Member` - punches the user mentioned
+`/punch user:discord.Member` - (global) punches the user mentioned
 
-`/doublepunch user1:discord.Member user2:discord.Member` - punches two users mentioned
+`/doublepunch user1:discord.Member user2:discord.Member` - (global) punches two users mentioned
 
-`/roundhousekick users:str` - roundhouse kicks all people mentioned
-
-`[DEV] /removerole user:discord.Member role:discord.Role` - removes the specified role from the specified user
-
-### imagegen.py
-`/img prompt:str` - generates 9 images based on the prompt using Craiyon AI
+Also has functionality for reacting to messages with certain keywords, and a rare chance to respond with a special message
 
 ### information.py
+
 `/suggestion text:str` - sends a suggestion to the developer(s)
 
 `/bugreport text:str` - sends a bugreport to the developer(s)
 
-`/servercount` - returns the number of servers the bot is in
+`/server_count` - returns the number of servers the bot is in
 
-`/invitelink` - sends the invite link for the bot & the discord server
+`/invite_link` - (global) sends the invite link for the bot & the discord server
 
-`/avatar member:discord.Member` - returns the avatar for the user mentioned (author if none)
+`/avatar member:discord.Member` - (global) (user) returns the avatar for the user mentioned (author if none)
 
-`/serverinfo` - returns information about the current server
+`/serverinfo` - (global) returns information about the current server
 
-`account_creation_date` - returns the date of the user's account creation
+`/account_creation_date member:discord.Member` - (global) (user) returns the date of the user's account creation
 
 ### moderation.py
-(WIP)
 
-### music.py
-`/play url:str` - plays the audio from the youtube link provided
+`/purge amount:int` - purges (deletes) a certain amount of messages from a channel
 
-`/join` - joins the voice channel the user is in
+`/kick user:discord.Member reason:str notify:bool=True` - kicks a user from the server with the specified reason, and whether to DM them
 
-`/disconnect` - disconnects from the currently connected voice channel
+`/ban user:discord.Member reason:str notify:bool=True` - bans a user from the server with the specified reason, and whether to DM them
 
-`/pause` - pauses the current audio
+`/unban user_id:str reason:str notify:bool=True` - unbans a user from the server with the specified reason, and whether to DM them
 
-`/resume` - resumes playing the current audio
+`/slowmode duration:str` - changes the slowmode for the current channel. string is parsed as a time (`10s`, `5m`, `1h`, `off`, etc.)
 
-`/stop` - stops playing audio
-
-### osu.py
-(WIP)
+Also has functionality for logging deleted messages
 
 ### qrcode.py
-(WIP)
 
-### selfroles.py
-(WIP)
+`/qr message:str` - generates a qr code image based on the message provided. also detects if an amongus is in the qr code :)
+
+### osu.py
+
 
 ### wiki.py
 `/wikisearch request:str` - returns a list of Wikipedia articles based on the request
@@ -142,4 +140,12 @@ handles customized error messages
 `/wikirandom` - returns the summary of a random Wikipedia article
 
 ### wordle.py
+(WIP)
+
+### music.py
+
+
+
+
+### selfroles.py
 (WIP)
