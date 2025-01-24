@@ -1,6 +1,5 @@
 import datetime
 import discord
-import json
 import os
 import time
 from itertools import cycle
@@ -8,6 +7,7 @@ from discord.ext import commands, tasks
 from dotenv import load_dotenv
 import aiofiles.os
 import sys
+from custom_exceptions import NotDeveloperError
 
 startupTime = time.time()
 # people who can call dev commands
@@ -17,14 +17,29 @@ developers = [460161554915000355]
 async def clear_temp():
     direct = './data/temp/'
     count = 0
+    os.makedirs(direct, exist_ok=True)
     for f in await aiofiles.os.listdir(direct):
         await aiofiles.os.remove(os.path.join(direct, f))
         count += 1
     return count
 
-
-def get_servercount():
-    return len(bot.guilds)
+def coglookup(name: str):
+    # cog shortcuts
+    if name in ['cogs', 'extensions', 'all', 'a']:
+        name = 'all'
+    if name in ['info']:
+        name = 'information'
+    if name in ['mod']:
+        name = 'moderation'
+    if name in ['chat']:
+        name = 'chatbot'
+    if name in ['roles', 'role']:
+        name = 'selfroles'
+    if name in ['qr']:
+        name = 'qrcode'
+    if name in ['calc', 'calculate']:
+        name = 'calculator'
+    return name
 
 
 if __name__ == "__main__":
@@ -42,26 +57,19 @@ if __name__ == "__main__":
         help_command=commands.MinimalHelpCommand(),
         intents=discord.Intents.all(),
         activity=activity,
-        status=discord.Status.online
+        status=discord.Status.online,
+        test_guilds=[962179884627669062]
     )
-    
-    # different bot statuses to cycle through
-    status = cycle([
-        f"/help | {get_servercount()} servers",
-        "/help | made by tylersfoot",
-        "/help | discord.gg/DKpCvsJ4fp",
-        "/help | tylersfoot.dev"
-    ])
     
     # on startup
     @bot.event
     async def on_ready():
         change_status.start()
         print(f'''
-    #--------------------------#
-    |  Logged in as {bot.user.name}  |
-    |  id:{bot.user.id}   |
-    #--------------------------#
+    #-------------------------->
+    |  Logged in as {bot.user.name}
+    |  id:{bot.user.id} 
+    #-------------------------->
     ''')
 
         await clear_temp() # clear temp folder
@@ -80,34 +88,26 @@ if __name__ == "__main__":
                 else:
                     pass
         print(f'Loaded {cogs}')
-        try:
-            # sync slash commands
-            await bot.sync_commands()
-            print(f'Synced commands')
-        except Exception as e:
-            print(f'Error syncing commands: {e}')
 
+        
 
-    # changes status every 10 seconds; change in `status` list
-    @tasks.loop(seconds=10)
+    status_cycle = cycle([
+        "over {server_count} servers",
+        "over {user_count} users",
+        "discord.gg/DKpCvsJ4fp",
+        "tylersfoot.dev"
+    ])
+
+    @tasks.loop(seconds=15)
     async def change_status():
-        await bot.change_presence(activity=discord.Game(next(status)))
+        server_count = len(bot.guilds)
+        user_count = sum(guild.member_count for guild in bot.guilds)
 
-    
-    @bot.slash_command(name="uptime", description="Sends the bot's uptime since last restart.")
-    async def uptime(ctx):
-        global startupTime
-        currentTime = time.time()
-        difference = int(round(currentTime - startupTime))
-        text = str(datetime.timedelta(seconds=difference))
-        embed = discord.Embed(
-            title=f"tylersbot uptime",
-            description=text,
-            color=int(str(ctx.author.color)[1:], 16)
-        )
-        embed.set_footer(text=f'Requested by {ctx.author.name}', icon_url=ctx.author.avatar.url)
-        embed.timestamp = datetime.datetime.now()
-        await ctx.respond(embed=embed)
+        next_status = next(status_cycle).format(server_count=server_count, user_count=user_count)
+
+        await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=next_status))
+
+
         
         
     @bot.slash_command(name="uptime", description="Sends the bot's uptime since last restart.")
@@ -142,124 +142,111 @@ if __name__ == "__main__":
 
     @bot.slash_command(name="unload", description="[DEV] Unloads cogs.")
     async def unload(ctx, extension: str):
-        cogs = ''
-        if ctx.author.id in developers:
-            if extension == 'info':
-                extension = 'information'
-            if extension == 'mod':
-                extension = 'moderation'
-            if extension == 'chat':
-                extension = 'chatbot'
-            if extension == 'roles':
-                extension = 'selfroles'
-            if extension == 'qr':
-                extension = 'qrcode'
-            if extension in ['cogs', 'extensions', 'all', 'a']:
-                await ctx.respond('Unloading all cogs...')
-                for file in os.listdir('./cogs'):
-                    if file.endswith('.py'):
-                        if cogs == '':
-                            cogs = file
-                        else:
-                            cogs += ', ' + file
-                        try:
-                            bot.unload_extension(f'cogs.{file[:-3]}')
-                        except Exception as e:
-                            print(f'Cog {file} could not unload. Error: {e}')
-                            pass
-                        else:
-                            pass
-                await ctx.respond(f'Unloaded {cogs}')
-                print(f'Unloaded {cogs}')
-            else:
-                try:
-                    bot.unload_extension(f'cogs.{extension}')
-                    await ctx.respond(f'Unloaded {extension}.py')
-                    print(f'Unloaded {extension}.py')
-                except Exception as e:
-                    await ctx.respond(f'Error unloading {extension}.py: {e}')
-                    print(f'Error unloading {extension}.py: {e}')
+        if ctx.author.id not in developers:
+            raise NotDeveloperError
+        
+        await ctx.response.defer(ephemeral=True)
+        extension = coglookup(extension)
+        
+        if extension == 'all':
+            cogs = ''
+            await ctx.respond('Unloading all cogs...')
+            for file in os.listdir('./cogs'):
+                if file.endswith('.py'):
+                    if cogs == '':
+                        cogs = file
+                    else:
+                        cogs += ', ' + file
+                    try:
+                        bot.unload_extension(f'cogs.{file[:-3]}')
+                    except Exception as e:
+                        print(f'Cog {file} could not unload. Error: {e}')
+                        pass
+                    else:
+                        pass
+            await ctx.respond(f'Unloaded {cogs}', ephemeral=True)
+            print(f'Unloaded {cogs}')
         else:
-            await ctx.respond('You must be a developer to use this command.')
+            try:
+                bot.unload_extension(f'cogs.{extension}')
+                await ctx.respond(f'Unloaded {extension}.py', ephemeral=True)
+                print(f'Unloaded {extension}.py')
+            except Exception as e:
+                await ctx.respond(f'Error unloading {extension}.py: {e}')
+                print(f'Error unloading {extension}.py: {e}')
 
 
     @bot.slash_command(name="reload", description="[DEV] Loads/reloads cogs.")
     async def reload(ctx, extension: str):
-        await ctx.response.defer(ephemeral=False)
-        cogs = ''
-        if ctx.author.id in developers:
-            if extension == 'info':
-                extension = 'information'
-            if extension == 'mod':
-                extension = 'moderation'
-            if extension == 'chat':
-                extension = 'chatbot'
-            if extension == 'roles':
-                extension = 'selfroles'
-            if extension in ['cogs', 'extensions', 'all', 'a']:
-                for file in os.listdir('./cogs'):
-                    if file.endswith('.py'):
-                        if cogs == '':
-                            cogs = file
-                        else:
-                            cogs += ', ' + file
-                        try:
-                            bot.unload_extension(f'cogs.{file[:-3]}')
-                        except Exception as e:
-                            print(f'Cog {file} could not unload. Error: {e}')
-                            pass
-                        else:
-                            pass
-                        bot.load_extension(f'cogs.{file[:-3]}')
-                await ctx.respond(f'Reloaded {cogs}')
-                print(f'Reloaded {cogs}')
-            else:
-                try:
+        if ctx.author.id not in developers:
+            raise NotDeveloperError
+        
+        await ctx.response.defer(ephemeral=True)
+        extension = coglookup(extension)
+        
+        if extension == 'all':
+            cogs = ''
+            for file in os.listdir('./cogs'):
+                if file.endswith('.py'):
+                    if cogs == '':
+                        cogs = file
+                    else:
+                        cogs += ', ' + file
                     try:
-                        bot.unload_extension(f'cogs.{extension}')
+                        bot.unload_extension(f'cogs.{file[:-3]}')
                     except Exception as e:
-                        print(f'Cog {extension} could not unload. Error: {e}')
+                        print(f'Cog {file} could not unload. Error: {e}')
                         pass
                     else:
                         pass
-                    bot.load_extension(f'cogs.{extension}')
-                    await ctx.respond(f'Reloaded {extension}.py')
-                    print(f'Reloaded {extension}.py')
-                except Exception as e:
-                    await ctx.respond(f'Error reloading {extension}.py: {e}')
-                    print(f'Error reloading {extension}.py: {e}')
+                    bot.load_extension(f'cogs.{file[:-3]}')
+            await ctx.respond(f'Reloaded {cogs}', ephemeral=True)
+            print(f'Reloaded {cogs}')
         else:
-            await ctx.respond('You must be a developer to use this command.')
+            try:
+                try:
+                    bot.unload_extension(f'cogs.{extension}')
+                except Exception as e:
+                    print(f'Cog {extension} could not unload. Error: {e}')
+                    pass
+                else:
+                    pass
+                bot.load_extension(f'cogs.{extension}')
+                await ctx.respond(f'Reloaded {extension}.py', ephemeral=True)
+                print(f'Reloaded {extension}.py')
+            except Exception as e:
+                await ctx.respond(f'Error reloading {extension}.py: {e}', ephemeral=True)
+                print(f'Error reloading {extension}.py: {e}')
 
 
     @bot.slash_command(name="sync", description="[DEV] Syncs slash commands.")
     async def sync(ctx):
-        if ctx.author.id in developers:
-            await ctx.response.defer(ephemeral=True)
-            await bot.sync_commands()
-            await ctx.followup.send('Synced commands.')
-        else:
-            await ctx.respond('You must be a developer to use this command.')
+        if ctx.author.id not in developers:
+            raise NotDeveloperError
+        
+        await ctx.response.defer(ephemeral=True)
+        await bot.sync_commands()
+        await ctx.followup.send('Synced commands.', ephemeral=True)
 
 
     @bot.slash_command(name="stopbot", description="[DEV] Stops/terminates the bot.")
     async def stopbot(ctx):
-        if ctx.author.id in developers:
-            await ctx.respond('Stopping bot...')
-            await bot.close()
-            sys.exit()
-        else:
-            await ctx.respond('You must be a developer to use this command.')
+        if ctx.author.id not in developers:
+            raise NotDeveloperError
+
+        await ctx.respond('Stopping bot...', ephemeral=True)
+        await bot.close()
+        sys.exit()
 
 
     @bot.slash_command(name="clear_temp", description="[DEV] Clears temp folder.")
     async def cleartemp(ctx):
-        if ctx.author.id in developers:
-            await ctx.response.defer(ephemeral=True)
-            count = await clear_temp()
-            await ctx.followup.send(f'Cleared {count} files from the temp folder.')
-        else:
-            await ctx.respond('You must be a developer to use this command.')
+        if ctx.author.id not in developers:
+            raise NotDeveloperError
+        
+        await ctx.response.defer(ephemeral=True)
+        count = await clear_temp()
+        await ctx.followup.send(f'Cleared {count} files from the temp folder.', ephemeral=True)
 
 
     @bot.event

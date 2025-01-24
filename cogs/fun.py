@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands
 import random
-from bot import guilds
 import datetime
 
 
@@ -10,8 +9,8 @@ class Fun(commands.Cog):
         self.bot = bot
 
 
-    @commands.slash_command(name="8ball", description="Decide your fate!")
-    async def eightball(self, ctx, *, question):
+    @commands.slash_command(name="8ball", description="Decide your fate!", integration_types={discord.IntegrationType.guild_install, discord.IntegrationType.user_install})
+    async def eightball(self, ctx, question: str):
         responses = ["It is certain.",
                      "It is decidedly so.",
                      "Without a doubt.",
@@ -41,47 +40,48 @@ class Fun(commands.Cog):
         embed.set_footer(text=f'Requested by {ctx.author.name}', icon_url=ctx.author.avatar.url)
         await ctx.respond(embed=embed)
 
-    @commands.slash_command(name="say", description="Tell the bot to say something.")
-    async def say(self, ctx, *, arg=None):
-        if arg is None:
-            await ctx.respond('Say what?')
-        else:
-            await ctx.respond(arg)
 
-    @commands.slash_command(name="coinflip", description="Flips a coin.")
+    @commands.slash_command(name="say", description="Tell the bot to say something.", integration_types={discord.IntegrationType.guild_install, discord.IntegrationType.user_install})
+    async def say(self, ctx, message: str):
+        await ctx.respond(message)
+
+
+    @commands.slash_command(name="coinflip", description="Flips a coin.", integration_types={discord.IntegrationType.guild_install, discord.IntegrationType.user_install})
     async def coinflip(self, ctx):
         coin = ['Heads', 'Tails']
         await ctx.respond(f'Flipped a coin and got {random.choice(coin)}!')
 
-    @commands.slash_command(name="punch", description="Punches a user.")
-    async def punch(self, ctx, arg):
 
-        await ctx.respond(f'Punched {arg}!')
+    @commands.slash_command(name="punch", description="Punches a user.", integration_types={discord.IntegrationType.guild_install, discord.IntegrationType.user_install})
+    async def punch(self, ctx, user: discord.Member):
+        await ctx.respond(f'Punched {user.mention}!')
 
-    @commands.slash_command(name="doublepunch", description="Punches two users.")
-    async def doublepunch(self, ctx, member1: discord.Member = None, member2: discord.Member = None):
-        if member1 is None:
-            member1 = self.client.user.mention
-        if member2 is None:
-            member2 = self.client.user.mention
-        await ctx.respond(f'Double punched {member1} and {member2}! Ouch!')
 
-    @commands.slash_command(name="roundhousekick", description="Roundhouse kicks multiple users.")
-    async def roundhousekick(self, ctx, *args):
-        everyone = ', '.join(args)
-        await ctx.respond(f'Roundhouse kicked {everyone}! Impressive!')
+    @commands.slash_command(name="doublepunch", description="Punches two users.", integration_types={discord.IntegrationType.guild_install, discord.IntegrationType.user_install})
+    async def doublepunch(self, ctx, user1: discord.Member, user2: discord.Member):
+        await ctx.respond(f'Double punched {user1.mention} and {user2.mention}! Ouch!')
+        
+    
+    # @commands.slash_command(name="roundhousekick", description="Roundhouse kicks multiple users.")
+    # async def roundhousekick(self, ctx, members: commands.Greedy[discord.Member]):
+    #     if not members:
+    #         await ctx.respond("You need to specify at least one user!", ephemeral=True)
+    #         return
+
+    #     everyone = ', '.join(member.mention for member in members)
+    #     await ctx.respond(f'Roundhouse kicked {everyone}! Impressive!')
         
 
     @commands.Cog.listener()
     async def on_message(self, message):
         '''
-        easter egg type thing. adds a reaction and replies with a message at a 0.1% change every message is sent.
+        easter egg type thing. adds a reaction and replies with a message at a 0.01% change every message is sent.
         feel free to remove this or change it if it gets annoying. also the emojis wont work since you're probably
         not in my server.
         '''
         if message.author.bot:
             return
-        if random.random() < 0.001:
+        if random.random() < 0.0001:
             await message.add_reaction('<a:deadcat:1063260777278083224>')
             embed = discord.Embed(
                 title=f"ATTENTION!!!!",
@@ -90,10 +90,11 @@ class Fun(commands.Cog):
             )
             embed.set_image(url='https://media.discordapp.net/attachments/962179885231652966/1063261025232760992/attention-thanks-for-your-attention-trolling-poster-3593367102.jpeg')
             embed.timestamp = datetime.datetime.now()
-            embed.set_footer(text=f'this message has a 0.1% chance of appearing!', icon_url=message.author.avatar.url)
+            embed.set_footer(text=f'this message has a 0.01% chance of appearing!', icon_url=message.author.avatar.url)
             await message.channel.send(embed=embed)
-        # example of doing something if any message sent has 'example' in it
-        if 'example' in message.content.lower():
+            
+        # example of doing something if any message sent has a certain substring in it
+        if 'fnf' in message.content.lower():
             await message.add_reaction('\U0001F480') # skull emoji
 
 

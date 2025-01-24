@@ -8,6 +8,7 @@ class Calculator(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         
+        
     @commands.slash_command(name="calculate", description="Calculates the given mathematical expression.")
     async def calc(self, ctx, expression: str):
         await ctx.response.defer(ephemeral=False)  # defers the response
@@ -26,6 +27,7 @@ class Calculator(commands.Cog):
             await ctx.respond(str(e))
         except Exception as e:
             await ctx.respond(f"An unexpected error occurred: `{e}`")
+
 
 def setup(bot):
     bot.add_cog(Calculator(bot))
