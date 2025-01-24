@@ -1,62 +1,31 @@
-import datetime
 import discord
 from discord.ext import commands
-from math import *
-import time
-from humanize import number
-from bot import guilds
-import mpmath
-import traceback
-import asyncio
-''' !!!!WARNING!!!!
-This uses eval(), which can be used to execute code. Just be careful when using this.
-'''
+from sympy import parse_expr
+from sympy.core.sympify import SympifyError
+
 
 class Calculator(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         
-    @commands.slash_command(name="calculate", description="Calculates the given expression.")
+    @commands.slash_command(name="calculate", description="Calculates the given mathematical expression.")
     async def calc(self, ctx, expression: str):
-        # create task to run the calculation in background
-        task = asyncio.create_task(eval(expression))
-        await ctx.response.defer(ephemeral=False)
+        await ctx.response.defer(ephemeral=False)  # defers the response
         try:
-            # list of operators
-            operators = ['+', '-', '*', '/', '^', 'sqrt']
+            # allow only valid characters (numbers, operators, and basic math symbols)
+            allowed_chars = "0123456789+-*/^().e "
+            if not all(char in allowed_chars for char in expression):
+                raise ValueError("Expression contains invalid characters.")
 
-            # loop through the list of operators
-            for operator in operators:
-                # replace the operator symbol with the corresponding python operator (e.g. '^' becomes '**')
-                expression = str(expression)
-                expression = expression.replace(operator, {
-                    '+': '+',
-                    '-': '-',
-                    '*': '*',
-                    'x': '*',
-                    '/': '/',
-                    '^': '**',
-                    'sqrt': 'sqrt',
-                    ' ': '',
-                    '(': '(',
-                    ')': ')'
-                }[operator])
-
-            # wait for the evaluation to complete or for the timeout to expire
-            result = await asyncio.wait_for(task, timeout=10)
-
-            await ctx.respond(result)
-            
-            # cancel the timer
-            signal.alarm(0)
-        except asyncio.TimeoutError:
-            task.cancel()
-            await ctx.respond('Calculation took too long, please try again with a simpler expression')
+            # safely parse and evaluate the expression
+            result = parse_expr(expression, evaluate=True)
+            await ctx.respond(f"The result is: `{result}`")
+        except SympifyError:
+            await ctx.respond("Invalid mathematical expression! Please use a valid format.")
+        except ValueError as e:
+            await ctx.respond(str(e))
         except Exception as e:
-            try:
-                await ctx.respond(f'Sorry, an error occurred: \n`{e}`\n - Please report to a developer')
-            except:
-                await ctx.send(f'Sorry, an error occurred: \n`{e}`\n - Please report to a developer')
+            await ctx.respond(f"An unexpected error occurred: `{e}`")
 
 def setup(bot):
     bot.add_cog(Calculator(bot))
