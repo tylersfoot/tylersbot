@@ -2,11 +2,6 @@ import datetime
 import discord
 from discord.ext import commands
 from math import *
-import time
-from humanize import number
-from bot import guilds
-import mpmath
-import traceback
 
 
 class Sex(commands.Cog):

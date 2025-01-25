@@ -1,10 +1,7 @@
 import discord
 from discord.ext import commands
 import wikipedia
-import asyncio
-from random import randint
 import traceback
-from bot import guilds
 
 
 class Wiki(commands.Cog):
@@ -48,11 +45,11 @@ class Wiki(commands.Cog):
             pagecontent = wikipedia.page(request, auto_suggest=False, redirect=True, preload=False)
             pagetext = wikipedia.summary(request, auto_suggest=False, redirect=True, sentences=5)
 
-            # Tries to set first image in article to embed thumbnail
+            # tries to set first image in article to embed thumbnail
             try:
                 thumbnail = pagecontent.images[0]
             except Exception as error:
-                # If there are no images, it will set it to the default wikipedia picture
+                # if there are no images, it will set it to the default wikipedia picture
                 try:
                     print(f'Couldn\'t load {thumbnail}, {error}')
                     thumbnail = 'https://www.wikipedia.org/static/images/project-logos/enwiki.png'
@@ -71,11 +68,11 @@ class Wiki(commands.Cog):
             await ctx.respond(embed=embed)
 
         except wikipedia.PageError:
-            await ctx.respond(f'Sorry, there are no results for "{request}".')
+            await ctx.respond(f'Sorry, there are no results for "{request}".', ephemeral=True)
+            
+        except wikipedia.DisambiguationError:
+            await ctx.respond('There are too many search results for this query. Please be more specific.', ephemeral=True)
 
-        except Exception as error:
-            await ctx.respond(f'Sorry, an error occurred: \n`{str(error)[:1900]}`\n - Please report to `tylersfoot#8888`.')
-            print(traceback.format_exc())
 
     @commands.slash_command(name="wikirandom", description="Returns the summary of a random Wikipedia article.")
     async def wikirandom(self, ctx):
