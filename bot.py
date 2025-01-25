@@ -10,13 +10,11 @@ import sys
 from custom_exceptions import NotDeveloperError
 from database import db_initialize
 from logger import *
+from config import *
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 startupTime = time.time()
-# people who can call dev commands
-developers = [460161554915000355]
-developer_servers = [962179884627669062]
 
 
 async def clear_temp():
@@ -65,7 +63,7 @@ if __name__ == "__main__":
         intents=discord.Intents.all(),
         activity=activity,
         status=discord.Status.online,
-        test_guilds=[962179884627669062]
+        test_guilds=DEVELOPER_GUILD_IDS
     )
     
     
@@ -104,7 +102,7 @@ if __name__ == "__main__":
         
 
     status_cycle = cycle([
-        "over {server_count} servers",
+        "over {guild_count} guilds",
         "over {user_count} users",
         "discord.gg/DKpCvsJ4fp",
         "tylersfoot.dev"
@@ -112,10 +110,10 @@ if __name__ == "__main__":
 
     @tasks.loop(seconds=15)
     async def change_status():
-        server_count = len(bot.guilds)
+        guild_count = len(bot.guilds)
         user_count = sum(guild.member_count for guild in bot.guilds)
 
-        next_status = next(status_cycle).format(server_count=server_count, user_count=user_count)
+        next_status = next(status_cycle).format(guild_count=guild_count, user_count=user_count)
 
         await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=next_status))
         
@@ -156,7 +154,7 @@ if __name__ == "__main__":
         await ctx.respond(f'Pong! {round(bot.latency * 1000)}ms')
 
 
-    @bot_group.command(name="unload", description="[DEV] Unloads cogs.", guild_ids=developer_servers)
+    @bot_group.command(name="unload", description="[DEV] Unloads cogs.", guild_ids=DEVELOPER_GUILD_IDS)
     async def bot_unload(ctx, extension: str):
         if ctx.author.id not in developers:
             raise NotDeveloperError
@@ -192,9 +190,9 @@ if __name__ == "__main__":
                 log_error(f'Error unloading cog {extension}.py: {e}')
 
 
-    @bot_group.command(name="reload", description="[DEV] Loads/reloads cogs.", guild_ids=developer_servers)
+    @bot_group.command(name="reload", description="[DEV] Loads/reloads cogs.", guild_ids=DEVELOPER_GUILD_IDS)
     async def bot_reload(ctx, extension: str):
-        if ctx.author.id not in developers:
+        if ctx.author.id not in DEVELOPER_USER_IDS:
             raise NotDeveloperError
         
         await ctx.response.defer(ephemeral=True)
@@ -235,9 +233,9 @@ if __name__ == "__main__":
                 log_error(f'Error reloading cog {extension}.py: {e}')
 
 
-    @bot_group.command(name="sync", description="[DEV] Syncs slash commands.", guild_ids=developer_servers)
+    @bot_group.command(name="sync", description="[DEV] Syncs slash commands.", guild_ids=DEVELOPER_GUILD_IDS)
     async def bot_sync(ctx):
-        if ctx.author.id not in developers:
+        if ctx.author.id not in DEVELOPER_USER_IDS:
             raise NotDeveloperError
         
         await ctx.response.defer(ephemeral=True)
@@ -246,9 +244,9 @@ if __name__ == "__main__":
         await ctx.followup.send('Synced commands', ephemeral=True)
 
 
-    @bot_group.command(name="stop", description="[DEV] Stops/terminates the bot.", guild_ids=developer_servers)
+    @bot_group.command(name="stop", description="[DEV] Stops/terminates the bot.", guild_ids=DEVELOPER_GUILD_IDS)
     async def bot_stop(ctx):
-        if ctx.author.id not in developers:
+        if ctx.author.id not in DEVELOPER_USER_IDS:
             raise NotDeveloperError
 
         await ctx.respond('Stopping bot!', ephemeral=True)
@@ -256,9 +254,9 @@ if __name__ == "__main__":
         sys.exit()
 
 
-    @bot_group.command(name="clear_temp", description="[DEV] Clears temp folder.", guild_ids=developer_servers)
+    @bot_group.command(name="clear_temp", description="[DEV] Clears temp folder.", guild_ids=DEVELOPER_GUILD_IDS)
     async def bot_cleartemp(ctx):
-        if ctx.author.id not in developers:
+        if ctx.author.id not in DEVELOPER_USER_IDS:
             raise NotDeveloperError
         
         await ctx.response.defer(ephemeral=True)
@@ -268,12 +266,12 @@ if __name__ == "__main__":
 
     @bot.event
     async def on_member_join(member):
-        log_info(f"{member} has joined the server '{member.guild.name}' [{member.guild.id}]")
+        log_info(f"{member} has joined the guild '{member.guild.name}' [{member.guild.id}]")
 
 
     @bot.event
     async def on_member_remove(member):
-        log_info(f"{member} has left the server '{member.guild.name}' [{member.guild.id}]")
+        log_info(f"{member} has left the guild '{member.guild.name}' [{member.guild.id}]")
 
 
     bot.run(token)
