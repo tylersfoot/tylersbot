@@ -52,12 +52,11 @@ class Information(commands.Cog):
             await ctx.respond(f'I am in {servercount} servers!')
 
 
-    @info_group.command(name="invite_link", description="Sends the invite link for the development server.")
-    async def info_invitelink(self, ctx):
-        await ctx.respond(f'''tylersfoot development server invite: https://discord.gg/DKpCvsJ4fp
-https://discord.com/oauth2/authorize?client_id={self.bot.user.id}''')
-
-# tylersbot invite: https://discordapp.com/oauth2/authorize?client_id={self.bot.user.id}&scope=applications.commands%20bot&permissions=8''')
+    @info_group.command(name="invite", description="Sends invite links related to the bot.")
+    async def info_invite(self, ctx):
+        await ctx.respond(f'''Server Invite: https://discord.gg/DKpCvsJ4fp
+Bot Invite: https://discord.com/oauth2/authorize?client_id={self.bot.user.id}
+GitHub Link: https://github.com/tylersfoot/tylersbot''')
 
 
     @info_group.command(name="avatar", description="Grabs the avatar of the specified user.",

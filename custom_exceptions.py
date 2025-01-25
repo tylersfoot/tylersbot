@@ -13,3 +13,7 @@ class WikiPageError(commands.CommandError):
     # raised when a Wikipedia search returns no results
     def __init__(self, request):
         self.request = request
+        
+class OsuAccountNotLinkedError(commands.CommandError):
+    # raised when an osu! account is not in the db
+    pass

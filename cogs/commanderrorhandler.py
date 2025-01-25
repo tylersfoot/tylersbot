@@ -4,6 +4,7 @@ import traceback
 import sys
 from discord.ext import commands
 from custom_exceptions import *
+from logger import *
 
 
 class CommandErrorHandler(commands.Cog):
@@ -29,10 +30,12 @@ class CommandErrorHandler(commands.Cog):
             await ctx.respond(f"There are too many search results \"{error.request}\". Please be more specific.", ephemeral=True)
         elif isinstance(error, WikiPageError):
             await ctx.respond(f"Sorry, there are no results for \"{error.request}\".", ephemeral=True)
+        elif isinstance(error, OsuAccountNotLinkedError):
+            await ctx.respond(f"Please link your osu! account with `/osu link`!", ephemeral=True)
 
         else:
             # log unhandled errors
-            print("Unhandled exception:", file=sys.stderr)
+            log_error("Unhandled exception:", file=sys.stderr)
             traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
             await ctx.respond("An unexpected error occurred. Please report this to the developers.", ephemeral=True)
 
