@@ -9,3 +9,4 @@ sympy
 pyqrcode
 pypng
 requests
+wikipedia

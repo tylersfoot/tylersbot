@@ -40,95 +40,10 @@ class Osu(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    # @commands.slash_command(name="osu play", description="idk something osu", integration_types={discord.IntegrationType.guild_install, discord.IntegrationType.user_install})
-    # async def osuplay(self, ctx, count: int = 1, mode: str = 'osu', userid: str = 'def'):
-    #     token = get_token()
-    #     headers = {'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': f'Bearer {token}'}
-    #     if userid == 'def':
-    #         with open('data/osuaccounts.json', 'r') as f:
-    #             accounts = json.load(f)
-    #             userid = accounts[str(ctx.author.id)]
-    #             f.close()
-    #     if count > 100 or count < 1:
-    #         await ctx.respond('Play must be between 1 and 100.')
-    #     else:
-    #         params = {'mode': mode, 'limit': count}
-    #         modevis = 'Standard'
-    #         if mode == 'taiko':
-    #             modevis = 'Taiko'
-    #         elif mode == 'ctb':
-    #             modevis = 'Catch the Beat'
-    #         elif mode == 'mania':
-    #             modevis = 'Mania'
-
-    #         count = count - 1
-    #         response = requests.get(f'{API_URL}/users/{userid}/scores/best', params=params, headers=headers)
-    #         cover = response.json()[count].get('beatmapset', {}).get('covers', {}).get('list@2x')
-    #         user = response.json()[count].get('user', {}).get('username')
-    #         title = response.json()[count].get('beatmapset', {}).get('title')
-    #         artist = response.json()[count].get('beatmapset', {}).get('artist')
-    #         difficulty = response.json()[count].get('beatmap', {}).get('version')
-    #         mods = response.json()[count].get('mods')
-    #         combo = response.json()[count].get('max_combo')
-    #         score = response.json()[count].get('score')
-    #         pp = round(response.json()[count].get('pp'), 2)
-    #         stars = response.json()[count].get('beatmap', {}).get('difficulty_rating')
-    #         rank = response.json()[count].get('rank')
-    #         accuracy = round(response.json()[count].get('accuracy') * 100, 2)
-    #         statistics = response.json()[count].get('statistics')
-    #         modslist = ''
-    #         if rank == 'X':
-    #             rank = '<:osurankX:971559056537960509>'
-    #         elif rank == 'SH':
-    #             rank = '<:osurankSH:971562051371683902>'
-    #         elif rank == 'XH':
-    #             rank = '<:osurankXH:971561995809746954>'
-    #         elif rank == 'S':
-    #             rank = '<:osurankS:971558974690312213>'
-    #         elif rank == 'A':
-    #             rank = '<:osurankA:971559105187680266>'
-    #         elif rank == 'B':
-    #             rank = '<:osurankB:971559146967146586>'
-    #         elif rank == 'C':
-    #             rank = '<:osurankC:971559185546346536>'
-    #         elif rank == 'D':
-    #             rank = '<:osurankD:971559256421711933>'
-    #         else:
-    #             await ctx.send(f'rank??? {rank}')
-    #         if not mods:
-    #             mods = 'NM'
-    #         else:
-    #             mods = " ".join(mods)
-    #             for x in range(len(mods)):
-    #                 modslist = modslist + mods[x] + ' '
-    #         embed = discord.Embed(
-    #             title=f'Number {count + 1} top osu! {modevis} play for {user}',
-    #             description='',
-    #             color=int(str(ctx.author.color)[1:], 16)
-    #         )
-    #         embed.set_thumbnail(url=cover)
-    #         embed.timestamp = ctx.message.created_at
-    #         embed.set_footer(text=f'Requested by {ctx.author.name}', icon_url=ctx.author.avatar.url)
-    #         embed.add_field(
-    #             name=f'{title} [{difficulty}] +{mods} [{stars}★]',
-    #             value=f'''▸ {rank} ▸ {pp}pp ▸ {accuracy}%
-    #         ▸ {"{:,}".format(score)} ▸ {combo}x ▸ [{statistics.get("count_300")}/{statistics.get("count_100")}/{statistics.get("count_50")}/{statistics.get("count_miss")}]
-    #         ▸ Score set on: {response.json()[count].get('created_at')[:10]}''',
-    #             inline=False
-    #         )
-    #         await ctx.respond(embed=embed)
-    
-    async def mode_autocomplete(ctx: discord.AutocompleteContext):
-        return ["Standard", "Taiko", "Catch", "Mania"]
-
 
     @commands.slash_command(name="osuplay", description="Gets osu! play data.", integration_types={discord.IntegrationType.guild_install, discord.IntegrationType.user_install})
     @option("mode", type=str, description="Pick a gamemode", choices=["Standard", "Taiko", "Catch", "Mania"])
-    async def osuplay(
-        self, ctx,
-        mode: str,
-        index: int = 1, userid: str = 'def'
-    ):
+    async def osuplay(self, ctx, mode: str, index: int = 1, userid: str = 'def'):
         # validate parameters
         index = max(1, index)
         if index > 100:
@@ -193,11 +108,13 @@ class Osu(commands.Cog):
         rank = rank_emojis.get(play.get('rank'), "Unknown rank")
         mods = 'NM' if not play.get('mods') else ' '.join(play.get('mods'))
         
-        modedisplay = 'Standard'
+        if mode == 'osu':
+            modedisplay = 'Standard'
         if mode == 'taiko':
             modedisplay = 'Taiko'
         elif mode == 'ctb':
             modedisplay = 'Catch'
+            mode = 'fruits'
         elif mode == 'mania':
             modedisplay = 'Mania'
 
@@ -211,10 +128,10 @@ class Osu(commands.Cog):
         embed.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar.url)
         embed.add_field(
             name=f"{play['beatmapset']['title']} [{play['beatmap']['version']}] [{play['beatmap']['difficulty_rating']}★]",
+            # name=f"[{play['beatmapset']['title']} [{play['beatmap']['version']}] [{play['beatmap']['difficulty_rating']}★]](https://osu.ppy.sh/beatmapsets/{play['beatmapset']['id']}#{mode}/{play['beatmap']['id']})",
             value=f"""
             ▸ {rank} ▸ {play['pp']}pp ▸ {round(play['accuracy'] * 100, 2)}% ▸ +{mods}
-            ▸ {"{:,}".format(play['score'])} ▸ {play['max_combo']}x
-            ▸ [{play['statistics']['count_300']}/{play['statistics']['count_100']}/{play['statistics']['count_50']}/{play['statistics']['count_miss']}]
+            ▸ {"{:,}".format(play['score'])} ▸ {play['max_combo']}x ▸ [{play['statistics']['count_300']}/{play['statistics']['count_100']}/{play['statistics']['count_50']}/{play['statistics']['count_miss']}]
             ▸ Score set on: {play['created_at'][:10]}
             """,
             inline=False
@@ -222,8 +139,9 @@ class Osu(commands.Cog):
         await ctx.respond(embed=embed)
 
 
-    @commands.command()
-    async def osutop(self, ctx, mode='def', userid='def'):
+    @commands.slash_command(name="osu play", description="Gets osu! play data.", integration_types={discord.IntegrationType.guild_install, discord.IntegrationType.user_install})
+    @option("mode", type=str, description="Pick a gamemode", choices=["Standard", "Taiko", "Catch", "Mania"])
+    async def osutop(self, ctx, mode, userid: str = 'def'):
         token = get_token()
         headers = {'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': f'Bearer {token}'}
         if userid == 'def':
