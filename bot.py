@@ -10,7 +10,7 @@ import sys
 from custom_exceptions import NotDeveloperError
 
 startupTime = time.time()
-# people who can call dev commands
+# people who can call dev commands 
 developers = [460161554915000355]
 
 
