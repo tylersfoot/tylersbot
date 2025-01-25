@@ -15,7 +15,8 @@
 My personal Discord bot, developed using Pycord (migrated from discord.py). My first major coding project. Feel free to give me any questions, feedback, suggestions, bug reports, or to use the code for yourself.
 
 Development Discord Server: [https://discord.gg/DKpCvsJ4fp](https://discord.gg/DKpCvsJ4fp)
-Invite the bot: [https://discord.com/oauth2/authorize?client_id=1059528586815606784](https://discord.com/oauth2/authorize?client_id=1059528586815606784)
+
+Invite the bot [here!](https://discord.com/oauth2/authorize?client_id=1059528586815606784)
 
 > [!NOTE]
 > There are many specific references to me, the servers I'm in, and specific channels. Feel free to change or delete them!
