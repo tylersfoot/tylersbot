@@ -41,6 +41,10 @@ cd tylersbot
 
 ### 3. Install Dependencies
 
+> [!NOTE]
+> To keep your dependencies isolated, it’s recommended to use a virtual environment!
+> [Follow this guide](https://docs.python.org/3/tutorial/venv.html) to set up and activate a venv.
+
 Use `pip` to install the required libraries:
 
 ```bash
