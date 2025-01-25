@@ -8,12 +8,15 @@ from dotenv import load_dotenv
 import aiofiles.os
 import sys
 from custom_exceptions import NotDeveloperError
+from database import db_initialize
+from logger import *
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 startupTime = time.time()
 # people who can call dev commands
 developers = [460161554915000355]
+developer_servers = [962179884627669062]
 
 
 async def clear_temp():
@@ -65,20 +68,23 @@ if __name__ == "__main__":
         test_guilds=[962179884627669062]
     )
     
+    
     # on startup
     @bot.event
     async def on_ready():
         change_status.start()
         print(f'''
-    #-------------------------->
+    #--------------------------#
     |  Logged in as {bot.user.name}
     |  id:{bot.user.id} 
-    #-------------------------->
+    #--------------------------#
     ''')
-
+        
+        logger_initialize(bot)
+        db_initialize()
+        
         await clear_temp() # clear temp folder
         cogs = ''
-        print('Loading all cogs...')
         for file in os.listdir('./cogs'):
             if file.endswith('.py'):
                 if cogs == '':
@@ -88,10 +94,10 @@ if __name__ == "__main__":
                 try:
                     bot.load_extension(f'cogs.{file[:-3]}')
                 except Exception as e:
-                    print(f'Cog {file} could not load. Error: {e}')
+                    log_error(f'Cog {file} could not load. Error: {e}')
                 else:
                     pass
-        print(f'Loaded {cogs}')
+        log_info(f'Loaded {cogs}')
         
         await bot.sync_commands()
 
@@ -150,7 +156,7 @@ if __name__ == "__main__":
         await ctx.respond(f'Pong! {round(bot.latency * 1000)}ms')
 
 
-    @bot_group.command(name="unload", description="[DEV] Unloads cogs.")
+    @bot_group.command(name="unload", description="[DEV] Unloads cogs.", guild_ids=developer_servers)
     async def bot_unload(ctx, extension: str):
         if ctx.author.id not in developers:
             raise NotDeveloperError
@@ -170,23 +176,23 @@ if __name__ == "__main__":
                     try:
                         bot.unload_extension(f'cogs.{file[:-3]}')
                     except Exception as e:
-                        print(f'Cog {file} could not unload. Error: {e}')
+                        log_error(f'Cog {file} could not unload. Error: {e}')
                         pass
                     else:
                         pass
-            await ctx.respond(f'Unloaded {cogs}', ephemeral=True)
-            print(f'Unloaded {cogs}')
+            await ctx.respond(f'Unloaded cogs `{cogs}`', ephemeral=True)
+            log_info(f'Unloaded cogs {cogs}')
         else:
             try:
                 bot.unload_extension(f'cogs.{extension}')
-                await ctx.respond(f'Unloaded {extension}.py', ephemeral=True)
-                print(f'Unloaded {extension}.py')
+                await ctx.respond(f'Unloaded cog `{extension}.py`', ephemeral=True)
+                log_info(f'Unloaded cog {extension}.py')
             except Exception as e:
-                await ctx.respond(f'Error unloading {extension}.py: {e}')
-                print(f'Error unloading {extension}.py: {e}')
+                await ctx.respond(f'Error unloading cog `{extension}.py`: {e}')
+                log_error(f'Error unloading cog {extension}.py: {e}')
 
 
-    @bot_group.command(name="reload", description="[DEV] Loads/reloads cogs.")
+    @bot_group.command(name="reload", description="[DEV] Loads/reloads cogs.", guild_ids=developer_servers)
     async def bot_reload(ctx, extension: str):
         if ctx.author.id not in developers:
             raise NotDeveloperError
@@ -205,51 +211,52 @@ if __name__ == "__main__":
                     try:
                         bot.unload_extension(f'cogs.{file[:-3]}')
                     except Exception as e:
-                        print(f'Cog {file} could not unload. Error: {e}')
+                        log_error(f'Cog {file} could not unload. Error: {e}')
                         pass
                     else:
                         pass
                     bot.load_extension(f'cogs.{file[:-3]}')
-            await ctx.respond(f'Reloaded {cogs}', ephemeral=True)
-            print(f'Reloaded {cogs}')
+            await ctx.respond(f'Reloaded cogs `{cogs}`', ephemeral=True)
+            log_info(f'Reloaded cogs {cogs}')
         else:
             try:
                 try:
                     bot.unload_extension(f'cogs.{extension}')
                 except Exception as e:
-                    print(f'Cog {extension} could not unload. Error: {e}')
+                    log_error(f'Cog {extension} could not unload. Error: {e}')
                     pass
                 else:
                     pass
                 bot.load_extension(f'cogs.{extension}')
-                await ctx.respond(f'Reloaded {extension}.py', ephemeral=True)
-                print(f'Reloaded {extension}.py')
+                await ctx.respond(f'Reloaded cog `{extension}.py`', ephemeral=True)
+                log_info(f'Reloaded cog {extension}.py')
             except Exception as e:
-                await ctx.respond(f'Error reloading {extension}.py: {e}', ephemeral=True)
-                print(f'Error reloading {extension}.py: {e}')
+                await ctx.respond(f'Error reloading cog `{extension}.py`: {e}', ephemeral=True)
+                log_error(f'Error reloading cog {extension}.py: {e}')
 
 
-    @bot_group.command(name="sync", description="[DEV] Syncs slash commands.")
+    @bot_group.command(name="sync", description="[DEV] Syncs slash commands.", guild_ids=developer_servers)
     async def bot_sync(ctx):
         if ctx.author.id not in developers:
             raise NotDeveloperError
         
         await ctx.response.defer(ephemeral=True)
         await bot.sync_commands()
-        await ctx.followup.send('Synced commands.', ephemeral=True)
+        log_info('Synced commands')
+        await ctx.followup.send('Synced commands', ephemeral=True)
 
 
-    @bot_group.command(name="stop", description="[DEV] Stops/terminates the bot.")
+    @bot_group.command(name="stop", description="[DEV] Stops/terminates the bot.", guild_ids=developer_servers)
     async def bot_stop(ctx):
         if ctx.author.id not in developers:
             raise NotDeveloperError
 
-        await ctx.respond('Stopping bot...', ephemeral=True)
+        await ctx.respond('Stopping bot!', ephemeral=True)
         await bot.close()
         sys.exit()
 
 
-    @bot_group.command(name="clear_temp", description="[DEV] Clears temp folder.")
+    @bot_group.command(name="clear_temp", description="[DEV] Clears temp folder.", guild_ids=developer_servers)
     async def bot_cleartemp(ctx):
         if ctx.author.id not in developers:
             raise NotDeveloperError
@@ -261,12 +268,12 @@ if __name__ == "__main__":
 
     @bot.event
     async def on_member_join(member):
-        print(f'{member} has joined the server.')
+        log_info(f"{member} has joined the server '{member.guild.name}' [{member.guild.id}]")
 
 
     @bot.event
     async def on_member_remove(member):
-        print(f'{member} has left the server.')
+        log_info(f"{member} has left the server '{member.guild.name}' [{member.guild.id}]")
 
 
     bot.run(token)

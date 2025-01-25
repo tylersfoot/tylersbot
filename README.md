@@ -120,12 +120,6 @@ Command Table Explanation:
 | `/bot clear_temp`           | deletes all files in the bot's temp folder       | Dev          | Server | Slash |
 | `/bot stop`                 | stops the instance of the bot                    | Dev          | Server | Slash |
 
-### calculator.py
-
-| Command                     | Description                          | Permissions | Scope  | Type  |
-| ---                         | ---                                  | ---         | ---    | ---   |
-| `/calculate expression:str` | calculates the given math expression | -           | Global | Slash |
-
 ### fun.py
 
 | Command                                                      | Description                     | Permissions | Scope  | Type  |
@@ -162,6 +156,12 @@ Also has functionality for reacting to messages with certain keywords, and a rar
 
 Also has basic functionality for logging deleted messages
 
+### calculator.py
+
+| Command                     | Description                          | Permissions | Scope  | Type  |
+| ---                         | ---                                  | ---         | ---    | ---   |
+| `/calculate expression:str` | calculates the given math expression | -           | Global | Slash |
+
 ### qrcode.py
 
 | Command           | Description                                                                                           | Permissions | Scope  | Type  |
@@ -191,3 +191,16 @@ Also has basic functionality for logging deleted messages
 ### commanderrorhandler.py
 
 Handles customized error messages
+(WIP)
+
+### custom_exceptions.py
+
+(WIP)
+
+### logger.py
+
+(WIP)
+
+### database.py
+
+(WIP)

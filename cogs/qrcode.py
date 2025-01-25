@@ -5,6 +5,7 @@ import pyqrcode
 import os
 import datetime
 from pathlib import Path
+from logger import *
 
 
 class Qrcode(commands.Cog):
@@ -61,7 +62,7 @@ class Qrcode(commands.Cog):
         try:
             os.remove(file_path)
         except OSError as e:
-            print(f"Error removing temporary file: {e}")
+            log_error(f"Error removing temporary file: {e}")
 
 
 def setup(bot):

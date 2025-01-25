@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import random
 import datetime
+from logger import *
 
 
 class Fun(commands.Cog):
@@ -98,6 +99,7 @@ class Fun(commands.Cog):
             embed.set_image(url='https://media.discordapp.net/attachments/962179885231652966/1063261025232760992/attention-thanks-for-your-attention-trolling-poster-3593367102.jpeg')
             embed.timestamp = datetime.datetime.now()
             embed.set_footer(text=f'this message has a 0.01% chance of appearing!', icon_url=message.author.avatar.url)
+            log_info(f"0.01% message triggered by {message.author.name} in {message.guild.name} ({message.guild.id}) #{message.channel.name} ({message.channel.id})")
             await message.channel.send(embed=embed)
             
         # example of doing something if any message sent has a certain substring in it
