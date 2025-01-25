@@ -6,10 +6,16 @@ import datetime
 class Moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        
+    mod_group = discord.SlashCommandGroup(
+        name = "mod", 
+        description = "Moderation commands",
+        integration_types = {discord.IntegrationType.guild_install}
+    )
 
         
-    @commands.slash_command(name="purge", description="Purges messages from the channel.")
-    async def purge(self, ctx, amount: int):
+    @mod_group.command(name="purge", description="Purges messages from the channel.")
+    async def mod_purge(self, ctx, amount: int):
         if not ctx.author.guild_permissions.manage_messages:
             raise commands.MissingPermissions(['manage_messages'])
         
@@ -18,8 +24,8 @@ class Moderation(commands.Cog):
         await ctx.respond( f'Deleted {amount} messages.')
         
         
-    @commands.slash_command(name="kick", description="Kicks a user from the server.")
-    async def kick(self, ctx, member: discord.Member, reason: str = None, notify: bool = True):
+    @mod_group.command(name="kick", description="Kicks a user from the server.")
+    async def mod_kick(self, ctx, member: discord.Member, reason: str = None, notify: bool = True):
         if not ctx.author.guild_permissions.kick_members:
             raise commands.MissingPermissions(['kick_members'])
 
@@ -49,8 +55,8 @@ class Moderation(commands.Cog):
             await ctx.respond(f"Kicked {member.mention} from the server, but could not send a DM to notify them.")
         
         
-    @commands.slash_command(name="ban", description="Bans a user from the server.")
-    async def ban(self, ctx, member: discord.Member, reason: str = None, notify: bool = True):
+    @mod_group.command(name="ban", description="Bans a user from the server.")
+    async def mod_ban(self, ctx, member: discord.Member, reason: str = None, notify: bool = True):
         if not ctx.author.guild_permissions.ban_members:
             raise commands.MissingPermissions(['ban_members'])
 
@@ -80,8 +86,8 @@ class Moderation(commands.Cog):
             await ctx.respond(f"Banned {member.mention} from the server, but could not send a DM to notify them.")    
             
             
-    @commands.slash_command(name="unban", description="Unbans a user from the server.")
-    async def unban(self, ctx, user_id: str, reason: str = None, notify: bool = True):
+    @mod_group.command(name="unban", description="Unbans a user from the server.")
+    async def mod_unban(self, ctx, user_id: str, reason: str = None, notify: bool = True):
         if not ctx.author.guild_permissions.ban_members:
             raise commands.MissingPermissions(['ban_members'])
         try:
@@ -115,8 +121,8 @@ class Moderation(commands.Cog):
         
 
             
-    @commands.slash_command(name="slowmode", description="Sets the slowmode for the channel.")
-    async def slowmode(self, ctx, duration: str):
+    @mod_group.command(name="slowmode", description="Sets the slowmode for the channel.")
+    async def mod_slowmode(self, ctx, duration: str):
         if not ctx.author.guild_permissions.manage_guild:
             raise commands.MissingPermissions(['manage_guild'])
 
@@ -152,7 +158,7 @@ class Moderation(commands.Cog):
 
         embed = discord.Embed(
             title=f"{message.author}\'s Message",
-            description=f'{message.content}'
+            description=description
         )
         embed.timestamp = datetime.datetime.now()
         

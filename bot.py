@@ -9,8 +9,10 @@ import aiofiles.os
 import sys
 from custom_exceptions import NotDeveloperError
 
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 startupTime = time.time()
-# people who can call dev commands 
+# people who can call dev commands
 developers = [460161554915000355]
 
 
@@ -39,6 +41,8 @@ def coglookup(name: str):
         name = 'qrcode'
     if name in ['calc', 'calculate']:
         name = 'calculator'
+    if name in ['error', 'errors', 'errorhandler', 'custom_error_handler']:
+        name = 'commanderrorhandler'
     return name
 
 
@@ -88,6 +92,8 @@ if __name__ == "__main__":
                 else:
                     pass
         print(f'Loaded {cogs}')
+        
+        await bot.sync_commands()
 
         
 
@@ -106,12 +112,16 @@ if __name__ == "__main__":
         next_status = next(status_cycle).format(server_count=server_count, user_count=user_count)
 
         await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=next_status))
-
-
+        
+    bot_group = bot.create_group(
+        name = "bot", 
+        description = "Bot related commands",
+        integration_types = {discord.IntegrationType.guild_install}
+    )
         
         
-    @bot.slash_command(name="uptime", description="Sends the bot's uptime since last restart.")
-    async def uptime(ctx):
+    @bot_group.command(name="uptime", description="Sends the bot's uptime since last restart.")
+    async def bot_uptime(ctx):
         global startupTime
         currentTime = time.time()
         difference = int(round(currentTime - startupTime))
@@ -135,13 +145,13 @@ if __name__ == "__main__":
         await ctx.respond(embed=embed)
 
 
-    @bot.slash_command(name="ping", description="Sends the bot's latency/ping.")
-    async def ping(ctx):
+    @bot_group.command(name="ping", description="Sends the bot's latency/ping.")
+    async def bot_ping(ctx):
         await ctx.respond(f'Pong! {round(bot.latency * 1000)}ms')
 
 
-    @bot.slash_command(name="unload", description="[DEV] Unloads cogs.")
-    async def unload(ctx, extension: str):
+    @bot_group.command(name="unload", description="[DEV] Unloads cogs.")
+    async def bot_unload(ctx, extension: str):
         if ctx.author.id not in developers:
             raise NotDeveloperError
         
@@ -176,8 +186,8 @@ if __name__ == "__main__":
                 print(f'Error unloading {extension}.py: {e}')
 
 
-    @bot.slash_command(name="reload", description="[DEV] Loads/reloads cogs.")
-    async def reload(ctx, extension: str):
+    @bot_group.command(name="reload", description="[DEV] Loads/reloads cogs.")
+    async def bot_reload(ctx, extension: str):
         if ctx.author.id not in developers:
             raise NotDeveloperError
         
@@ -219,8 +229,8 @@ if __name__ == "__main__":
                 print(f'Error reloading {extension}.py: {e}')
 
 
-    @bot.slash_command(name="sync", description="[DEV] Syncs slash commands.")
-    async def sync(ctx):
+    @bot_group.command(name="sync", description="[DEV] Syncs slash commands.")
+    async def bot_sync(ctx):
         if ctx.author.id not in developers:
             raise NotDeveloperError
         
@@ -229,8 +239,8 @@ if __name__ == "__main__":
         await ctx.followup.send('Synced commands.', ephemeral=True)
 
 
-    @bot.slash_command(name="stopbot", description="[DEV] Stops/terminates the bot.")
-    async def stopbot(ctx):
+    @bot_group.command(name="stop", description="[DEV] Stops/terminates the bot.")
+    async def bot_stop(ctx):
         if ctx.author.id not in developers:
             raise NotDeveloperError
 
@@ -239,8 +249,8 @@ if __name__ == "__main__":
         sys.exit()
 
 
-    @bot.slash_command(name="clear_temp", description="[DEV] Clears temp folder.")
-    async def cleartemp(ctx):
+    @bot_group.command(name="clear_temp", description="[DEV] Clears temp folder.")
+    async def bot_cleartemp(ctx):
         if ctx.author.id not in developers:
             raise NotDeveloperError
         

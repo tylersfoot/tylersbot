@@ -16,136 +16,173 @@ My personal Discord bot, developed using Pycord (migrated from discord.py). My f
 
 Development Discord Server: [https://discord.gg/DKpCvsJ4fp](https://discord.gg/DKpCvsJ4fp)
 
+> [!NOTE]
+> There are many specific references to me, the servers I'm in, and specific channels. Feel free to change or delete them!
+
 ---
 
 ## Setup
 
-Install Python 3.7+
+Follow these steps to set up and run the bot:
 
-Download the repository files
+### 1. Install Python
 
-Install the required libraries:
+Ensure you have **Python 3.7 or higher** installed on your system
+You can download Python [here](https://www.python.org/downloads/)
+
+### 2. Clone the Repository
+
+Download or clone this repository to your local machine:
+
+```bash
+git clone https://github.com/tylersfoot/tylersbot.git
+cd tylersbot
+```
+
+### 3. Install Dependencies
+
+Use `pip` to install the required libraries:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Create a `.env` file with the following template:
+### 4. Create a `.env` file
+
+Create a `.env` file in the project directory and add the following variables:
 
 ```env
-DISCORD_TOKEN = your_discord_bot_token
-HUGGINGFACE_TOKEN = your_huggingface_token
-CHATBOT_EMAIL = your_openai_email
-CHATBOT_PASSWORD = your_openai_password
+DISCORD_TOKEN='discord_bot_token'
+OSU_CLIENT_ID='osu_api_client_id'
+OSU_CLIENT_SECRET='osu_api_client_secret'
 ```
 
-Finally, start the bot!
+Replace the placeholders (your_discord_bot_token, etc.) with your actual credentials:
+
+- `DISCORD_TOKEN`: Your Discord bot token (from the Discord Developer Portal)
+- `OSU_CLIENT_ID` and `OSU_CLIENT_SECRET`: Your osu! API client ID and secret [(instructions)](https://osu.ppy.sh/docs/index.html#registering-an-oauth-application)
+
+### 5. Start the bot
+
+Run the bot with:
 
 ```bash
-python bot.py
+python -u bot.py
 ```
 
-Note: There are references to me or the servers I'm in. Feel free to change them, such as: reporting errors to tylersfoot#8888 and the `developers` variable in `bot.py`.
+The bot will now start and log into Discord!
+
+### Troubleshooting
+
+- If you encounter any issues, ensure all dependencies are installed correctly and that your .env file is properly configured
+- For more help, feel free to reach out!
 
 ---
 
 ## Features/Commands
 
-[DEV] = developer only command (temporary)
+### Notes
 
-(user) = available as a user app (right click on user to use)
+Command Table Explanation:
 
-(global) = command available everywhere (dms, other servers) - USER INSTALL ONLY
+`Command`: the format of the slash command
+> if it's in a command group, there will be a space (e.g. `/group command`)
+> everything else is the parameters:type
+
+`Description`: a description of what the command does
+
+`Permissions`: what permission(s) the user needs to run the command
+> `Dev`: can only be used by developers (note: will be removed soon)
+> otherwise discord permissions (e.g. `manage_messages`, `ban_members`)
+
+`Scope`: where the command is available:
+> `Server`: A normal server slash command
+> `Global`: command/app available everywhere (dms, other servers) - bot must be user installed
+
+`Type`: whether it's a slash command or a user app
+> `User`: available as a user app (right click on a user to use)
+> `Slash`: available as a slash command
 
 ### bot.py
 
-`/uptime` - returns the uptime of the bot since last restart
-
-`/ping` - returns the bot's latency/ping
-
-`[DEV] /unload extension:str` - unloads a specified cog or all cogs
-
-`[DEV] /reload extension:str` - reloads/loads a specified cog or all cogs
-
-`[DEV] /sync` - syncs all slash commands
-
-`[DEV] /clear_temp` - deletes all files in the bot's temp folder
-
-`[DEV] /stopbot` - stops the instance of the bot
+| Command                     | Description                                      | Permissions  | Scope  | Type  |
+| ---                         | ---                                              | ---          | ---    | ---   |
+| `/bot uptime`               | returns the uptime of the bot since last restart | -            | Server | Slash |
+| `/bot ping`                 | returns the bot's latency/ping                   | -            | Server | Slash |
+| `/bot unload extension:str` | unloads a specified cog or all cogs              | Dev          | Server | Slash |
+| `/bot reload extension:str` | reloads/loads a specified cog or all cogs        | Dev          | Server | Slash |
+| `/bot sync`                 | syncs all slash commands                         | Dev          | Server | Slash |
+| `/bot clear_temp`           | deletes all files in the bot's temp folder       | Dev          | Server | Slash |
+| `/bot stop`                 | stops the instance of the bot                    | Dev          | Server | Slash |
 
 ### calculator.py
 
-`/calculate expression:str` - calculates the given mathematical expression
-
-### commanderrorhandler.py
-
-Handles customized error messages
+| Command                     | Description                          | Permissions | Scope  | Type  |
+| ---                         | ---                                  | ---         | ---    | ---   |
+| `/calculate expression:str` | calculates the given math expression | -           | Global | Slash |
 
 ### fun.py
 
-`/8ball question:str` - (global) lets the 8ball decide your fate
-
-`/say message:str` - (global) makes the bot say the message specified
-
-`/coinflip` - (global) flips a coin. duh.
-
-`/punch user:discord.Member` - (global) punches the user mentioned
-
-`/doublepunch user1:discord.Member user2:discord.Member` - (global) punches two users mentioned
+| Command                                                      | Description                     | Permissions | Scope  | Type  |
+| ---                                                          | ---                             | ---         | ---    | ---   |
+| `/fun 8ball question:str`                                    | lets the 8ball decide your fate | -           | Global | Slash |
+| `/fun say message:str`                                       | makes the bot say a message     | -           | Global | Slash |
+| `/fun coinflip`                                              | flips a coin                    | -           | Global | Slash |
+| `/fun punch user:discord.Member`                             | punches the user mentioned      | -           | Global | Slash |
+| `/fun doublepunch user1:discord.Member user2:discord.Member` | punches two users mentioned     | -           | Global | Slash |
 
 Also has functionality for reacting to messages with certain keywords, and a rare chance to respond with a special message
 
 ### information.py
 
-`/suggestion text:str` - sends a suggestion to the developer(s)
-
-`/bugreport text:str` - sends a bugreport to the developer(s)
-
-`/server_count` - returns the number of servers the bot is in
-
-`/invite_link` - (global) sends the invite link for the bot & the discord server
-
-`/avatar member:discord.Member` - (global) (user) returns the avatar for the user mentioned (author if none)
-
-`/serverinfo` - (global) returns information about the current server
-
-`/account_creation_date member:discord.Member` - (global) (user) returns the date of the user's account creation
+| Command                                             | Description                                        | Permissions | Scope  | Type        |
+| ---                                                 | ---                                                | ---         | ---    | ---         |
+| `/info suggestion text:str`                         | sends a suggestion to the developers               | -           | Global | Slash       |
+| `/info bugreport text:str`                          | sends a bugreport to the developers                | -           | Global | Slash       |
+| `/info server_count`                                | sends the number of servers the bot is in          | -           | Global | Slash       |
+| `/info invite_link`                                 | sends the invite link for the bot & discord server | -           | Global | Slash       |
+| `/info avatar member:discord.Member`                | sends the avatar for the user mentioned            | -           | Global | Slash, User |
+| `/info serverinfo`                                  | sends information about the current server         | -           | Global | Slash       |
+| `/info account_creation_date member:discord.Member` | sends the date of the user's account creation      | -           | Global | Slash, User |
 
 ### moderation.py
 
-`/purge amount:int` - purges (deletes) a certain amount of messages from a channel
+| Command                                                     | Description                                                                     | Permissions       | Scope  | Type  |
+| ---                                                         | ---                                                                             | ---               | ---    | ---   |
+| `/mod purge amount:int`                                     | purges (deletes) messages from a channel                                        | `manage_messages` | Server | Slash |
+| `/mod kick user:discord.Member reason:str notify:bool=True` | kicks a user from the server with the specified reason, and whether to DM them  | `kick_members`    | Server | Slash |
+| `/mod ban user:discord.Member reason:str notify:bool=True`  | bans a user from the server with the specified reason, and whether to DM them   | `ban_members`     | Server | Slash |
+| `/mod unban user_id:str reason:str notify:bool=True`        | unbans a user from the server with the specified reason, and whether to DM them | `ban_members`     | Server | Slash |
+| `/mod slowmode duration:str`                                | changes the slowmode for the current channel (`10s`, `5m`, `1h`, `off`)         | `manage_guild`    | Server | Slash |
 
-`/kick user:discord.Member reason:str notify:bool=True` - kicks a user from the server with the specified reason, and whether to DM them
-
-`/ban user:discord.Member reason:str notify:bool=True` - bans a user from the server with the specified reason, and whether to DM them
-
-`/unban user_id:str reason:str notify:bool=True` - unbans a user from the server with the specified reason, and whether to DM them
-
-`/slowmode duration:str` - changes the slowmode for the current channel. string is parsed as a time (`10s`, `5m`, `1h`, `off`, etc.)
-
-Also has functionality for logging deleted messages
+Also has basic functionality for logging deleted messages
 
 ### qrcode.py
 
-`/qr message:str` - generates a qr code image based on the message provided. also detects if an amongus is in the qr code :)
+| Command           | Description                                                                                           | Permissions | Scope  | Type  |
+| ---               | ---                                                                                                   | ---         | ---    | ---   |
+| `/qr message:str` | generates a qr code image based on the message provided. also detects if an amongus is in the qr code | -           | Global | Slash |
+
+### wiki.py
+
+| Command                     | Description                                     | Permissions | Scope  | Type        |
+| ---                         | ---                                             | ---         | ---    | ---         |
+| `/wiki search request:str`  | searches sends a list of Wikipedia articles     | -           | Global | Slash       |
+| `/wiki article request:str` | sends a summary of a specific Wikipedia article | -           | Global | Slash       |
+| `/wiki random`              | sends a summary of a random Wikipedia article   | -           | Global | Slash       |
 
 ### osu.py
 
-
-### wiki.py
-`/wikisearch request:str` - returns a list of Wikipedia articles based on the request
-
-`/wiki request:str` - returns a summary of the specified Wikipedia article
-
-`/wikirandom` - returns the summary of a random Wikipedia article
-
 ### wordle.py
+
 (WIP)
 
 ### music.py
 
-
-
-
 ### selfroles.py
+
 (WIP)
+
+### commanderrorhandler.py
+
+Handles customized error messages
