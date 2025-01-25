@@ -9,8 +9,15 @@ class Fun(commands.Cog):
         self.bot = bot
 
 
-    @commands.slash_command(name="8ball", description="Decide your fate!", integration_types={discord.IntegrationType.guild_install, discord.IntegrationType.user_install})
-    async def eightball(self, ctx, question: str):
+    fun_group = discord.SlashCommandGroup(
+        name = "fun", 
+        description = "Fun commands",
+        integration_types = {discord.IntegrationType.guild_install, discord.IntegrationType.user_install}
+    )
+
+
+    @fun_group.command(name="8ball", description="Decide your fate!")
+    async def fun_eightball(self, ctx, question: str):
         responses = ["It is certain.",
                      "It is decidedly so.",
                      "Without a doubt.",
@@ -41,24 +48,24 @@ class Fun(commands.Cog):
         await ctx.respond(embed=embed)
 
 
-    @commands.slash_command(name="say", description="Tell the bot to say something.", integration_types={discord.IntegrationType.guild_install, discord.IntegrationType.user_install})
-    async def say(self, ctx, message: str):
+    @fun_group.command(name="say", description="Tell the bot to say something.")
+    async def fun_say(self, ctx, message: str):
         await ctx.respond(message)
 
 
-    @commands.slash_command(name="coinflip", description="Flips a coin.", integration_types={discord.IntegrationType.guild_install, discord.IntegrationType.user_install})
-    async def coinflip(self, ctx):
+    @fun_group.command(name="coinflip", description="Flips a coin.")
+    async def fun_coinflip(self, ctx):
         coin = ['Heads', 'Tails']
         await ctx.respond(f'Flipped a coin and got {random.choice(coin)}!')
 
 
-    @commands.slash_command(name="punch", description="Punches a user.", integration_types={discord.IntegrationType.guild_install, discord.IntegrationType.user_install})
-    async def punch(self, ctx, user: discord.Member):
+    @fun_group.command(name="punch", description="Punches a user.")
+    async def fun_punch(self, ctx, user: discord.Member):
         await ctx.respond(f'Punched {user.mention}!')
 
 
-    @commands.slash_command(name="doublepunch", description="Punches two users.", integration_types={discord.IntegrationType.guild_install, discord.IntegrationType.user_install})
-    async def doublepunch(self, ctx, user1: discord.Member, user2: discord.Member):
+    @fun_group.command(name="doublepunch", description="Punches two users.")
+    async def fun_doublepunch(self, ctx, user1: discord.Member, user2: discord.Member):
         await ctx.respond(f'Double punched {user1.mention} and {user2.mention}! Ouch!')
         
     

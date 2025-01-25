@@ -9,7 +9,8 @@ class Calculator(commands.Cog):
         self.bot = bot
         
         
-    @commands.slash_command(name="calculate", description="Calculates the given mathematical expression.")
+    @commands.slash_command(name="calculate", description="Calculates the given mathematical expression.",
+                            integration_types={discord.IntegrationType.guild_install, discord.IntegrationType.user_install})
     async def calc(self, ctx, expression: str):
         await ctx.response.defer(ephemeral=False)  # defers the response
         try:
