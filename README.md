@@ -15,6 +15,7 @@
 My personal Discord bot, developed using Pycord (migrated from discord.py). My first major coding project. Feel free to give me any questions, feedback, suggestions, bug reports, or to use the code for yourself.
 
 Development Discord Server: [https://discord.gg/DKpCvsJ4fp](https://discord.gg/DKpCvsJ4fp)
+Invite the bot: [https://discord.com/oauth2/authorize?client_id=1059528586815606784](https://discord.com/oauth2/authorize?client_id=1059528586815606784)
 
 > [!NOTE]
 > There are many specific references to me, the servers I'm in, and specific channels. Feel free to change or delete them!
@@ -27,8 +28,7 @@ Follow these steps to set up and run the bot:
 
 ### 1. Install Python
 
-Ensure you have **Python 3.7 or higher** installed on your system
-You can download Python [here](https://www.python.org/downloads/)
+Ensure you have **Python 3.7 or higher** installed on your system. You can download Python [here!](https://www.python.org/downloads/)
 
 ### 2. Clone the Repository
 
@@ -61,7 +61,7 @@ OSU_CLIENT_ID='osu_api_client_id'
 OSU_CLIENT_SECRET='osu_api_client_secret'
 ```
 
-Replace the placeholders (your_discord_bot_token, etc.) with your actual credentials:
+Replace the placeholders with your actual credentials:
 
 - `DISCORD_TOKEN`: Your Discord bot token (from the Discord Developer Portal)
 - `OSU_CLIENT_ID` and `OSU_CLIENT_SECRET`: Your osu! API client ID and secret [(instructions)](https://osu.ppy.sh/docs/index.html#registering-an-oauth-application)
