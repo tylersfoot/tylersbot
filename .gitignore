@@ -1,8 +1,5 @@
 ### My stuff ###
-/data/data.json
-/data/pi-billion.txt
-/data/temp/
-/.idea/
+/data/
 
 ### Database ###
 *.accdb

@@ -92,20 +92,24 @@ Command Table Explanation:
 
 `Command`: the format of the slash command
 > if it's in a command group, there will be a space (e.g. `/group command`)
+>
 > everything else is the parameters:type
 
 `Description`: a description of what the command does
 
 `Permissions`: what permission(s) the user needs to run the command
 > `Dev`: can only be used by developers (note: will be removed soon)
+>
 > otherwise discord permissions (e.g. `manage_messages`, `ban_members`)
 
 `Scope`: where the command is available:
 > `Server`: A normal server slash command
+>
 > `Global`: command/app available everywhere (dms, other servers) - bot must be user installed
 
 `Type`: whether it's a slash command or a user app
 > `User`: available as a user app (right click on a user to use)
+>
 > `Slash`: available as a slash command
 
 ### bot.py
@@ -153,8 +157,9 @@ Also has functionality for reacting to messages with certain keywords, and a rar
 | `/mod ban user:discord.Member reason:str notify:bool=True`  | bans a user from the server with the specified reason, and whether to DM them   | `ban_members`     | Server | Slash |
 | `/mod unban user_id:str reason:str notify:bool=True`        | unbans a user from the server with the specified reason, and whether to DM them | `ban_members`     | Server | Slash |
 | `/mod slowmode duration:str`                                | changes the slowmode for the current channel (`10s`, `5m`, `1h`, `off`)         | `manage_guild`    | Server | Slash |
+| `/mod log_channel channel:discord.TextChannel`              | sets the log channel for a server                                               | `manage_guild`    | Server | Slash |
 
-Also has basic functionality for logging deleted messages
+Has functionality for logging deleted messages in a server (set using `/mod log_channel`)
 
 ### calculator.py
 

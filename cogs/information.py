@@ -43,18 +43,18 @@ class Information(commands.Cog):
         await channel.send(embed=embed)
 
 
-    @info_group.command(name="server_count", description="Gets the bot's server count.")
-    async def info_servercount(self, ctx):
-        servercount = len(self.bot.guilds)
-        if servercount == 1:
-            await ctx.respond(f'I am in 1 server!')
+    @info_group.command(name="guild_count", description="Gets the bot's guild count.")
+    async def info_guildcount(self, ctx):
+        guildcount = len(self.bot.guilds)
+        if guildcount == 1:
+            await ctx.respond(f'I am in 1 guild!')
         else:
-            await ctx.respond(f'I am in {servercount} servers!')
+            await ctx.respond(f'I am in {guildcount} guilds!')
 
 
     @info_group.command(name="invite", description="Sends invite links related to the bot.")
     async def info_invite(self, ctx):
-        await ctx.respond(f'''Server Invite: https://discord.gg/DKpCvsJ4fp
+        await ctx.respond(f'''Guild Invite: https://discord.gg/DKpCvsJ4fp
 Bot Invite: https://discord.com/oauth2/authorize?client_id={self.bot.user.id}
 GitHub Link: https://github.com/tylersfoot/tylersbot''')
 
@@ -87,13 +87,13 @@ GitHub Link: https://github.com/tylersfoot/tylersbot''')
         await ctx.respond(embed=embed)
 
 
-    @info_group.command(name="server_info", description="Sends information about the current server.")
-    async def info_serverinfo(self, ctx):
+    @info_group.command(name="guild_info", description="Sends information about the current guild.")
+    async def info_guildinfo(self, ctx):
         fa = False
         if ctx.guild.mfa_level == 1:
             fa = True
         embed = discord.Embed(
-            title="Server information",
+            title="Guild information",
             description=f'{ctx.guild} ({ctx.guild.id})\nDescription: {ctx.guild.description}',
             color=int(str(ctx.author.color)[1:], 16)
         )

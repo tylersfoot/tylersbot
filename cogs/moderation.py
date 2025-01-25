@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import datetime
+from database import db_guild_insert_log, db_guild_get_log
 
 
 class Moderation(commands.Cog):
@@ -149,7 +150,16 @@ class Moderation(commands.Cog):
             await ctx.channel.edit(slowmode_delay=total_seconds)
             await ctx.respond(f"Slowmode set to {amount}{unit}.")
         except (ValueError, IndexError):
-            await ctx.respond("Invalid duration format. Use a number followed by a unit (`10s`, `5m`, `1h`).", ephemeral=True)    
+            await ctx.respond("Invalid duration format. Use a number followed by a unit (`10s`, `5m`, `1h`).", ephemeral=True)   
+            
+            
+    @mod_group.command(name="log_channel", description="Sets the log channel for the server.")
+    async def mod_log_channel(self, ctx, channel: discord.TextChannel):
+        if not ctx.author.guild_permissions.manage_guild:
+            raise commands.MissingPermissions(['manage_guild'])
+        
+        db_guild_insert_log(ctx.guild.id, channel.id)
+        await ctx.respond(f"Log channel set to {channel.mention}.")
             
             
     @commands.Cog.listener()
@@ -161,8 +171,10 @@ class Moderation(commands.Cog):
             description=description
         )
         embed.timestamp = datetime.datetime.now()
-        
-        channel = await self.bot.fetch_channel(1050002784671518790)
+        channel_id = db_guild_get_log(message.guild.id)
+        if channel_id is None: # no log channel set
+            return
+        channel = await self.bot.fetch_channel(channel_id)
         await channel.send(embed=embed)
 
 
