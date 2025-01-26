@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 import datetime
-
+from config import SUGGESTIONS_CHANNEL_IDS, BUG_REPORTS_CHANNEL_IDS, SERVER_INVITE_LINK
 
 class Information(commands.Cog):
     def __init__(self, bot):
@@ -23,10 +23,11 @@ class Information(commands.Cog):
             color=int(str(ctx.author.color)[1:], 16)
         )
         embed.timestamp = datetime.datetime.now()
-        # posts in suggestions/reports channel
-        channel = await self.bot.fetch_channel(1049496433100853350)
-        await ctx.respond('Suggestion sent!', ephemeral=True)
-        await channel.send(embed=embed)
+        # posts in suggestions channel
+        for channel_id in SUGGESTIONS_CHANNEL_IDS:
+            channel = await self.bot.fetch_channel(channel_id)
+            await channel.send(embed=embed)
+        await ctx.respond('Sent! Thank you for your suggestion!', ephemeral=True)
 
 
     @info_group.command(name="bugreport", description="Sends a bug report to the developers. Add as much information as possible!")
@@ -37,24 +38,25 @@ class Information(commands.Cog):
             color=int(str(ctx.author.color)[1:], 16)
         )
         embed.timestamp = datetime.datetime.now()
-        # posts in suggestions/reports channel
-        channel = await self.bot.fetch_channel(1049496433100853350)
-        await ctx.respond('Report sent!', ephemeral=True)
-        await channel.send(embed=embed)
+        # posts in bug reports channel
+        for channel_id in BUG_REPORTS_CHANNEL_IDS:
+            channel = await self.bot.fetch_channel(channel_id)
+            await channel.send(embed=embed)
+        await ctx.respond('Report sent! Thank you!', ephemeral=True)
 
 
-    @info_group.command(name="guild_count", description="Gets the bot's guild count.")
-    async def info_guildcount(self, ctx):
+    @info_group.command(name="server_count", description="Gets the bot's server count.")
+    async def info_servercount(self, ctx):
         guildcount = len(self.bot.guilds)
         if guildcount == 1:
-            await ctx.respond(f'I am in 1 guild!')
+            await ctx.respond(f'I am in 1 server!')
         else:
-            await ctx.respond(f'I am in {guildcount} guilds!')
+            await ctx.respond(f'I am in {guildcount} server!')
 
 
     @info_group.command(name="invite", description="Sends invite links related to the bot.")
     async def info_invite(self, ctx):
-        await ctx.respond(f'''Guild Invite: https://discord.gg/DKpCvsJ4fp
+        await ctx.respond(f'''Server Invite: {SERVER_INVITE_LINK}
 Bot Invite: https://discord.com/oauth2/authorize?client_id={self.bot.user.id}
 GitHub Link: https://github.com/tylersfoot/tylersbot''')
 
@@ -87,13 +89,13 @@ GitHub Link: https://github.com/tylersfoot/tylersbot''')
         await ctx.respond(embed=embed)
 
 
-    @info_group.command(name="guild_info", description="Sends information about the current guild.")
-    async def info_guildinfo(self, ctx):
+    @info_group.command(name="server_info", description="Sends information about the current server.")
+    async def info_serverinfo(self, ctx):
         fa = False
         if ctx.guild.mfa_level == 1:
             fa = True
         embed = discord.Embed(
-            title="Guild information",
+            title="Server information",
             description=f'{ctx.guild} ({ctx.guild.id})\nDescription: {ctx.guild.description}',
             color=int(str(ctx.author.color)[1:], 16)
         )
