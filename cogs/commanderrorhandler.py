@@ -24,18 +24,18 @@ class CommandErrorHandler(commands.Cog):
         elif isinstance(error, NotDeveloperError):
             # await ctx.respond("You must be a developer to use this command.", ephemeral=True)
             await ctx.respond("Only developers can use this command!", ephemeral=True)
-        elif isinstance(error, discord.HTTPException) and "Must be 2000 or fewer in length" in str(error):
-            await ctx.respond("The bot's response was too long for Discord!", ephemeral=True)
         elif isinstance(error, WikiDisambiguationError):
             await ctx.respond(f"There are too many search results \"{error.request}\". Please be more specific.", ephemeral=True)
         elif isinstance(error, WikiPageError):
             await ctx.respond(f"Sorry, there are no results for \"{error.request}\".", ephemeral=True)
         elif isinstance(error, OsuAccountNotLinkedError):
             await ctx.respond(f"Please link your osu! account with `/osu link`!", ephemeral=True)
+        elif "Must be 2000 or fewer in length" in str(error):
+            await ctx.respond("The bot's response was too long for Discord!", ephemeral=True)
 
         else:
             # log unhandled errors
-            log_error("Unhandled exception:", file=sys.stderr)
+            log_error(f"Unhandled exception: {error}")
             traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
             await ctx.respond("An unexpected error occurred. Please report this to the developers.", ephemeral=True)
 
