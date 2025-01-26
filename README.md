@@ -93,7 +93,7 @@ Command Table Explanation:
 `Command`: the format of the slash command
 > if it's in a command group, there will be a space (e.g. `/group command`)
 >
-> everything else is the parameters:type, or paramaters?:type for optional
+> everything else is the parameter:type, or paramater:type? for optional
 
 `Description`: a description of what the command does
 
@@ -144,9 +144,9 @@ Also has functionality for reacting to messages with certain keywords, and a rar
 | `/info bugreport text:str`                          | sends a bugreport to the developers                | -           | Global | Slash       |
 | `/info server_count`                                | sends the number of servers the bot is in          | -           | Global | Slash       |
 | `/info invite_link`                                 | sends the invite link for the bot & discord server | -           | Global | Slash       |
-| `/info avatar member?:discord.Member`                | sends the avatar for the user mentioned            | -           | Global | Slash, User |
+| `/info avatar member:discord.Member?`                | sends the avatar for the user mentioned            | -           | Global | Slash, User |
 | `/info serverinfo`                                  | sends information about the current server         | -           | Global | Slash       |
-| `/info account_creation_date member?:discord.Member` | sends the date of the user's account creation      | -           | Global | Slash, User |
+| `/info account_creation_date member:discord.Member?` | sends the date of the user's account creation      | -           | Global | Slash, User |
 
 ### moderation.py
 
@@ -186,9 +186,9 @@ Has functionality for logging deleted messages in a server (set using `/mod log_
 | Command                                        | Description                                           | Permissions | Scope  | Type  |
 | ---                                            | ---                                                   | ---         | ---    | ---   |
 | `/osu link username:str`                       | links an osu! account with the user's discord account | -           | Global | Slash |
-| `/osu play mode?:str index?:int user?:str`     | sends an osu! play from the user's top plays          | -           | Global | Slash |
-| `/osu recent mode?:str user?:str`              | sends the user's most recent osu! play                | -           | Global | Slash |
-| `/osu profile mode?:str user?:str`             | sends the user's osu! profile                         | -           | Global | Slash |
+| `/osu play mode:str? index:int? user:str?`     | sends an osu! play from the user's top plays          | -           | Global | Slash |
+| `/osu recent mode:str? user:str?`              | sends the user's most recent osu! play                | -           | Global | Slash |
+| `/osu profile mode:str? user:str?`             | sends the user's osu! profile                         | -           | Global | Slash |
 
 ### wordle.py
 
