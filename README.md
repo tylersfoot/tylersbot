@@ -190,29 +190,26 @@ Has functionality for logging deleted messages in a server (set using `/mod log_
 | `/osu recent mode:str? user:str?`              | sends the user's most recent osu! play                | -           | Global | Slash |
 | `/osu profile mode:str? user:str?`             | sends the user's osu! profile                         | -           | Global | Slash |
 
-### wordle.py
-
-(WIP)
-
-### music.py
-
-### selfroles.py
-
-(WIP)
-
 ### commanderrorhandler.py
 
-Handles customized error messages
-(WIP)
+Catches and handles custom errors and miscelaneous errors to display custom error messages
 
-### custom_exceptions.py
+### customexceptions.py
 
-(WIP)
+Custom errors (to simply throw in multiple commands, and handle in `commanderrorhandler.py`) - useful if multiple commands could have the same error, instead of pasting print statements in all of them
 
 ### logger.py
 
-(WIP)
+simple custom logging system
+
+three log levels: info, warning, error
+
+prints to console, outputs to data/bot.log, and can send logs to a specified discord channel
 
 ### database.py
 
-(WIP)
+database handling, uses sqlite, currently holds:
+
+- osu! account linking
+  
+- log channel saving
