@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import os
 from discord.commands import option
 from database import db_osu_insert_user, db_osu_get_user
-from custom_exceptions import OsuAccountNotLinkedError
+from customexceptions import OsuAccountNotLinkedError
 from logger import *
 import datetime
 

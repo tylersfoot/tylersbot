@@ -7,7 +7,7 @@ from discord.ext import commands, tasks
 from dotenv import load_dotenv
 import aiofiles.os
 import sys
-from custom_exceptions import NotDeveloperError
+from customexceptions import NotDeveloperError
 from database import db_initialize
 from logger import *
 from config import *
@@ -156,7 +156,7 @@ if __name__ == "__main__":
 
     @bot_group.command(name="unload", description="[DEV] Unloads cogs.", guild_ids=DEVELOPER_GUILD_IDS)
     async def bot_unload(ctx, extension: str):
-        if ctx.author.id not in developers:
+        if ctx.author.id not in DEVELOPER_USER_IDS:
             raise NotDeveloperError
         
         await ctx.response.defer(ephemeral=True)

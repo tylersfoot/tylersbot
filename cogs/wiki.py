@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 import wikipedia
-from custom_exceptions import WikiPageError, WikiDisambiguationError
+from customexceptions import WikiPageError, WikiDisambiguationError
 import datetime
 
 
