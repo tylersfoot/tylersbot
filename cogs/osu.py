@@ -9,6 +9,7 @@ from database import db_osu_insert_user, db_osu_get_user
 from customexceptions import OsuAccountNotLinkedError
 from logger import *
 import datetime
+from colorsys import rgb_to_hls, hls_to_rgb
 
 
 API_URL = 'https://osu.ppy.sh/api/v2'
@@ -143,6 +144,29 @@ def id_to_username(userid: int):
         return None
 
 
+# def country_code_to_flag_url(country_code):
+#     base_url = "https://osu.ppy.sh/assets/images/flags/"
+#     # convert country code to unicode
+#     # ex. US -> 1f1fa-1f1f8
+#     unicode = [ord(char) + 0x1F1E6 - ord('A') for char in country_code.upper()]
+#     hex_points = "-".join(f"{point:x}" for point in unicode)
+#     hex_points = hex_points.lower()
+#     link = f"{base_url}{hex_points}.svg"
+#     print(link)
+#     return link
+
+def country_code_to_flag_url(country_code):
+    
+    return f"https://osuflags.omkserver.nl/{country_code}.png"
+
+
+def profile_color(shift: float) -> discord.Colour:
+    # applies hue shift for osu profile color
+    # original_color = 'FF6966'
+    shift = 0 if shift is None else shift
+    return discord.Colour.from_hsv(shift/360, 0.70, 0.92)
+
+
 class Osu(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -268,83 +292,6 @@ class Osu(commands.Cog):
         await ctx.respond(embed=embed)
 
 
-    # @osu_group.command(name="osu play", description="Gets osu! play data.", integration_types={discord.IntegrationType.guild_install, discord.IntegrationType.user_install})
-    # @option("mode", type=str, description="Pick a gamemode", choices=["Standard", "Taiko", "Catch", "Mania"])
-    # async def osutop(self, ctx, mode, userid: str = 'def'):
-    #     token = get_token()
-    #     headers = {'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': f'Bearer {token}'}
-    #     if userid == 'def':
-    #         with open('data/osuaccounts.json', 'r') as f:
-    #             accounts = json.load(f)
-    #             userid = accounts[str(ctx.author.id)]
-    #             f.close()
-    #     if mode == 'def':
-    #         params = {'limit': 5}
-    #     else:
-    #         params = {'mode': mode, 'limit': 5}
-    #     response = requests.get(f'{API_URL}/users/{userid}/scores/best', params=params, headers=headers)
-    #     user = response.json()[0].get('user', {}).get('username')
-    #     if mode == 'def':
-    #         mode = response.json()[0].get('beatmap', {}).get('mode')
-    #     modevis = 'Standard'
-    #     if mode == 'taiko':
-    #         modevis = 'Taiko'
-    #     elif mode == 'ctb':
-    #         modevis = 'Catch the Beat'
-    #     elif mode == 'mania':
-    #         modevis = 'Mania'
-    #     embed = discord.Embed(
-    #         title=f'Top 5 osu! {modevis} plays for {user}',
-    #         description='',
-    #         color=int(str(ctx.author.color)[1:], 16)
-    #     )
-    #     embed.set_thumbnail(url=ctx.author.avatar.url)
-    #     embed.timestamp = ctx.message.created_at
-    #     embed.set_footer(text=f'Requested by {ctx.author.name}', icon_url=ctx.author.avatar.url)
-    #     for i in range(0, 5):
-    #         cover = response.json()[i].get('beatmapset', {}).get('covers', {}).get('list@2x')
-    #         title = response.json()[i].get('beatmapset', {}).get('title')
-    #         artist = response.json()[i].get('beatmapset', {}).get('artist')
-    #         difficulty = response.json()[i].get('beatmap', {}).get('version')
-    #         mods = response.json()[i].get('mods')
-    #         combo = response.json()[i].get('max_combo')
-    #         score = response.json()[i].get('score')
-    #         pp = round(response.json()[i].get('pp'), 2)
-    #         stars = response.json()[i].get('beatmap', {}).get('difficulty_rating')
-    #         rank = response.json()[i].get('rank')
-    #         accuracy = round(response.json()[i].get('accuracy') * 100, 2)
-    #         statistics = response.json()[i].get('statistics')
-    #         modslist = ''
-    #         if rank == 'SS':
-    #             rank = '<:osurankSS:971559056537960509>'
-    #         elif rank == 'S':
-    #             rank = '<:osurankS:971558974690312213>'
-    #         elif rank == 'A':
-    #             rank = '<:osurankA:971559105187680266>'
-    #         elif rank == 'B':
-    #             rank = '<:osurankB:971559146967146586>'
-    #         elif rank == 'C':
-    #             rank = '<:osurankC:971559185546346536>'
-    #         elif rank == 'D':
-    #             rank = '<:osurankD:971559256421711933>'
-    #         else:
-    #             await ctx.send(f'rank??? {rank}')
-    #         if not mods:
-    #             mods = 'NM'
-    #         else:
-    #             mods = " ".join(mods)
-    #             for x in range(len(mods)):
-    #                 modslist = modslist + mods[x] + ' '
-    #         embed.add_field(
-    #             name=f'{i + 1}. {title} [{difficulty}] +{mods} [{stars}★]',
-    #             value=f'''▸ {rank} ▸ {pp}pp ▸ {accuracy}%
-    #         ▸ {"{:,}".format(score)} ▸ {combo}x ▸ [{statistics.get("count_300")}/{statistics.get("count_100")}/{statistics.get("count_50")}/{statistics.get("count_miss")}]
-    #         ▸ Score set on: {response.json()[i].get('created_at')[:10]}''',
-    #             inline=False
-    #         )
-    #     await ctx.send(embed=embed)
-
-
     @osu_group.command(name="recent", description="Sends the user's most recent play.")
     @option("mode", type=str, description="Pick a gamemode", choices=["standard", "taiko", "catch", "mania"])
     async def osu_recent(self, ctx, mode: str = '', user: str = ''):
@@ -447,6 +394,86 @@ class Osu(commands.Cog):
         embed.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar.url)
         
         await ctx.respond(embed=embed)
+        
+        
+    # @osu_group.command(name="profile", description="Sends a user's osu! profile.")
+    # @option("mode", type=str, description="Pick a gamemode", choices=["standard", "taiko", "catch", "mania"])
+    # async def osu_recent(self, ctx, mode: str = '', user: str = ''):
+    #     # get user ID from database
+    #     if not user:
+    #         user = db_osu_get_user(ctx.author.id)
+    #         if user is None:
+    #             raise OsuAccountNotLinkedError
+    #     # if its a username
+    #     elif not user.isdigit():
+    #         user = username_to_id(user)
+    #         if user is None:
+    #             await ctx.respond(f"Could not find an osu! account with the username `{user}`.", ephemeral=True)
+    #             return
+        
+    #     # make the API request
+    #     token = get_token()
+    #     headers = {
+    #         'Content-Type': 'application/json',
+    #         'Accept': 'application/json',
+    #         'Authorization': f'Bearer {token}'
+    #     }
+        
+    #     try:
+    #         # get user data
+    #         if mode:
+    #             response_user = requests.get(f'{API_URL}/users/{user}/{clean_mode(mode, 'api')}', headers=headers)
+    #         else:
+    #             response_user = requests.get(f'{API_URL}/users/{user}', headers=headers)
+    #         response_user.raise_for_status()
+    #         data_user = response_user.json()
+    #         mode = clean_mode(data_user.get('playmode'), 'clean')
+    #     except requests.RequestException as error:
+    #         if "Not Found" in str(error):
+    #             await ctx.respond(f"Could not find an osu! account with the username or id `{user}`.", ephemeral=True)
+    #         else:
+    #             await ctx.respond(f"Failed to fetch data: {error}", ephemeral=True)
+    #         return 
+        
+        
+    #     user_data = {
+    #         "username": id_to_username(user),
+    #         "avatar": data_user.get('avatar_url'),
+    #         "country_code": data_user.get('country_code'),
+    #         "country_url": country_code_to_flag_url(data_user.get('country_code')),
+    #         "pp": data_user.get('statistics').get('pp'),
+    #         "global_rank": data_user.get('statistics').get('global_rank'),
+    #         "country_rank": data_user.get('statistics').get('country_rank'),
+    #         "profile_color": profile_color(data_user.get('profile_hue')),
+    #         "join_date": int(datetime.datetime.fromisoformat(data_user.get('join_date').replace("Z", "+00:00")).timestamp()),
+    #         "kudosu": data_user.get('kudosu').get('total'),
+    #         "is_supporter": data_user.get('is_supporter'),
+    #         "follower_count": data_user.get('follower_count'),
+    #         "level": data_user.get('statistics').get('level'),
+    #         "play_time": data_user.get('statistics').get('play_time'),
+    #         "play_count": data_user.get('statistics').get('play_count'),
+    #         "replays_watched": data_user.get('statistics').get('replays_watched_by_others'),
+    #         "cover_url": data_user.get('cover_url')
+    #     }
+
+    #     embed = discord.Embed(
+    #         title=f"{data_user['username']}'s Profile (osu!{clean_mode(mode, 'display')})",
+    #         url=f"https://osu.ppy.sh/users/{user}/{clean_mode(mode, 'website')}",
+    #         description=f"""
+    #         """,
+    #         color=user_data['profile_color'] if user_data['profile_color'] else discord.Color.blurple()
+    #     )
+    #     embed.set_author(
+    #         name=f"{user_data['username']}: {user_data['pp']}pp (#{user_data['global_rank']} {user_data['country_code']}{user_data['country_rank']})",
+    #         icon_url=user_data['country_url'],
+    #         url=f"https://osu.ppy.sh/users/{user}/{clean_mode(mode, 'website')}"
+    #     )
+    #     print(user_data['country_url'])
+    #     embed.set_thumbnail(url=user_data['avatar'])
+    #     embed.timestamp = datetime.datetime.now()
+    #     embed.set_footer(text=f"Requested by {ctx.author.name}", icon_url=ctx.author.avatar.url)
+        
+    #     await ctx.respond(embed=embed)
         
                 
     @osu_group.command(name="link", description="Link your osu! account with your Discord account.")
