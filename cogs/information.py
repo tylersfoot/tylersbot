@@ -51,7 +51,7 @@ class Information(commands.Cog):
         if guildcount == 1:
             await ctx.respond(f'I am in 1 server!')
         else:
-            await ctx.respond(f'I am in {guildcount} server!')
+            await ctx.respond(f'I am in {guildcount} servers!')
 
 
     @info_group.command(name="invite", description="Sends invite links related to the bot.")
