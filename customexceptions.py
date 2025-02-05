@@ -17,3 +17,8 @@ class WikiPageError(commands.CommandError):
 class OsuAccountNotLinkedError(commands.CommandError):
     # raised when an osu! account is not in the db
     pass
+
+class BotMissingPermissionsError(commands.CommandError):
+    # raised when the bot is missing permissions
+    def __init__(self, missing_permissions):
+        self.missing_permissions = missing_permissions

@@ -22,14 +22,16 @@ class CommandErrorHandler(commands.Cog):
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.respond("You're missing a required argument.", ephemeral=True)
         elif isinstance(error, NotDeveloperError):
-            # await ctx.respond("You must be a developer to use this command.", ephemeral=True)
-            await ctx.respond("Only developers can use this command!", ephemeral=True)
+            await ctx.respond("Only developers can use this command! You.. shouldn't even be able to see this :P", ephemeral=True)
         elif isinstance(error, WikiDisambiguationError):
             await ctx.respond(f"There are too many search results \"{error.request}\". Please be more specific.", ephemeral=True)
         elif isinstance(error, WikiPageError):
             await ctx.respond(f"Sorry, there are no results for \"{error.request}\".", ephemeral=True)
         elif isinstance(error, OsuAccountNotLinkedError):
             await ctx.respond(f"Please link your osu! account with `/osu link`!", ephemeral=True)
+        elif isinstance(error, BotMissingPermissionsError):
+            missing = ', '.join(error.missing_permissions)
+            await ctx.respond(f"I am missing the permission(s) `{missing}`!", ephemeral=True)
         elif "Must be 2000 or fewer in length" in str(error):
             await ctx.respond("The bot's response was too long for Discord!", ephemeral=True)
 

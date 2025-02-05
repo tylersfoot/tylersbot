@@ -97,7 +97,7 @@ Command Table Explanation:
 
 `Description`: a description of what the command does
 
-`Permissions`: what permission(s) the user needs to run the command
+`Permissions`: what permission(s) the user needs to run (and see) the command
 > `Dev`: can only be used by developers (note: will be removed soon)
 >
 > otherwise discord permissions (e.g. `manage_messages`, `ban_members`)
@@ -118,11 +118,11 @@ Command Table Explanation:
 | ---                         | ---                                              | ---          | ---    | ---   |
 | `/bot uptime`               | returns the uptime of the bot since last restart | -            | Server | Slash |
 | `/bot ping`                 | returns the bot's latency/ping                   | -            | Server | Slash |
-| `/bot unload extension:str` | unloads a specified cog or all cogs              | Dev          | Server | Slash |
-| `/bot reload extension:str` | reloads/loads a specified cog or all cogs        | Dev          | Server | Slash |
-| `/bot sync`                 | syncs all slash commands                         | Dev          | Server | Slash |
-| `/bot clear_temp`           | deletes all files in the bot's temp folder       | Dev          | Server | Slash |
-| `/bot stop`                 | stops the instance of the bot                    | Dev          | Server | Slash |
+| `/dev unload extension:str` | unloads a specified cog or all cogs              | Dev          | Server | Slash |
+| `/dev reload extension:str` | reloads/loads a specified cog or all cogs        | Dev          | Server | Slash |
+| `/dev sync`                 | syncs all slash commands                         | Dev          | Server | Slash |
+| `/dev clear_temp`           | deletes all files in the bot's temp folder       | Dev          | Server | Slash |
+| `/dev stop`                 | stops the instance of the bot                    | Dev          | Server | Slash |
 
 ### fun.py
 
@@ -138,14 +138,14 @@ Also has functionality for reacting to messages with certain keywords, and a rar
 
 ### information.py
 
-| Command                                             | Description                                        | Permissions | Scope  | Type        |
-| ---                                                 | ---                                                | ---         | ---    | ---         |
-| `/info suggestion text:str`                         | sends a suggestion to the developers               | -           | Global | Slash       |
-| `/info bugreport text:str`                          | sends a bugreport to the developers                | -           | Global | Slash       |
-| `/info server_count`                                | sends the number of servers the bot is in          | -           | Global | Slash       |
-| `/info invite_link`                                 | sends the invite link for the bot & discord server | -           | Global | Slash       |
+| Command                                              | Description                                        | Permissions | Scope  | Type        |
+| ---                                                  | ---                                                | ---         | ---    | ---         |
+| `/info suggestion text:str`                          | sends a suggestion to the developers               | -           | Global | Slash       |
+| `/info bugreport text:str`                           | sends a bugreport to the developers                | -           | Global | Slash       |
+| `/info server_count`                                 | sends the number of servers the bot is in          | -           | Global | Slash       |
+| `/info invite`                                       | sends the invite link for the bot & discord server | -           | Global | Slash       |
 | `/info avatar member:discord.Member?`                | sends the avatar for the user mentioned            | -           | Global | Slash, User |
-| `/info serverinfo`                                  | sends information about the current server         | -           | Global | Slash       |
+| `/info server_info`                                   | sends information about the current server         | -           | Global | Slash       |
 | `/info account_creation_date member:discord.Member?` | sends the date of the user's account creation      | -           | Global | Slash, User |
 
 ### moderation.py
@@ -188,7 +188,6 @@ Has functionality for logging deleted messages in a server (set using `/mod log_
 | `/osu link username:str`                       | links an osu! account with the user's discord account | -           | Global | Slash |
 | `/osu play mode:str? index:int? user:str?`     | sends an osu! play from the user's top plays          | -           | Global | Slash |
 | `/osu recent mode:str? user:str?`              | sends the user's most recent osu! play                | -           | Global | Slash |
-| `/osu profile mode:str? user:str?`             | sends the user's osu! profile                         | -           | Global | Slash |
 
 ### commanderrorhandler.py
 

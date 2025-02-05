@@ -54,10 +54,12 @@ class Information(commands.Cog):
             await ctx.respond(f'I am in {guildcount} servers!')
 
 
-    @info_group.command(name="invite", description="Sends invite links related to the bot.")
+    @info_group.command(name="invite", description="Sends links related to the bot.")
     async def info_invite(self, ctx):
-        await ctx.respond(f'''Server Invite: {SERVER_INVITE_LINK}
-Bot Invite: https://discord.com/oauth2/authorize?client_id={self.bot.user.id}
+        await ctx.respond(f'''
+Server Invite: {SERVER_INVITE_LINK}
+Bot Invite (Server): https://discord.com/oauth2/authorize?client_id={self.bot.user.id}&permissions=8&integration_type=0&scope=bot
+Bot Invite (App): https://discord.com/oauth2/authorize?client_id={self.bot.user.id}
 GitHub Link: https://github.com/tylersfoot/tylersbot''')
 
 

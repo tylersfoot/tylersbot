@@ -54,7 +54,8 @@ if __name__ == "__main__":
     # startup activity
     activity = discord.Activity(
         type=discord.ActivityType.playing,
-        name="Bot Started!"
+        name="Bot Started!",
+        test_guild_ids = DEVELOPER_GUILD_ID
     )
 
     # define bot object
@@ -62,8 +63,7 @@ if __name__ == "__main__":
         help_command=commands.MinimalHelpCommand(),
         intents=discord.Intents.all(),
         activity=activity,
-        status=discord.Status.online,
-        test_guilds=DEVELOPER_GUILD_IDS
+        status=discord.Status.online
     )
     
     
@@ -99,10 +99,9 @@ if __name__ == "__main__":
         
         await bot.sync_commands()
 
-        
 
     status_cycle = cycle([
-        "over {guild_count} guilds",
+        "over {guild_count} servers",
         "over {user_count} users",
         "discord.gg/DKpCvsJ4fp",
         "tylersfoot.dev"
@@ -121,6 +120,14 @@ if __name__ == "__main__":
         name = "bot", 
         description = "Bot related commands",
         integration_types = {discord.IntegrationType.guild_install}
+    )
+    
+    # dev commands (should only be SEEN by developers - aka ADMINS in DEV SERVER)
+    dev_group = bot.create_group(
+        name = 'dev',
+        description = 'Developer commands',
+        guild_ids = [DEVELOPER_GUILD_ID],
+        default_member_permissions = discord.Permissions(permissions = 0, administrator = True)
     )
         
         
@@ -154,7 +161,7 @@ if __name__ == "__main__":
         await ctx.respond(f'Pong! {round(bot.latency * 1000)}ms')
 
 
-    @bot_group.command(name="unload", description="[DEV] Unloads cogs.", guild_ids=DEVELOPER_GUILD_IDS)
+    @dev_group.command(name="unload", description="Unloads cogs.")
     async def bot_unload(ctx, extension: str):
         if ctx.author.id not in DEVELOPER_USER_IDS:
             raise NotDeveloperError
@@ -190,7 +197,7 @@ if __name__ == "__main__":
                 log_error(f'Error unloading cog {extension}.py: {e}')
 
 
-    @bot_group.command(name="reload", description="[DEV] Loads/reloads cogs.", guild_ids=DEVELOPER_GUILD_IDS)
+    @dev_group.command(name="reload", description="Loads/reloads cogs.", guild_ids=[962179884627669062])
     async def bot_reload(ctx, extension: str):
         if ctx.author.id not in DEVELOPER_USER_IDS:
             raise NotDeveloperError
@@ -233,7 +240,7 @@ if __name__ == "__main__":
                 log_error(f'Error reloading cog {extension}.py: {e}')
 
 
-    @bot_group.command(name="sync", description="[DEV] Syncs slash commands.", guild_ids=DEVELOPER_GUILD_IDS)
+    @dev_group.command(name="sync", description="Syncs slash commands.")
     async def bot_sync(ctx):
         if ctx.author.id not in DEVELOPER_USER_IDS:
             raise NotDeveloperError
@@ -244,7 +251,7 @@ if __name__ == "__main__":
         await ctx.followup.send('Synced commands', ephemeral=True)
 
 
-    @bot_group.command(name="stop", description="[DEV] Stops/terminates the bot.", guild_ids=DEVELOPER_GUILD_IDS)
+    @dev_group.command(name="stop", description="Stops/terminates the bot.")
     async def bot_stop(ctx):
         if ctx.author.id not in DEVELOPER_USER_IDS:
             raise NotDeveloperError
@@ -254,7 +261,7 @@ if __name__ == "__main__":
         sys.exit()
 
 
-    @bot_group.command(name="clear_temp", description="[DEV] Clears temp folder.", guild_ids=DEVELOPER_GUILD_IDS)
+    @dev_group.command(name="clear_temp", description="Clears temp folder.")
     async def bot_cleartemp(ctx):
         if ctx.author.id not in DEVELOPER_USER_IDS:
             raise NotDeveloperError
