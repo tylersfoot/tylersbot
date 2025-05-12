@@ -12,14 +12,16 @@
 ![Size](https://img.shields.io/github/repo-size/tylersfoot/tylersbot)
 ![Language](https://img.shields.io/github/languages/top/tylersfoot/tylersbot)
 
-My personal Discord bot, developed using Pycord (migrated from discord.py). My first major coding project. Feel free to give me any questions, feedback, suggestions, bug reports, or to use the code for yourself.
+My personal Discord bot, built using [Pycord](https://github.com/Pycord-Development/pycord) (originally started on discord.py).  
+It’s my first major coding project, and has been updated with many [commands and features](#commands--internals)!
 
-Development Discord Server: [https://discord.gg/DKpCvsJ4fp](https://discord.gg/DKpCvsJ4fp)
+ Feel free to give me any questions, feedback, suggestions, bug reports, or to use the code for yourself!
 
-Invite the bot [here!](https://discord.com/oauth2/authorize?client_id=1059528586815606784)
+- Join the [development Discord server](https://discord.gg/DKpCvsJ4fp) for updates, testing, and feature suggestions
+- [Invite the bot](https://discord.com/oauth2/authorize?client_id=1059528586815606784) to your own server
 
 > [!NOTE]
-> There are many specific references to me, the servers I'm in, and specific channels. Feel free to change or delete them!
+> There are some references to personal servers or channels I use. You can change or remove them as needed!
 
 ---
 
@@ -30,7 +32,7 @@ The bot can be run [manually](#manual-setup) using Python and a virtual environm
 ### Troubleshooting
 
 - If you encounter any issues, ensure all dependencies are installed correctly and that your .env file is properly configured
-- For more help, feel free to reach out!
+- For more help, feel free to [reach out](#contact)!
 
 ---
 
@@ -92,6 +94,8 @@ The bot will now start and log into Discord!
 
 ### 1. Build and Run the Container
 
+Run the following command in the project directory to build and run the Docker container:
+
 ```bash
 docker compose up --build -d
 ```
@@ -106,6 +110,11 @@ OSU_CLIENT_ID='osu_api_client_id'
 OSU_CLIENT_SECRET='osu_api_client_secret'
 ```
 
+Replace the placeholders with your actual credentials:
+
+- `DISCORD_TOKEN`: Your Discord bot token (from the Discord Developer Portal)
+- `OSU_CLIENT_ID` and `OSU_CLIENT_SECRET`: Your osu! API client ID and secret [(instructions)](https://osu.ppy.sh/docs/index.html#registering-an-oauth-application)
+
 ### 3. Data Persistence
 
 The bot saves logs, databases, and temporary files to the `./data/` directory, which is mapped as a persistent volume from `/app/data/` in the container.
@@ -116,3 +125,29 @@ For more info, see the [compose.yaml](compose.yaml) and [Dockerfile](Dockerfile)
 ## Commands & Internals
 
 A full list of slash commands (with descriptions, parameters, and permissions), along with info about the bot's internals (logging, error handling, database) are documented in [COMMANDS.md](COMMANDS.md).
+
+---
+
+## Contributing
+
+If you would like to contribute to the bot, feel free to:
+
+- [Open an issue](https://github.com/tylersfoot/tylersbot/issues/new) for bug reports, suggestions, or questions
+- [Submit a pull request](https://github.com/tylersfoot/tylersbot/pulls) with fixes or new features
+- [Contact me](#contact) via Discord or email if you're unsure about something or just wanna talk about the project!
+
+---
+
+## License
+
+Distributed under the MIT License, which allows use, modification, and distribution with attribution.
+
+See the [LICENSE](LICENSE) for more information.
+
+---
+
+## Contact
+
+- **Discord Server:** [discord.gg/DKpCvsJ4fp](https://discord.gg/DKpCvsJ4fp)
+- **Discord Username:** `tylersfoot`
+- **Email:** <tylersfoot8@gmail.com>

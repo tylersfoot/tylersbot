@@ -138,9 +138,7 @@ Source: [osu.py](cogs/osu.py)
 
 ## Internals
 
-### Error Handling
-
-#### Command Error Handler
+### Command Error Handler
 
 Source: [commanderrorhandler.py](cogs/commanderrorhandler.py)
 
@@ -151,7 +149,7 @@ Handles all command-related errors in a centralized way.
 - Integrates with `customexceptions.py` for better error reuse
 - Prevents default traceback spam in Discord
 
-#### Custom Exceptions
+### Custom Exceptions
 
 Source: [customexceptions.py](core/customexceptions.py)
 
@@ -160,8 +158,6 @@ Defines reusable exceptions for common error types.
 - Used to raise shared logic-based errors across multiple commands
 - Pairs with `commanderrorhandler.py` for clean display
 - Reduces repetitive checks and messages in individual cogs
-
----
 
 ### Logging
 
@@ -172,8 +168,6 @@ A basic logging system with 3 levels: `info`, `warning`, and `error`.
 - Outputs to console
 - Writes to `data/bot.log`
 - Can optionally send logs to a Discord channel if configured
-
----
 
 ### Database
 
