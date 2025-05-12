@@ -1,0 +1,14 @@
+services:
+  tylersbot:
+    build:
+      context: .
+    container_name: tylersbot
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+      - OSU_CLIENT_ID=${OSU_CLIENT_ID}
+      - OSU_CLIENT_SECRET=${OSU_CLIENT_SECRET}
+    volumes:
+      - ./data:/app/data
