@@ -9,10 +9,10 @@ from discord.ext import commands, tasks
 from dotenv import load_dotenv
 import aiofiles.os
 import sys
-from customexceptions import NotDeveloperError
-from database import db_initialize
-from logger import *
-from config import *
+from core.customexceptions import NotDeveloperError
+from core.database import db_initialize
+from core.logger import *
+from config.config import *
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 

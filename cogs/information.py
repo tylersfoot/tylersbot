@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 import datetime
-from config import SUGGESTIONS_CHANNEL_IDS, BUG_REPORTS_CHANNEL_IDS, SERVER_INVITE_LINK
+from config.config import SUGGESTIONS_CHANNEL_IDS, BUG_REPORTS_CHANNEL_IDS, SERVER_INVITE_LINK
 
 class Information(commands.Cog):
     def __init__(self, bot):

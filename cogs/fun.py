@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import random
 import datetime
-from logger import *
+from core.logger import *
 
 
 class Fun(commands.Cog):

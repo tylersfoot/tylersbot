@@ -1,8 +1,8 @@
 import discord
 from discord.ext import commands
 import datetime
-from database import db_guild_insert_log, db_guild_get_log
-from customexceptions import BotMissingPermissionsError
+from core.database import db_guild_insert_log, db_guild_get_log
+from core.customexceptions import BotMissingPermissionsError
 
 
 class Moderation(commands.Cog):

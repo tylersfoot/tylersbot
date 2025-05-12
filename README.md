@@ -25,15 +25,24 @@ Invite the bot [here!](https://discord.com/oauth2/authorize?client_id=1059528586
 
 ## Setup
 
-Follow these steps to set up and run the bot:
+The bot can be run [manually](#manual-setup) using Python and a virtual environment, or using [Docker](#docker-setup) for containerized deployment.
+
+### Troubleshooting
+
+- If you encounter any issues, ensure all dependencies are installed correctly and that your .env file is properly configured
+- For more help, feel free to reach out!
+
+---
+
+## Manual setup
 
 ### 1. Install Python
 
-Ensure you have **Python 3.9 or higher** installed on your system. You can download Python [here!](https://www.python.org/downloads/)
+Ensure you have **Python 3.9 or higher** installed on your system. You can download Python [here](https://www.python.org/downloads/).
 
 ### 2. Clone the Repository
 
-Download or clone this repository to your local machine:
+Download or clone the repository to your local machine:
 
 ```bash
 git clone https://github.com/tylersfoot/tylersbot.git
@@ -52,7 +61,7 @@ Use `pip` to install the required libraries:
 pip install -r requirements.txt
 ```
 
-### 4. Create a `.env` file
+### 4. Configure Environment Variables
 
 Create a `.env` file in the project directory and add the following variables:
 
@@ -67,7 +76,7 @@ Replace the placeholders with your actual credentials:
 - `DISCORD_TOKEN`: Your Discord bot token (from the Discord Developer Portal)
 - `OSU_CLIENT_ID` and `OSU_CLIENT_SECRET`: Your osu! API client ID and secret [(instructions)](https://osu.ppy.sh/docs/index.html#registering-an-oauth-application)
 
-### 5. Start the bot
+### 5. Start the Bot
 
 Run the bot with:
 
@@ -77,138 +86,33 @@ python -u bot.py
 
 The bot will now start and log into Discord!
 
-### Troubleshooting
+---
 
-- If you encounter any issues, ensure all dependencies are installed correctly and that your .env file is properly configured
-- For more help, feel free to reach out!
+## Docker Setup
+
+### 1. Build and Run the Container
+
+```bash
+docker compose up --build -d
+```
+
+### 2. Configure Environment Variables
+
+Create a `.env` file in the project directory and add the following variables:
+
+```env
+DISCORD_TOKEN='discord_bot_token'
+OSU_CLIENT_ID='osu_api_client_id'
+OSU_CLIENT_SECRET='osu_api_client_secret'
+```
+
+### 3. Data Persistence
+
+The bot saves logs, databases, and temporary files to the `./data/` directory, which is mapped as a persistent volume from `/app/data/` in the container.
+For more info, see the [compose.yaml](compose.yaml) and [Dockerfile](Dockerfile).
 
 ---
 
-## Features/Commands
+## Commands & Internals
 
-### Notes
-
-Command Table Explanation:
-
-`Command`: the format of the slash command
-> if it's in a command group, there will be a space (e.g. `/group command`)
->
-> everything else is the parameter:type, or paramater:type? for optional
-
-`Description`: a description of what the command does
-
-`Permissions`: what permission(s) the user needs to run (and see) the command
-> `Dev`: can only be used by developers (note: will be removed soon)
->
-> otherwise discord permissions (e.g. `manage_messages`, `ban_members`)
-
-`Scope`: where the command is available:
-> `Server`: A normal server slash command
->
-> `Global`: command/app available everywhere (dms, other servers) - bot must be user installed
-
-`Type`: whether it's a slash command or a user app
-> `User`: available as a user app (right click on a user to use)
->
-> `Slash`: available as a slash command
-
-### bot.py
-
-| Command                     | Description                                      | Permissions  | Scope  | Type  |
-| ---                         | ---                                              | ---          | ---    | ---   |
-| `/bot uptime`               | returns the uptime of the bot since last restart | -            | Server | Slash |
-| `/bot ping`                 | returns the bot's latency/ping                   | -            | Server | Slash |
-| `/dev unload extension:str` | unloads a specified cog or all cogs              | Dev          | Server | Slash |
-| `/dev reload extension:str` | reloads/loads a specified cog or all cogs        | Dev          | Server | Slash |
-| `/dev sync`                 | syncs all slash commands                         | Dev          | Server | Slash |
-| `/dev clear_temp`           | deletes all files in the bot's temp folder       | Dev          | Server | Slash |
-| `/dev stop`                 | stops the instance of the bot                    | Dev          | Server | Slash |
-
-### fun.py
-
-| Command                                                      | Description                     | Permissions | Scope  | Type  |
-| ---                                                          | ---                             | ---         | ---    | ---   |
-| `/fun 8ball question:str`                                    | lets the 8ball decide your fate | -           | Global | Slash |
-| `/fun say message:str`                                       | makes the bot say a message     | -           | Global | Slash |
-| `/fun coinflip`                                              | flips a coin                    | -           | Global | Slash |
-| `/fun punch user:discord.Member`                             | punches the user mentioned      | -           | Global | Slash |
-| `/fun doublepunch user1:discord.Member user2:discord.Member` | punches two users mentioned     | -           | Global | Slash |
-
-Also has functionality for reacting to messages with certain keywords, and a rare chance to respond with a special message
-
-### information.py
-
-| Command                                              | Description                                        | Permissions | Scope  | Type        |
-| ---                                                  | ---                                                | ---         | ---    | ---         |
-| `/info suggestion text:str`                          | sends a suggestion to the developers               | -           | Global | Slash       |
-| `/info bugreport text:str`                           | sends a bugreport to the developers                | -           | Global | Slash       |
-| `/info server_count`                                 | sends the number of servers the bot is in          | -           | Global | Slash       |
-| `/info invite`                                       | sends the invite link for the bot & discord server | -           | Global | Slash       |
-| `/info avatar member:discord.Member?`                | sends the avatar for the user mentioned            | -           | Global | Slash, User |
-| `/info server_info`                                   | sends information about the current server         | -           | Global | Slash       |
-| `/info account_creation_date member:discord.Member?` | sends the date of the user's account creation      | -           | Global | Slash, User |
-
-### moderation.py
-
-| Command                                                     | Description                                                                     | Permissions       | Scope  | Type  |
-| ---                                                         | ---                                                                             | ---               | ---    | ---   |
-| `/mod purge amount:int`                                     | purges (deletes) messages from a channel                                        | `manage_messages` | Server | Slash |
-| `/mod kick user:discord.Member reason:str notify:bool=True` | kicks a user from the server with the specified reason, and whether to DM them  | `kick_members`    | Server | Slash |
-| `/mod ban user:discord.Member reason:str notify:bool=True`  | bans a user from the server with the specified reason, and whether to DM them   | `ban_members`     | Server | Slash |
-| `/mod unban user_id:str reason:str notify:bool=True`        | unbans a user from the server with the specified reason, and whether to DM them | `ban_members`     | Server | Slash |
-| `/mod slowmode duration:str`                                | changes the slowmode for the current channel (`10s`, `5m`, `1h`, `off`)         | `manage_guild`    | Server | Slash |
-| `/mod log_channel channel:discord.TextChannel`              | sets the log channel for a server                                               | `manage_guild`    | Server | Slash |
-
-Has functionality for logging deleted messages in a server (set using `/mod log_channel`)
-
-### calculator.py
-
-| Command                     | Description                          | Permissions | Scope  | Type  |
-| ---                         | ---                                  | ---         | ---    | ---   |
-| `/calculate expression:str` | calculates the given math expression | -           | Global | Slash |
-
-### qrcode.py
-
-| Command           | Description                                                                                           | Permissions | Scope  | Type  |
-| ---               | ---                                                                                                   | ---         | ---    | ---   |
-| `/qr message:str` | generates a qr code image based on the message provided. also detects if an amongus is in the qr code | -           | Global | Slash |
-
-### wiki.py
-
-| Command                     | Description                                     | Permissions | Scope  | Type  |
-| ---                         | ---                                             | ---         | ---    | ---   |
-| `/wiki search request:str`  | searches sends a list of Wikipedia articles     | -           | Global | Slash |
-| `/wiki article request:str` | sends a summary of a specific Wikipedia article | -           | Global | Slash |
-| `/wiki random`              | sends a summary of a random Wikipedia article   | -           | Global | Slash |
-
-### osu.py
-
-| Command                                        | Description                                           | Permissions | Scope  | Type  |
-| ---                                            | ---                                                   | ---         | ---    | ---   |
-| `/osu link username:str`                       | links an osu! account with the user's discord account | -           | Global | Slash |
-| `/osu play mode:str? index:int? user:str?`     | sends an osu! play from the user's top plays          | -           | Global | Slash |
-| `/osu recent mode:str? user:str?`              | sends the user's most recent osu! play                | -           | Global | Slash |
-
-### commanderrorhandler.py
-
-Catches and handles custom errors and miscelaneous errors to display custom error messages
-
-### customexceptions.py
-
-Custom errors (to simply throw in multiple commands, and handle in `commanderrorhandler.py`) - useful if multiple commands could have the same error, instead of pasting print statements in all of them
-
-### logger.py
-
-simple custom logging system
-
-three log levels: info, warning, error
-
-prints to console, outputs to data/bot.log, and can send logs to a specified discord channel
-
-### database.py
-
-database handling, uses sqlite, currently holds:
-
-- osu! account linking
-  
-- log channel saving
+A full list of slash commands (with descriptions, parameters, and permissions), along with info about the bot's internals (logging, error handling, database) are documented in [COMMANDS.md](COMMANDS.md).

@@ -3,8 +3,8 @@ import discord
 import traceback
 import sys
 from discord.ext import commands
-from customexceptions import *
-from logger import *
+from core.customexceptions import *
+from core.logger import *
 
 
 class CommandErrorHandler(commands.Cog):

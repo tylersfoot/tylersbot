@@ -5,7 +5,7 @@ import pyqrcode
 import os
 import datetime
 from pathlib import Path
-from logger import *
+from core.logger import *
 
 
 class Qrcode(commands.Cog):

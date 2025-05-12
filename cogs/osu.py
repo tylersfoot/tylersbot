@@ -5,9 +5,9 @@ from discord.ext import commands
 from dotenv import load_dotenv
 import os
 from discord.commands import option
-from database import db_osu_insert_user, db_osu_get_user
-from customexceptions import OsuAccountNotLinkedError
-from logger import *
+from core.database import db_osu_insert_user, db_osu_get_user
+from core.customexceptions import OsuAccountNotLinkedError
+from core.logger import *
 import datetime
 from colorsys import rgb_to_hls, hls_to_rgb
 

@@ -1,5 +1,5 @@
 import sqlite3
-from logger import *
+from core.logger import *
 
 
 DB_PATH = "data/bot_data.db"
