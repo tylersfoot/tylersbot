@@ -1,5 +1,4 @@
 # syntax=docker/dockerfile:1
-# https://docs.docker.com/go/dockerfile-reference/
 
 # use python 3.13.2-slim as the base image
 FROM python:3.13.2-slim 
@@ -8,11 +7,10 @@ FROM python:3.13.2-slim
 WORKDIR /app
 
 # prevents python from writing pyc files
-ENV PYTHONDONTWRITEBYTECODE=1
-
+ENV PYTHONDONTWRITEBYTECODE=1 \
 # keeps python from buffering stdout and stderr to avoid situations where
 # the application crashes without emitting any logs due to buffering
-ENV PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1
 
 # create a non-privileged user
 ARG UID=10001
@@ -27,7 +25,7 @@ RUN adduser \
 
 # copy only requirements and install first (uses caching)
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN --mount=type=cache,target=/root/.cache/pip pip install --no-cache-dir -r requirements.txt
 
 # copy the rest of the project files
 COPY . .

@@ -1,8 +1,8 @@
-# tylersbot — Command Reference
+# tylersbot Commands & Features
 
 This document lists all slash commands and internal functionality available in the `tylersbot` Discord bot.
 
-- For setup instructions, see the [README](./README.md)
+- For setup instructions, see the [README](README.md)
 
 ---
 
@@ -28,7 +28,7 @@ Each command entry is documented using the following columns:
 
 ## Core Bot Commands
 
-Source: [bot.py](bot.py)
+Source: [bot.py](src/bot.py)
 
 | Command                     | Description                                      | Permissions  | Scope  | Type  |
 | ---                         | ---                                              | ---          | ---    | ---   |
@@ -44,7 +44,7 @@ Source: [bot.py](bot.py)
 
 ## Fun & Misc
 
-Source: [fun.py](cogs/fun.py)
+Source: [fun.py](src/cogs/fun.py)
 
 - Can be configured to react to certain keywords in messages
 - Rare chance to send special responses
@@ -61,7 +61,7 @@ Source: [fun.py](cogs/fun.py)
 
 ## Information
 
-Source: [information.py](cogs/information.py)
+Source: [information.py](src/cogs/information.py)
 
 | Command                                              | Description                                        | Permissions | Scope  | Type        |
 | ---                                                  | ---                                                | ---         | ---    | ---         |
@@ -77,7 +77,7 @@ Source: [information.py](cogs/information.py)
 
 ## Moderation
 
-Source: [moderation.py](cogs/moderation.py)
+Source: [moderation.py](src/cogs/moderation.py)
 
 - Has functionality for logging deleted messages in a server (set using `/mod log_channel`)
 
@@ -94,7 +94,7 @@ Source: [moderation.py](cogs/moderation.py)
 
 ## Calculator
 
-Source: [calculator.py](cogs/calculator.py)
+Source: [calculator.py](src/cogs/calculator.py)
 
 | Command                     | Description                          | Permissions | Scope  | Type  |
 | ---                         | ---                                  | ---         | ---    | ---   |
@@ -104,7 +104,7 @@ Source: [calculator.py](cogs/calculator.py)
 
 ## QR Codes
 
-Source: [qrcode.py](cogs/qrcode.py)
+Source: [qrcode.py](src/cogs/qrcode.py)
 
 | Command           | Description                                                                                           | Permissions | Scope  | Type  |
 | ---               | ---                                                                                                   | ---         | ---    | ---   |
@@ -114,7 +114,7 @@ Source: [qrcode.py](cogs/qrcode.py)
 
 ## Wikipedia
 
-Source: [wiki.py](cogs/wiki.py)
+Source: [wiki.py](src/cogs/wiki.py)
 
 | Command                     | Description                                     | Permissions | Scope  | Type  |
 | ---                         | ---                                             | ---         | ---    | ---   |
@@ -126,7 +126,7 @@ Source: [wiki.py](cogs/wiki.py)
 
 ## osu! Integration
 
-Source: [osu.py](cogs/osu.py)
+Source: [osu.py](src/cogs/osu.py)
 
 | Command                                        | Description                                           | Permissions | Scope  | Type  |
 | ---                                            | ---                                                   | ---         | ---    | ---   |
@@ -140,7 +140,7 @@ Source: [osu.py](cogs/osu.py)
 
 ### Command Error Handler
 
-Source: [commanderrorhandler.py](cogs/commanderrorhandler.py)
+Source: [commanderrorhandler.py](src/cogs/commanderrorhandler.py)
 
 Handles all command-related errors in a centralized way.
 
@@ -151,7 +151,7 @@ Handles all command-related errors in a centralized way.
 
 ### Custom Exceptions
 
-Source: [customexceptions.py](core/customexceptions.py)
+Source: [customexceptions.py](src/core/customexceptions.py)
 
 Defines reusable exceptions for common error types.
 
@@ -161,7 +161,7 @@ Defines reusable exceptions for common error types.
 
 ### Logging
 
-Source: [logger.py](core/logger.py)
+Source: [logger.py](src/core/logger.py)
 
 A basic logging system with 3 levels: `info`, `warning`, and `error`.
 
@@ -171,7 +171,7 @@ A basic logging system with 3 levels: `info`, `warning`, and `error`.
 
 ### Database
 
-Source: [database.py](core/database.py)
+Source: [database.py](src/core/database.py)
 
 Handles persistent data storage using SQLite.
 

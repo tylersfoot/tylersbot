@@ -100,6 +100,14 @@ Run the following command in the project directory to build and run the Docker c
 docker compose up --build -d
 ```
 
+For development, if you want to have live code updates, run:
+
+```bash
+docker compose -f compose.yaml -f compose-dev.yaml up --build -d
+```
+
+This will mount the `src/` directory, which means any time the bot gets restarted (with `/bot stop` or in the terminal), the code will be updated without having to rebuild the docker container.
+
 ### 2. Configure Environment Variables
 
 Create a `.env` file in the project directory and add the following variables:
@@ -122,7 +130,7 @@ For more info, see the [compose.yaml](compose.yaml) and [Dockerfile](Dockerfile)
 
 ---
 
-## Commands & Internals
+## Commands & Features
 
 A full list of slash commands (with descriptions, parameters, and permissions), along with info about the bot's internals (logging, error handling, database) are documented in [COMMANDS.md](COMMANDS.md).
 

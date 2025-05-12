@@ -1,0 +1,5 @@
+services:
+  tylersbot:
+    volumes:
+      - ./src:/app
+      - ./data:/app/data
