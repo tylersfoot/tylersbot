@@ -6,6 +6,7 @@ import os
 import datetime
 from pathlib import Path
 from core.logger import *
+from core.paths import *
 
 
 class Qrcode(commands.Cog):
@@ -30,8 +31,9 @@ class Qrcode(commands.Cog):
                         return True, j, i
             return False, 0, 0
 
+        await ctx.response.defer()
         # temporary file path
-        temp_dir = Path('./data/temp')
+        temp_dir = Path(TEMP_PATH)
         temp_dir.mkdir(parents=True, exist_ok=True)
         uid = str(random.randint(1, 1000000000000))
         file_path = temp_dir / f'qr-{uid}.png'

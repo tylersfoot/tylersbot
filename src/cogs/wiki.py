@@ -20,6 +20,7 @@ class Wiki(commands.Cog):
     @wiki_group.command(name="search", description="Searches for a list of Wikipedia articles.")
     async def wiki_search(self, ctx, request: str):
         try:
+            await ctx.response.defer()
             wikicontent = wikipedia.search(request, results=10, suggestion=False)  # Wikipedia search request
 
             wikilinks = []
@@ -54,6 +55,7 @@ class Wiki(commands.Cog):
     @wiki_group.command(name="article", description="Returns a summary of the Wikipedia article specified.")
     async def wiki_article(self, ctx, request: str):
         try:
+            await ctx.response.defer()
             pagecontent = wikipedia.page(request, auto_suggest=False, redirect=True, preload=False)
             pagetext = wikipedia.summary(request, auto_suggest=False, redirect=True, sentences=5)
 
@@ -84,6 +86,7 @@ class Wiki(commands.Cog):
     @wiki_group.command(name="random", description="Returns the summary of a random Wikipedia article.")
     async def wiki_random(self, ctx):
         try:
+            await ctx.response.defer()
             tries = 0
             # tries to get a random article 10 times
             for i in range(10):

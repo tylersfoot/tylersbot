@@ -182,6 +182,7 @@ class Osu(commands.Cog):
     @osu_group.command(name="play", description="Sends a play from the user's top plays.")
     @option("mode", type=str, description="Pick a gamemode", choices=["standard", "taiko", "catch", "mania"])
     async def osu_play(self, ctx, mode: str = '', index: int = 1, user: str = ''):
+        await ctx.response.defer()
         # validate parameters
         index = max(min(index, 100), 1)
 
@@ -295,6 +296,7 @@ class Osu(commands.Cog):
     @osu_group.command(name="recent", description="Sends the user's most recent play.")
     @option("mode", type=str, description="Pick a gamemode", choices=["standard", "taiko", "catch", "mania"])
     async def osu_recent(self, ctx, mode: str = '', user: str = ''):
+        await ctx.response.defer()
         # get user ID from database
         if not user:
             user = db_osu_get_user(ctx.author.id)
@@ -478,6 +480,7 @@ class Osu(commands.Cog):
                 
     @osu_group.command(name="link", description="Link your osu! account with your Discord account.")
     async def osu_link(self, ctx, username: str):
+        await ctx.response.defer()
         id = username_to_id(username)
         if not id:
             await ctx.respond(f"Could not find an osu! account with the username `{username}`.", ephemeral=True)
