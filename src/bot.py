@@ -13,14 +13,14 @@ from core.customexceptions import NotDeveloperError
 from core.database import db_initialize
 from core.logger import *
 from config.config import *
+from core.paths import *
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 startupTime = time.time()
 
-
 async def clear_temp():
-    direct = './data/temp/'
+    direct = TEMP_PATH
     count = 0
     os.makedirs(direct, exist_ok=True)
     for f in await aiofiles.os.listdir(direct):
@@ -85,7 +85,7 @@ if __name__ == "__main__":
         
         await clear_temp() # clear temp folder
         cogs = ''
-        for file in os.listdir('./cogs'):
+        for file in os.listdir(COGS_PATH):
             if file.endswith('.py'):
                 if cogs == '':
                     cogs = file
@@ -174,7 +174,7 @@ if __name__ == "__main__":
         if extension == 'all':
             cogs = ''
             await ctx.respond('Unloading all cogs...')
-            for file in os.listdir('./cogs'):
+            for file in os.listdir(COGS_PATH):
                 if file.endswith('.py'):
                     if cogs == '':
                         cogs = file
@@ -209,7 +209,7 @@ if __name__ == "__main__":
         
         if extension == 'all':
             cogs = ''
-            for file in os.listdir('./cogs'):
+            for file in os.listdir(COGS_PATH):
                 if file.endswith('.py'):
                     if cogs == '':
                         cogs = file
@@ -218,7 +218,8 @@ if __name__ == "__main__":
                     try:
                         bot.unload_extension(f'cogs.{file[:-3]}')
                     except Exception as e:
-                        log_error(f'Cog {file} could not unload. Error: {e}')
+                        if not "has not been loaded" in str(e):
+                            log_error(f'Cog {file} could not unload. Error: {e}')
                         pass
                     else:
                         pass
@@ -249,8 +250,8 @@ if __name__ == "__main__":
         
         await ctx.response.defer(ephemeral=True)
         await bot.sync_commands()
-        log_info('Synced commands')
-        await ctx.followup.send('Synced commands', ephemeral=True)
+        log_info('Synced commands!')
+        await ctx.followup.send('Synced commands!', ephemeral=True)
 
 
     @dev_group.command(name="stop", description="Stops/terminates the bot.")
