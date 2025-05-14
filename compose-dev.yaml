@@ -1,5 +1,6 @@
 services:
   tylersbot:
+    image: tylersfoot/tylersbot:dev
     volumes:
       - ./src:/app
       - ./data:/app/data

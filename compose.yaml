@@ -1,5 +1,6 @@
 services:
   tylersbot:
+    image: tylersfoot/tylersbot:latest
     build:
       context: .
     container_name: tylersbot
@@ -11,4 +12,4 @@ services:
       - OSU_CLIENT_ID=${OSU_CLIENT_ID}
       - OSU_CLIENT_SECRET=${OSU_CLIENT_SECRET}
     volumes:
-      - ./data:/app/data
+      - ${BOT_DATA_PATH:-./data}:/app/data

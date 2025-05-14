@@ -71,6 +71,7 @@ Create a `.env` file in the project directory and add the following variables:
 DISCORD_TOKEN='discord_bot_token'
 OSU_CLIENT_ID='osu_api_client_id'
 OSU_CLIENT_SECRET='osu_api_client_secret'
+BOT_DATA_PATH='./data' # path where the bot will store data
 ```
 
 Replace the placeholders with your actual credentials:
@@ -116,6 +117,7 @@ Create a `.env` file in the project directory and add the following variables:
 DISCORD_TOKEN='discord_bot_token'
 OSU_CLIENT_ID='osu_api_client_id'
 OSU_CLIENT_SECRET='osu_api_client_secret'
+BOT_DATA_PATH='./data' # path where the bot will store data
 ```
 
 Replace the placeholders with your actual credentials:
