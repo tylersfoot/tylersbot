@@ -72,13 +72,12 @@ if __name__ == "__main__":
     # on startup
     @bot.event
     async def on_ready():
-        change_status.start()
-        print(f'''
-    #--------------------------#
-    |  Logged in as {bot.user.name}
-    |  id:{bot.user.id} 
-    #--------------------------#
-    ''')
+        print(f"""
+    +-------------------------------+
+    |  Logged in as: {bot.user.name}
+    |  User ID:      {bot.user.id}
+    +-------------------------------+
+    """)
         
         logger_initialize(bot)
         db_initialize()

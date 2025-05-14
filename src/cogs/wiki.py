@@ -3,6 +3,7 @@ from discord.ext import commands
 import wikipedia
 from core.customexceptions import WikiPageError, WikiDisambiguationError
 import datetime
+from core.logger import *
 
 
 class Wiki(commands.Cog):
@@ -64,7 +65,7 @@ class Wiki(commands.Cog):
                 thumbnail = pagecontent.images[0]
             except Exception as error:
                 # if there are no images, it will set it to the default wikipedia picture
-                print(f"Couldn\'t load thumbnail, {error}")
+                log_error(f"Couldn't load {thumbnail}, {error}")
                 thumbnail = "https://www.wikipedia.org/static/images/project-logos/enwiki.png"
 
             embed = discord.Embed(
@@ -106,10 +107,10 @@ class Wiki(commands.Cog):
             except Exception as error:
                 # if there are no images, it will set it to the default wikipedia picture
                 try:
-                    print(f"Couldn't load {thumbnail}, {error}")
+                    log_error(f"Couldn't load {thumbnail}, {error}")
                     thumbnail = "https://www.wikipedia.org/static/images/project-logos/enwiki.png"
                 except:
-                    print(f"Couldn't load thumbnail, {error}")
+                    log_error(f"Couldn't load {thumbnail}, {error}")
                     thumbnail = "https://www.wikipedia.org/static/images/project-logos/enwiki.png"
 
             embed = discord.Embed(title=random_article,

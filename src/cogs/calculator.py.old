@@ -1,0 +1,204 @@
+import discord
+from discord.ext import commands
+from sympy import parse_expr, log, ceiling
+from sympy.core.sympify import SympifyError
+import multiprocessing
+import asyncio
+import queue as queue_module
+
+
+def calc_worker(expression, result_queue):
+    try:
+        # do the parsing (and any heavy calculation) in this process
+        result = parse_expr(expression)
+        result_queue.put(('success', result))
+    except SympifyError as e:
+        # errors during parsing the expression string itself
+        result_queue.put(('error', f"Invalid expression: {e}"))
+    except MemoryError:
+        # handle out-of-memory errors specifically if they occur
+        result_queue.put(('error', "Calculation ran out of memory."))
+    except RecursionError:
+        # handle recursion depth errors
+        result_queue.put(('error', "Calculation exceeded recursion limits."))
+    except Exception as e:
+        # catch any other exceptions during sympy's processing
+        result_queue.put(('error', f"Calculation error: {e}"))
+
+
+# check digits roughly
+def safe_digit_count(n):
+    print(str(type(n)) + " AAAAAAAAAAAAAAAAAAAAAA")
+    try:
+        # handle exact integers
+        if hasattr(n, "is_Integer") and n.is_Integer:
+            if n == 0:
+                return 1
+
+            # n.p fails int_max_str_digits, n.digits() too slow
+            # use log for digits
+            if n > 0:
+                log_val = log(n + 1, 10)
+                if log_val.is_Number: # check if it evaluated to a number
+                    return int(ceiling(log_val))
+                else: # log_val is symbolic, cannot determine digits
+                    return None 
+            elif n < 0:
+                log_val = log(-n + 1, 10)
+                if log_val.is_Number:
+                    return int(ceiling(log_val))
+                else: # log_val is symbolic
+                    return None
+        # fallback for symbolic or huge floats
+        if n == 0:
+            return 1
+        if isinstance(n, (float, int)) and abs(n) < 1e-100:
+            return 0
+        
+        log_abs_val = log(abs(n), 10)
+        if log_abs_val.is_Number:
+            if abs(n) >= 1:
+                return int(ceiling(log_abs_val)) if n!=0 else 1
+            else: # for numbers between -1 and 1 (exclusive of 0)
+                 # e.g. 0.5, log10(0.5) ~ -0.301, ceiling -> 0
+                return int(ceiling(log_abs_val)) if n!=0 else 1
+        else: # symbolic log result
+            return None
+    except (TypeError, ValueError, AttributeError, OverflowError) as e:
+        return None
+
+
+class Calculator(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+
+    @commands.slash_command(
+        name="calculate",
+        description="Calculates the given mathematical expression.",
+        integration_types={discord.IntegrationType.guild_install, discord.IntegrationType.user_install},
+    )
+    async def calc(self, ctx, expression: str):
+        await ctx.response.defer(ephemeral=False)
+        # clean up the expression
+        expression_cleaned = expression.replace(" ", "") \
+                                .replace("^", "**") \
+                                .replace("×", "*") \
+                                .replace("÷", "/")
+                                
+        # simple pre-filters for obviously problematic expressions
+        if len(expression_cleaned) > 200: # limit expression length
+            await ctx.ctx.respond("The expression is too long.", ephemeral=True)
+            return
+                                
+        # use a multiprocessing.Queue for communication
+        result_q = multiprocessing.Queue()
+        # create the worker process
+        process = multiprocessing.Process(target=calc_worker, args=(expression_cleaned, result_q))
+        process.start()
+
+        result_payload = None
+        timed_out_happened = False
+        
+        try:            
+            # wait for the worker to put a result in the queue, with a timeout
+            # queue.get() is blocking, so run it in a thread that asyncio can wait for
+            result_payload = await asyncio.wait_for(
+                asyncio.to_thread(result_q.get), timeout=5
+            )
+        except asyncio.TimeoutError:
+            time_out_happened = True
+            # send an ephemeral followup message to the user
+            await ctx.respond(f"The calculaton took too long to process! (>5 seconds)")
+            # if the process is still alive after the timeout, terminate it
+            if process.is_alive():
+                await asyncio.to_thread(process.terminate) # send SIGTERM
+                try:
+                    # wait for a short grace period for the process to exit
+                    await asyncio.wait_for(asyncio.to_thread(process.join), timeout=1)
+                except asyncio.TimeoutError:
+                    if process.is_alive():
+                        await asyncio.to_thread(process.kill) # send SIGKILL
+                        try:
+                            # wait for kill to complete
+                            await asyncio.wait_for(asyncio.to_thread(process.join), timeout=1)
+                        except asyncio.TimeoutError:
+                            # if it's still not dead, something is very wrong
+                            pass
+            return
+        finally:
+            # this block executes regardless of whether an exception occurred or not in the try block.
+            # ensures the process and queue are cleaned up.        
+            if process.is_alive():
+                # if the process is still alive here, it means q.get() didn't complete successfully
+                # (e.g., an error other than TimeoutError, or it was about to timeout and this runs first).
+                # if it wasn't a timeout that was handled above, we need to terminate it now.
+                if not timed_out_happened: # only if timeout block didn't already handle it
+                    await asyncio.to_thread(process.terminate)
+                    try:
+                        await asyncio.wait_for(asyncio.to_thread(process.join), timeout=1)
+                    except asyncio.TimeoutError:
+                        if process.is_alive():
+                            await asyncio.to_thread(process.kill)
+                            # join after kill, give it a moment. if it doesn't join, it's stuck.
+                            await asyncio.to_thread(process.join, timeout=1) 
+            
+            # ensure the process is joined if it finished normally or was terminated/killed.
+            # process.join() without timeout here assumes it's no longer alive or will exit quickly.
+            if not process.is_alive() and process.exitcode is None:
+                # this case can happen if the process terminated but join wasn't called yet.
+                await asyncio.to_thread(process.join)
+            elif not process.is_alive() and process.exitcode is not None:
+                # process already exited and has an exit code, join is safe and quick
+                await asyncio.to_thread(process.join)
+
+
+            # clean up the queue
+            result_q.close() # indicate that no more data will be put on this queue
+            # drain any pending items in the queue to help with join_thread
+            while not result_q.empty():
+                try:
+                    result_q.get_nowait()
+                except queue_module.Empty:
+                    break # queue is empty
+            # wait for the queue's feeder thread to terminate.
+            # this is important for resource cleanup with multiprocessing.Queue.
+            await asyncio.to_thread(result_q.join_thread)
+            
+        # if we reach here, it means no timeout occurred and result_payload should be valid.
+        if result_payload is None:
+            # this should ideally not be reached if timeout handling returns properly.
+            # it's a fallback for unexpected states.
+            await ctx.respond(content=f"Calculation failed: No result obtained.")
+            return
+
+        status, actual_result = result_payload
+        
+        if status == 'success':
+            digits = safe_digit_count(actual_result)
+            if digits is not None and digits > 200:
+                await ctx.respond(f"The result is too large to display (approximately {digits} digits).")
+            else:
+                result_str = str(actual_result)
+                # discord message character limit is 2000.
+                if len(result_str) > 1950: # leave some room for formatting
+                    result_str = result_str[:1950] + "..."
+                await ctx.respond(f"Expression: `{expression}`\nResult: `{result_str}`")
+        else: # status == 'error'
+            error_message = str(actual_result) # this is the error string from calc_worker
+            
+            msg = f"Error: {error_message}" # default error detail
+
+            # customize messages for common sympy errors if needed
+            if "exceeds the limit" in error_message.lower() or "too large" in error_message.lower():
+                msg = f"The expression `{expression}` is too complex or results in a number too large for SymPy to handle."
+            elif "division by zero" in error_message.lower():
+                msg = f"Error in `{expression}`: Division by zero is not allowed."
+            elif "invalid expression" in error_message.lower(): # from our SympifyError catch
+                msg = f"The input `{expression}` is not a valid mathematical expression. ({error_message})"
+
+            await ctx.respond(msg)
+
+
+def setup(bot):
+    bot.add_cog(Calculator(bot))
