@@ -12,7 +12,7 @@
 ![Size](https://img.shields.io/github/repo-size/tylersfoot/tylersbot)
 ![Language](https://img.shields.io/github/languages/top/tylersfoot/tylersbot)
 
-My personal Discord bot, built using [Pycord](https://github.com/Pycord-Development/pycord) (originally started on discord.py).  
+My personal Discord bot, built using [Pycord](https://github.com/Pycord-Development/pycord) (originally started on discord.py).
 It’s my first major coding project, and has been updated with many [commands and features](#commands--internals)!
 
  Feel free to give me any questions, feedback, suggestions, bug reports, or to use the code for yourself!

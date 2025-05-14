@@ -42,7 +42,7 @@ def safe_digit_count(n):
                 if log_val.is_Number: # check if it evaluated to a number
                     return int(ceiling(log_val))
                 else: # log_val is symbolic, cannot determine digits
-                    return None 
+                    return None
             elif n < 0:
                 log_val = log(-n + 1, 10)
                 if log_val.is_Number:
@@ -54,7 +54,7 @@ def safe_digit_count(n):
             return 1
         if isinstance(n, (float, int)) and abs(n) < 1e-100:
             return 0
-        
+
         log_abs_val = log(abs(n), 10)
         if log_abs_val.is_Number:
             if abs(n) >= 1:
@@ -85,12 +85,12 @@ class Calculator(commands.Cog):
                                 .replace("^", "**") \
                                 .replace("×", "*") \
                                 .replace("÷", "/")
-                                
+
         # simple pre-filters for obviously problematic expressions
         if len(expression_cleaned) > 200: # limit expression length
             await ctx.ctx.respond("The expression is too long.", ephemeral=True)
             return
-                                
+
         # use a multiprocessing.Queue for communication
         result_q = multiprocessing.Queue()
         # create the worker process
@@ -99,8 +99,8 @@ class Calculator(commands.Cog):
 
         result_payload = None
         timed_out_happened = False
-        
-        try:            
+
+        try:
             # wait for the worker to put a result in the queue, with a timeout
             # queue.get() is blocking, so run it in a thread that asyncio can wait for
             result_payload = await asyncio.wait_for(
@@ -128,7 +128,7 @@ class Calculator(commands.Cog):
             return
         finally:
             # this block executes regardless of whether an exception occurred or not in the try block.
-            # ensures the process and queue are cleaned up.        
+            # ensures the process and queue are cleaned up.
             if process.is_alive():
                 # if the process is still alive here, it means q.get() didn't complete successfully
                 # (e.g., an error other than TimeoutError, or it was about to timeout and this runs first).
@@ -141,8 +141,8 @@ class Calculator(commands.Cog):
                         if process.is_alive():
                             await asyncio.to_thread(process.kill)
                             # join after kill, give it a moment. if it doesn't join, it's stuck.
-                            await asyncio.to_thread(process.join, timeout=1) 
-            
+                            await asyncio.to_thread(process.join, timeout=1)
+
             # ensure the process is joined if it finished normally or was terminated/killed.
             # process.join() without timeout here assumes it's no longer alive or will exit quickly.
             if not process.is_alive() and process.exitcode is None:
@@ -164,7 +164,7 @@ class Calculator(commands.Cog):
             # wait for the queue's feeder thread to terminate.
             # this is important for resource cleanup with multiprocessing.Queue.
             await asyncio.to_thread(result_q.join_thread)
-            
+
         # if we reach here, it means no timeout occurred and result_payload should be valid.
         if result_payload is None:
             # this should ideally not be reached if timeout handling returns properly.
@@ -173,7 +173,7 @@ class Calculator(commands.Cog):
             return
 
         status, actual_result = result_payload
-        
+
         if status == 'success':
             digits = safe_digit_count(actual_result)
             if digits is not None and digits > 200:
@@ -186,7 +186,7 @@ class Calculator(commands.Cog):
                 await ctx.respond(f"Expression: `{expression}`\nResult: `{result_str}`")
         else: # status == 'error'
             error_message = str(actual_result) # this is the error string from calc_worker
-            
+
             msg = f"Error: {error_message}" # default error detail
 
             # customize messages for common sympy errors if needed

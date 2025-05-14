@@ -1,0 +1,25 @@
+[project]
+name = "tylersbot"
+version = "2025"
+description = "A Multipurpose Python Discord Bot"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+  "aiofiles==24.1.0",
+  "py-cord==2.6.1",
+  "PyQRCode==1.2.1",
+  "python-dotenv==1.1.0",
+  "requests==2.32.3",
+  "sympy==1.13.3",
+  "wikipedia==1.4.0",
+  "audioop-lts==0.2.1",  # will be removed in next py-cord version
+]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.2.0",
+    "ruff>=0.11.9",
+]
+
+[tool.ruff.format]
+skip-magic-trailing-comma = true

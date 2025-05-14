@@ -1,8 +1,9 @@
 import sqlite3
-from core.logger import *
+from core.logger import log_info, log_error
 
 
 DB_PATH = "data/bot_data.db"
+
 
 # connect with the db and create tables if they don't exist
 def db_initialize():
@@ -18,25 +19,28 @@ def db_initialize():
         osu_id INTEGER NOT NULL
     )
     """)
-    
+
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS guilds (
         guild_id INTEGER PRIMARY KEY,
         log_channel_id INTEGER NOT NULL
-    )            
+    )
     """)
 
     connection.commit()
     connection.close()
     log_info("Database initialized")
-    
-    
+
+
 def db_osu_insert_user(user_id: int, osu_id: int):
     # inserts/updates an osu! user id into the database
     try:
         connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
-        cursor.execute("INSERT OR REPLACE INTO osu_accounts (user_id, osu_id) VALUES (?, ?)", (user_id, osu_id))
+        cursor.execute(
+            "INSERT OR REPLACE INTO osu_accounts (user_id, osu_id) VALUES (?, ?)",
+            (user_id, osu_id),
+        )
         connection.commit()
         log_info(f"Inserted user {user_id} with osu! id {osu_id}")
     except sqlite3.Error as e:
@@ -65,7 +69,10 @@ def db_guild_insert_log(guild_id: int, log_channel_id: int):
     try:
         connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
-        cursor.execute("INSERT OR REPLACE INTO guilds (guild_id, log_channel_id) VALUES (?, ?)", (guild_id, log_channel_id))
+        cursor.execute(
+            "INSERT OR REPLACE INTO guilds (guild_id, log_channel_id) VALUES (?, ?)",
+            (guild_id, log_channel_id),
+        )
         connection.commit()
         log_info(f"Linked log channel {log_channel_id} to guild {guild_id}")
     except sqlite3.Error as e:
@@ -79,7 +86,9 @@ def db_guild_get_log(guild_id: int):
     try:
         connection = sqlite3.connect(DB_PATH)
         cursor = connection.cursor()
-        cursor.execute("SELECT log_channel_id FROM guilds WHERE guild_id = ?", (guild_id,))
+        cursor.execute(
+            "SELECT log_channel_id FROM guilds WHERE guild_id = ?", (guild_id,)
+        )
         result = cursor.fetchone()
         return result[0] if result else None
     except sqlite3.Error as e:

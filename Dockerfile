@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # use python 3.13.2-slim as the base image
-FROM python:3.13.2-slim 
+FROM python:3.13.2-slim
 
 # set working directory
 WORKDIR /app

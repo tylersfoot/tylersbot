@@ -1,6 +1,6 @@
-'''
+"""
 Change the following variables to your own values
-'''
+"""
 
 # discord user ids of people who can use dev commands
 DEVELOPER_USER_IDS = [460161554915000355]

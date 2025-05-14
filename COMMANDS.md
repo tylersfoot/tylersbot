@@ -10,12 +10,12 @@ This document lists all slash commands and internal functionality available in t
 
 Each command entry is documented using the following columns:
 
-- **Command** — the full slash command syntax  
-  - if it’s in a command group, it’ll show like `/group command`  
+- **Command** — the full slash command syntax
+  - if it’s in a command group, it’ll show like `/group command`
   - parameters are formatted as `param:type` (with `?` for optional)
 - **Description** — what the command does
 - **Permissions** — user permissions required to use it
-  - `Dev`: can only be used by developers (deprecated soon)  
+  - `Dev`: can only be used by developers (deprecated soon)
   - otherwise, Discord permissions (e.g., `manage_messages`, `ban_members`)
 - **Scope** — where the command is available
   - `Server`: a normal server slash command
