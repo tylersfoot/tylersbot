@@ -1,37 +1,37 @@
 # syntax=docker/dockerfile:1
+# Dockerfile for tylersbot — multistage + uv + Python 3.13
 
-# use python alpine as the base image
-FROM python:alpine
+FROM ghcr.io/astral-sh/uv:python3.13-alpine AS builder
 
-# set working directory
+ENV UV_COMPILE_BYTECODE=0 \
+    UV_LINK_MODE=copy \
+    UV_PYTHON_DOWNLOADS=0
+
 WORKDIR /app
 
-# prevents python from writing pyc files
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv pip install -r pyproject.toml --system --no-cache
+
+FROM python:3.13-alpine
+
+RUN addgroup -S app && adduser -S -G app app
+
+WORKDIR /app
+
+COPY --from=builder /usr/local/lib/python3.13 /usr/local/lib/python3.13
+
+COPY --chown=app:app src/ ./src/
+
+RUN mkdir -p /app/data && chown app:app /app/data
+
 ENV PYTHONDONTWRITEBYTECODE=1 \
-# keeps python from buffering stdout and stderr to avoid situations where
-# the application crashes without emitting any logs due to buffering
     PYTHONUNBUFFERED=1
 
-# create a non-privileged user
-ARG UID=10001
-RUN adduser \
-    --disabled-password \
-    --gecos "" \
-    --home "/nonexistent" \
-    --shell "/sbin/nologin" \
-    --no-create-home \
-    --uid "${UID}" \
-    botuser
+USER app
 
-# copy only requirements and install first (uses caching)
-COPY requirements.txt .
-RUN --mount=type=cache,target=/root/.cache/pip pip install --no-cache-dir -r requirements.txt
+CMD ["python", "src/bot.py"]
 
-# copy the rest of the project files
-COPY . .
-
-# switch to the non-privileged user to run the application
-USER botuser
-
-# run the application
-CMD ["python", "bot.py"]
+LABEL maintainer="tylersfoot"
+LABEL org.opencontainers.image.source="https://github.com/tylersfoot/tylersbot"
