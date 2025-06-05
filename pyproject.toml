@@ -7,6 +7,7 @@ requires-python = ">=3.13"
 dependencies = [
   "aiofiles==24.1.0",
   "py-cord==2.6.1",
+  "pypng==0.20220715.0",
   "PyQRCode==1.2.1",
   "python-dotenv==1.1.0",
   "requests==2.32.3",
@@ -18,7 +19,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "pre-commit>=4.2.0",
-    "ruff>=0.11.9",
+    "ruff>=0.11.12",
 ]
 
 [tool.ruff.format]

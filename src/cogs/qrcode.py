@@ -2,11 +2,10 @@ import discord
 from discord.ext import commands
 import random
 import pyqrcode
-import os
 import datetime
 from pathlib import Path
-from core.logger import log_error
 from core.paths import TEMP_PATH
+from bot import clear_temp
 
 
 class Qrcode(commands.Cog):
@@ -79,9 +78,9 @@ class Qrcode(commands.Cog):
         await ctx.respond(file=file, embed=embed)
 
         try:
-            os.remove(file_path)
-        except OSError as e:
-            log_error(f"Error removing temporary file: {e}")
+            await clear_temp()
+        except PermissionError:
+            return
 
 
 def setup(bot):

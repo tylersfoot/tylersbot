@@ -100,6 +100,7 @@ if __name__ == "__main__":
         log_info(f"Loaded {cogs}")
 
         await bot.sync_commands()
+        change_status.start()
 
     status_cycle = cycle(
         [

@@ -81,8 +81,8 @@ class Wiki(commands.Cog):
             try:
                 thumbnail = pagecontent.images[0]
             except Exception as error:
-                # if there are no images, it will set it to the default wikipedia picture
-                log_error(f"Couldn't load {thumbnail}, {error}")
+                # if there are no images, use the default Wikipedia picture
+                log_error(f"Couldn't load thumbnail: {error}")
                 thumbnail = (
                     "https://www.wikipedia.org/static/images/project-logos/enwiki.png"
                 )
@@ -127,13 +127,11 @@ class Wiki(commands.Cog):
             try:
                 thumbnail = pagecontent.images[0]
             except Exception as error:
-                # if there are no images, it will set it to the default wikipedia picture
-                try:
-                    log_error(f"Couldn't load {thumbnail}, {error}")
-                    thumbnail = "https://www.wikipedia.org/static/images/project-logos/enwiki.png"
-                except Exception:
-                    log_error(f"Couldn't load {thumbnail}, {error}")
-                    thumbnail = "https://www.wikipedia.org/static/images/project-logos/enwiki.png"
+                # if there are no images, use the default Wikipedia picture
+                log_error(f"Couldn't load thumbnail: {error}")
+                thumbnail = (
+                    "https://www.wikipedia.org/static/images/project-logos/enwiki.png"
+                )
 
             embed = discord.Embed(
                 title=random_article,
