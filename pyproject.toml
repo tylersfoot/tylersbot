@@ -10,7 +10,7 @@ dependencies = [
   "pypng==0.20220715.0",
   "PyQRCode==1.2.1",
   "python-dotenv==1.1.0",
-  "requests==2.32.3",
+  "requests==2.32.4",
   "sympy==1.13.3",
   "wikipedia==1.4.0",
   "audioop-lts==0.2.1",  # will be removed in next py-cord version
